@@ -1,0 +1,603 @@
+:root {
+  --font-main: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-serif: 'Georgia', serif;
+
+  /* Quiet Confidence Palette (Deep Graphite) */
+  --bg-app: #18181b;
+  /* Zinc 950 - Main Background */
+  --bg-panel: #18181b;
+  /* Match app bg for matte look */
+  --bg-sidebar: #18181b;
+  --bg-input: #27272a;
+  /* Zinc 900 - Inputs */
+  --bg-card: rgba(255, 255, 255, 0.02);
+
+  --text-main: #f4f4f5;
+  /* Zinc 100 */
+  --text-muted: #a1a1aa;
+  /* Zinc 400 */
+  --text-dim: #52525b;
+  /* Zinc 600 */
+
+  --accent-color: #6366f1;
+  /* Indigo 500 */
+  --accent-hover: #4f46e5;
+  /* Indigo 600 */
+
+  --border-color: #27272a;
+  /* Zinc 900 */
+  --border-focus: #3f3f46;
+  /* Zinc 700 */
+  --border-active: #6366f1;
+
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  --spacing-xxl: 64px;
+
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-main);
+  background-color: var(--bg-app);
+  color: var(--text-main);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* Layout Utilities */
+.app-layout {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+  background-color: var(--bg-app);
+}
+
+.sidebar {
+  /* Legacy class kept for backward compatibility if needed, though mostly unused now */
+  width: 260px;
+  background-color: var(--bg-subtle);
+  border-right: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+}
+
+.main-content {
+  display: flex;
+  flex-direction: column;
+  /* Mobile first: stack vertically */
+  overflow-y: auto;
+  /* Allow window scroll on mobile */
+  height: auto;
+}
+
+.editor-panel {
+  width: 100%;
+  background-color: var(--bg-app);
+  border-right: none;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.preview-panel {
+  width: 100%;
+  background-color: #121212;
+  /* Dark contrast background */
+  padding: var(--spacing-lg);
+  /* Reduced padding for mobile */
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 500px;
+}
+
+/* Preview Page Container (Screen) */
+.preview-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px;
+  background-color: #F3F4F6;
+}
+
+/* Desktop Styles */
+@media (min-width: 1024px) {
+  .app-layout {
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  .main-content {
+    flex: 1;
+    height: calc(100vh - 70px);
+    /* Fixed height for split view */
+    flex-direction: row;
+    overflow: hidden;
+  }
+
+  .editor-panel {
+    width: 50%;
+    height: 100%;
+    overflow-y: auto;
+    border-right: 1px solid var(--border-color);
+    border-bottom: none;
+  }
+
+  .preview-panel {
+    width: 50%;
+    height: 100%;
+    /* important */
+    overflow-y: auto;
+    padding: 48px;
+  }
+}
+
+/* Typography */
+.text-display {
+  font-size: 3.5rem;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 1.1;
+  margin-bottom: 24px;
+  color: var(--text-main);
+}
+
+.text-h1 {
+  font-size: 2.25rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  margin-bottom: 16px;
+  color: var(--text-main);
+}
+
+.text-h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  margin-bottom: 16px;
+  color: var(--text-main);
+}
+
+.text-h3 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: var(--text-main);
+}
+
+.text-body {
+  font-size: 1rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+.text-sm {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+}
+
+/* Forms & Inputs */
+.form-group {
+  margin-bottom: var(--spacing-lg);
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-main);
+}
+
+.form-input,
+.form-textarea {
+  display: block;
+  width: 100%;
+  padding: 10px 14px;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: var(--text-main);
+  background-color: var(--bg-input);
+  background-clip: padding-box;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  font-family: inherit;
+}
+
+.form-input:focus,
+.form-textarea:focus {
+  outline: none;
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
+  /* Subtle focus ring */
+}
+
+.form-input::placeholder,
+.form-textarea::placeholder {
+  color: var(--text-dim);
+}
+
+/* Sidebar Navigation Items */
+.nav-item {
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+  margin-bottom: 4px;
+  color: var(--text-muted);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.1s;
+}
+
+.nav-item:hover {
+  background-color: var(--bg-subtle);
+  color: var(--text-main);
+}
+
+.nav-item.active {
+  background-color: #EEE;
+  color: var(--text-main);
+  font-weight: 500;
+}
+
+/* ... Buttons skipped ... */
+
+/* Cards (for lists within editor) */
+.card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  padding: var(--spacing-md);
+  border-radius: var(--radius-md);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.card:hover {
+  border-color: var(--border-focus);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* A4 Paper Preview Container */
+.paper-preview {
+  /* This container handles the scaling/positioning */
+  width: 210mm;
+  /* Default A4 width */
+  min-height: 297mm;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  transform-origin: top center;
+  transition: transform 0.2s;
+
+  /* Default Desktop Scale (Small styling fix for laptops) */
+  transform: scale(0.65);
+  /* Start smaller to fit most split screens */
+  margin-bottom: -100mm;
+  /* Compensate for whitespace */
+}
+
+/* The actual resume page content */
+.resume-page {
+  width: 210mm;
+  min-height: 297mm;
+  background-color: white;
+  color: black;
+  padding: 15mm;
+  box-sizing: border-box;
+  box-shadow: 0 0 50px rgba(0, 0, 0, 0.15);
+  /* Softer shadow */
+  overflow: hidden;
+}
+
+/* Tablet/Desktop Tweaks */
+@media (min-width: 1024px) {
+  .paper-preview {
+    transform: scale(0.6);
+    /* Even smaller on split screens if needed, or 0.75 on large */
+    margin-bottom: -110mm;
+  }
+}
+
+@media (min-width: 1400px) {
+  .paper-preview {
+    transform: scale(0.85);
+    /* Proper scale for large monitors */
+    margin-bottom: -50mm;
+  }
+}
+
+/* Mobile Responsive Scaling for Preview */
+@media (max-width: 768px) {
+  .preview-panel {
+    overflow: hidden;
+    padding: 24px 0;
+    background: #121212;
+    min-height: 480px;
+    /* Ensure enough height to see preview */
+  }
+
+  .paper-preview {
+    /* Safe mobile scale for 360px width phones */
+    transform: scale(0.42);
+    margin-bottom: -160mm;
+    /* Stronger shadow on mobile */
+  }
+}
+
+/* Print Styles - Strict A4 Enforcement */
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 0mm;
+  }
+
+  html,
+  body {
+    width: 210mm;
+    height: 297mm;
+    background: white;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden;
+    /* Hide scrollbars */
+  }
+
+  /* Reset all layout containers to be invisible wrappers */
+  #root,
+  .app-layout,
+  .main-content,
+  .preview-panel,
+  .paper-preview,
+  .preview-container {
+    display: block !important;
+    position: static !important;
+    /* Ensure they don't trap absolute children if possible, or handle offset */
+    width: 100% !important;
+    height: auto !important;
+    overflow: visible !important;
+    background: transparent !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    transform: none !important;
+    box-shadow: none !important;
+    border: none !important;
+  }
+
+  /* Hide UI elements */
+  .sidebar,
+  .editor-panel,
+  .no-print {
+    display: none !important;
+  }
+
+  /* The Resume Container itself - Forces Top Left */
+  .resume-page {
+    position: absolute !important;
+    left: 0 !important;
+    top: 0 !important;
+    width: 210mm !important;
+    min-height: 297mm !important;
+    margin: 0 !important;
+    padding: 10mm !important;
+    /* Standard Internal Padding - Reduced for Print to maximize space */
+    box-sizing: border-box !important;
+    background: white !important;
+    box-shadow: none !important;
+    z-index: 9999;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  /* Compact Spacing Overrides for Print to fit one page */
+  .resume-page section {
+    margin-bottom: 12px !important;
+    /* Override inline 24px/32px */
+    break-inside: avoid;
+    /* Try to keep sections intact */
+  }
+
+  .resume-page h1 {
+    margin-bottom: 12px !important;
+    /* Override inline 16px */
+    font-size: 28pt !important;
+    /* Slightly smaller title if needed */
+  }
+
+  .resume-page h3 {
+    margin-bottom: 8px !important;
+    /* Override inline 16px */
+    padding-bottom: 4px !important;
+  }
+
+  .resume-page p,
+  .resume-page li {
+    font-size: 9.5pt !important;
+    /* Micro-optimization for font size */
+  }
+}
+
+/* Landing Page Specific Styles - Modern Dark Theme */
+/* Landing Page Specific Styles - Modern Clean Light Theme */
+/* Landing Page Specific Styles - Quiet Confidence (Deep Graphite) */
+.landing-page {
+  /* Deep Graphite Palette */
+  --lp-bg: #18181b;
+  /* Zinc 950 - Graphite Base */
+  --lp-bg-alt: #18181b;
+  /* Same as base for matte feel (no panels) */
+  --lp-text: #f4f4f5;
+  /* Zinc 100 - Soft White */
+  --lp-text-muted: #a1a1aa;
+  /* Zinc 400 - Muted Gray */
+  --lp-accent: #6366f1;
+  /* Indigo 500 - Professional Accent */
+  --lp-border: #27272a;
+  /* Zinc 900 - Very subtle */
+
+  background-color: var(--lp-bg);
+  color: var(--lp-text);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  line-height: 1.6;
+  width: 100%;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+.container {
+  width: 100%;
+  max-width: 900px;
+  /* Tighter container for reading */
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* Typography & Layout - Minimal */
+.lp-brand-title {
+  font-family: 'Georgia', serif;
+  /* Serif for authority */
+  font-size: 3.5rem;
+  font-weight: 400;
+  /* Regular weight for calm authority */
+  color: var(--lp-text);
+  margin-bottom: 24px;
+  letter-spacing: -0.02em;
+}
+
+.lp-hero-title {
+  font-size: 3rem;
+  line-height: 1.1;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--lp-text);
+  margin-bottom: 32px;
+}
+
+.lp-section-text {
+  font-size: 1.25rem;
+  line-height: 1.6;
+  color: var(--lp-text-muted);
+  font-weight: 400;
+}
+
+/* Primary Button - Restrained */
+.btn-lp-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--lp-accent);
+  color: #ffffff;
+  font-weight: 500;
+  padding: 14px 32px;
+  border-radius: 6px;
+  /* Slight rounding, not pill */
+  transition: opacity 0.2s;
+  font-size: 1rem;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.btn-lp-primary:hover {
+  opacity: 0.9;
+}
+
+/* Card Grids */
+.lp-grid-3 {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+  margin-top: 48px;
+}
+
+.lp-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+  margin-top: 48px;
+}
+
+.lp-minimal-card {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--lp-border);
+  padding: 24px;
+  border-radius: 8px;
+  transition: border-color 0.2s;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.lp-minimal-card:hover {
+  border-color: #3f3f46;
+}
+
+.lp-card-heading {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--lp-text);
+}
+
+.lp-card-body {
+  font-size: 0.95rem;
+  color: var(--lp-text-muted);
+  line-height: 1.5;
+}
+
+/* Utilities */
+.hidden-mobile {
+  display: flex;
+}
+
+@media (min-width: 768px) {
+  .lp-grid-3 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .lp-grid-2 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .hidden-mobile {
+    display: none;
+  }
+
+  .lp-brand-title {
+    font-size: 2.5rem;
+  }
+
+  .lp-hero-title {
+    font-size: 2.25rem;
+  }
+
+  .lp-section-text {
+    font-size: 1.125rem;
+  }
+}
