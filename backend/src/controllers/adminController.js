@@ -55,9 +55,9 @@ const deleteUser = async (req, res) => {
     try {
         const user = await User.findById(req.params.id);
         if (user) {
-            await user.deleteOne();
-            // Also delete their resumes
+            // First delete their resumes
             await Resume.deleteMany({ user: req.params.id });
+            await user.deleteOne();
             res.json({ message: 'User removed' });
         } else {
             res.status(404).json({ message: 'User not found' });

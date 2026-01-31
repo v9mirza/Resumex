@@ -37,6 +37,8 @@ const Admin = () => {
         try {
             await api.deleteUser(id);
             setUsers(prev => prev.filter(u => u._id !== id));
+            // Remove resumes belonging to this user from the view immediately
+            setResumes(prev => prev.filter(r => r.user?._id !== id));
             toast.success('User deleted');
         } catch (error) {
             toast.error('Failed to delete user');
