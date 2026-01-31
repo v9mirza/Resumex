@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
-import { useResume } from '../state/useResume';
+import React, { useState, useEffect } from 'react';
+import { useResume } from '../state/useResume.jsx';
 import Editor from '../components/editor/Editor';
 import LivePreview from '../components/preview/LivePreview';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
+import * as api from '../services/api';
+import toast from 'react-hot-toast';
 
 const STEPS = [
     { id: 'basics', label: 'Basics' },
@@ -15,9 +17,28 @@ const STEPS = [
 ];
 
 const Builder = () => {
-    const { resume, updateBasics, updateSection, setTemplate } = useResume();
+    const { resume, updateBasics, updateSection, setTemplate, setResume } = useResume();
     const [currentStepIndex, setCurrentStepIndex] = useState(0);
+    const [isSaving, setIsSaving] = useState(false);
     const navigate = useNavigate();
+    const { id } = useParams();
+
+    useEffect(() => {
+        if (id) {
+            const loadResume = async () => {
+                try {
+                    const { data } = await api.getResume(id);
+                    if (data && data.data) {
+                        setResume(data.data);
+                    }
+                } catch (e) {
+                    console.error("Failed to load", e);
+                    toast.error("Failed to load resume");
+                }
+            };
+            loadResume();
+        }
+    }, [id]);
 
     const currentStep = STEPS[currentStepIndex].id;
 
@@ -32,6 +53,33 @@ const Builder = () => {
             navigate('/preview');
         }
     };
+
+    const handleSave = async () => {
+        setIsSaving(true);
+        try {
+            // Determine if we are updating (id exists) or creating
+            const saveCall = id
+                ? api.updateResume(id, { data: resume, title: resume.basics.name + "'s Resume" })
+                : api.createResume({ title: resume.basics.name + "'s Resume", data: resume });
+
+            const { data } = await toast.promise(saveCall, {
+                loading: 'Saving...',
+                success: 'Resume saved to cloud!',
+                error: 'Failed to save resume'
+            });
+
+            // If created new, we might get an ID back.
+            if (!id && data._id) {
+                navigate(`/build/${data._id}`, { replace: true });
+            }
+
+        } catch (error) {
+            console.error(error);
+        } finally {
+            setIsSaving(false);
+        }
+    };
+
 
     return (
         <div className="app-layout" style={{ flexDirection: 'column' }}>
@@ -50,9 +98,27 @@ const Builder = () => {
                     <Link to="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '8px' }}>
                         <span style={{ fontFamily: 'Georgia, serif', fontWeight: 400, fontSize: '1.5rem', color: 'var(--text-main)' }}>Resumex</span>
                     </Link>
+                    <Link to="/dashboard" style={{ textDecoration: 'none', color: 'var(--text-muted)', fontSize: '0.9rem', marginLeft: '16px' }}>
+                        Dashboard
+                    </Link>
                 </div>
 
-                <div>
+                <div style={{ display: 'flex', gap: '12px' }}>
+                    <button
+                        onClick={handleSave}
+                        className="btn"
+                        disabled={isSaving}
+                        style={{
+                            padding: '8px 20px',
+                            fontSize: '0.9rem',
+                            backgroundColor: 'transparent',
+                            color: 'var(--text-main)',
+                            border: '1px solid var(--border-color)',
+                            cursor: 'pointer'
+                        }}
+                    >
+                        {isSaving ? 'Saving...' : 'Save Progress'}
+                    </button>
                     <Link to="/preview" className="btn btn-primary" style={{ padding: '8px 20px', fontSize: '0.9rem', backgroundColor: 'var(--accent-color)', color: 'white' }}>
                         Preview & Export
                     </Link>

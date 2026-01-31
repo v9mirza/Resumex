@@ -1,9 +1,44 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+
+const AuthButtons = () => {
+  const { user } = useAuth();
+  if (user) {
+    return (
+      <div style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
+        <Link to="/dashboard" style={{ color: 'var(--lp-text)', textDecoration: 'none', fontWeight: 500 }}>Dashboard</Link>
+        <Link to="/profile" style={{ color: 'var(--lp-text)', textDecoration: 'none', fontWeight: 500 }}>Profile</Link>
+      </div>
+    );
+  }
+  return (
+    <>
+      <Link to="/login" style={{ color: 'var(--lp-text)', textDecoration: 'none', fontWeight: 500 }}>Log in</Link>
+      <Link to="/register" style={{
+        padding: '8px 16px',
+        backgroundColor: 'var(--lp-text)',
+        color: 'var(--bg-app)',
+        textDecoration: 'none',
+        borderRadius: '4px',
+        fontWeight: 600,
+        fontSize: '0.9rem'
+      }}>Sign up</Link>
+    </>
+  );
+};
 
 const Home = () => {
   return (
     <div className="landing-page">
+      <nav className="container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '24px 0' }}>
+        <span style={{ fontFamily: 'Georgia, serif', fontWeight: 600, fontSize: '1.25rem', color: 'var(--lp-text)' }}>Resumex</span>
+        <div style={{ display: 'flex', gap: '24px', alignItems: 'center' }}>
+          {/* Check if user is logged in, if so show Dashboard, else Login/Register */}
+          <AuthButtons />
+        </div>
+      </nav>
+
       {/* 
         1. Hero Section 
         Establish authority immediately.
@@ -17,11 +52,11 @@ const Home = () => {
         </h2>
 
         <p style={{ fontSize: '1.25rem', color: 'var(--lp-text-muted)', marginBottom: '48px', maxWidth: '600px', margin: '0 auto 64px' }}>
-Create a clear, professional resume focused on structure, readability,
-and the experience that actually matters.        </p>
+          Create a clear, professional resume focused on structure, readability,
+          and the experience that actually matters.        </p>
 
-        <Link to="/build" className="btn-lp-primary">
-          Build my resume
+        <Link to="/dashboard" className="btn-lp-primary">
+          Manage Resumes
         </Link>
       </section>
 
@@ -48,8 +83,8 @@ and the experience that actually matters.        </p>
             <p className="lp-card-body">No distractions. No complex drag-and-drop. Just you and your career history.</p>
           </div>
           <div className="lp-minimal-card">
-            <h3 className="lp-card-heading">Private</h3>
-            <p className="lp-card-body">Local-only storage. No servers. No tracking. Your data never leaves your device.</p>
+            <h3 className="lp-card-heading">Secure Cloud</h3>
+            <p className="lp-card-body">Your resumes are encrypted and saved to the cloud. Access them from any device.</p>
           </div>
           <div className="lp-minimal-card">
             <h3 className="lp-card-heading">Standard</h3>
