@@ -1,7 +1,7 @@
 <div align="center">
 
 # Resumex
-### Build Your Professional Future
+### Build a clear, professional resume.
 
 **Resumex** is a modern, full-stack application that empowers users to create ATS-friendly, professional resumes in minutes. Feature-rich, secure, and designed for simplicity.
 
@@ -79,6 +79,6 @@ For a deep dive into the architecture, check out [PROJECT_STRUCTURE.md](./PROJEC
 ---
 
 <div align="center">
-  <p>Made by the Resumex Team</p>
+  <p>Made by the <a href="https://v9mirza.com/">v9mirza</a></p>
   <p>Licensed under MIT</p>
 </div>
