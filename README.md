@@ -1,140 +1,84 @@
-# Resumex 📄
+<div align="center">
 
-**Resumex** is a modern, full-stack Resume Builder application designed to help users create professional, ATS-friendly resumes with ease. It features a real-time preview, multiple templates, and secure user authentication.
+# Resumex
+### Build Your Professional Future
 
----
+**Resumex** is a modern, full-stack application that empowers users to create ATS-friendly, professional resumes in minutes. Feature-rich, secure, and designed for simplicity.
 
-## 🚀 Features
+[![React](https://img.shields.io/badge/Frontend-React-61DAFB?style=flat-square&logo=react&logoColor=black)](https://reactjs.org/)
+[![Node](https://img.shields.io/badge/Backend-Node.js-339933?style=flat-square&logo=node.js&logoColor=white)](https://nodejs.org/)
+[![MongoDB](https://img.shields.io/badge/Database-MongoDB-47A248?style=flat-square&logo=mongodb&logoColor=white)](https://www.mongodb.com/)
+[![Express](https://img.shields.io/badge/Framework-Express-000000?style=flat-square&logo=express&logoColor=white)](https://expressjs.com/)
 
--   **Real-time Resume Builder**: See changes instantly as you type.
--   **Multiple Templates**: Choose from Classic, Modern, and Minimal designs.
--   **User Authentication**: Secure Login/Register functionality.
--   **Dashboard**: Manage multiple resumes from a central dashboard.
--   **PDF Export**: Download your high-quality resume as a PDF.
--   **Admin Panel**: Administrative capabilities to manage users and view system stats.
--   **Responsive Design**: Works seamlessly on desktop and mobile devices.
+</div>
 
 ---
 
-## 🛠️ Tech Stack
+## Key Features
 
-### **Frontend**
--   **React** (Vite): Fast and modern UI library.
--   **Context API**: Global state management for Auth and Resume data.
--   **React Router**: Client-side routing.
--   **Axios**: API communication.
--   **CSS Variables**: Flexible and maintainable styling system.
--   **HTML2PDF.js**: For generating PDF downloads.
-
-### **Backend**
--   **Node.js & Express**: Robust server-side framework.
--   **MongoDB & Mongoose**: NoSQL database for flexible data storage.
--   **JWT (JSON Web Tokens)**: Secure stateless authentication.
--   **Bcrypt.js**: Password hashing.
+- **Real-time Editor**: See your changes instantly as you type.
+- **Multiple Templates**: Choose from Classic, Modern, and Minimal designs.
+- **Secure Accounts**: Full user authentication with JWT.
+- **Dashboard**: Manage, edit, and delete multiple resumes.
+- **PDF Export**: One-click download in high quality.
+- **Admin Panel**: User management and system statistics.
 
 ---
 
-## ⚙️ Prerequisites
+## Quick Start 🚀
 
-Before running this project, ensure you have the following installed:
-
--   [Node.js](https://nodejs.org/) (v14+ recommended)
--   [MongoDB](https://www.mongodb.com/) (Local or Atlas)
-
----
-
-## 📥 Installation & Setup
-
-1.  **Clone the Repository**
-    ```bash
-    git clone <repository_url>
-    cd Resumex
-    ```
-
-### **Backend Setup**
-
-2.  **Navigate to the backend directory**
-    ```bash
-    cd backend
-    ```
-
-3.  **Install Dependencies**
-    ```bash
-    npm install
-    ```
-
-4.  **Configure Environment Variables**
-    Create a `.env` file in the `backend` folder and add the following:
-    ```env
-    PORT=3000
-    MONGO_URI=mongodb://localhost:27017/resumex  # Or your MongoDB Atlas URI
-    JWT_SECRET=your_super_secret_jwt_key
-    ```
-
-5.  **Start the Server**
-    ```bash
-    npm start
-    ```
-    The backend will run on `http://localhost:3000`.
-
-### **Frontend Setup**
-
-6.  **Navigate to the frontend directory** (Open a new terminal)
-    ```bash
-    cd ../frontend
-    ```
-
-7.  **Install Dependencies**
-    ```bash
-    npm install
-    ```
-
-8.  **Start the Development Server**
-    ```bash
-    npm run dev
-    ```
-    The frontend will run on `http://localhost:5173` (or the port shown in terminal).
-
----
-
-## 📖 Usage
-
-1.  Open your browser and navigate to the frontend URL (usually `http://localhost:5173`).
-2.  **Register** a new account.
-3.  Go to the **Dashboard** and click **Create New Resume**.
-4.  Fill in your details (Education, Experience, Skills) in the editor form.
-5.  Watch the **Live Preview** update in real-time.
-6.  Click **Download PDF** to save your resume.
-
----
-
-## 📂 Project Structure
-
-For a detailed breakdown of the file structure and purpose, please see [PROJECT_STRUCTURE.md](./PROJECT_STRUCTURE.md).
-
-```
-Resumex/
-├── backend/            # Express Server & Database Logic
-│   ├── src/
-│   │   ├── config/     # DB Connection
-│   │   ├── controllers/# Business Logic
-│   │   ├── middleware/ # Auth & Security
-│   │   ├── models/     # Mongoose Schemas
-│   │   └── routes/     # API Endpoints
-│
-├── frontend/           # React Client Application
-│   ├── src/
-│   │   ├── components/ # Reusable UI Components
-│   │   ├── context/    # Global State (Auth)
-│   │   ├── pages/      # Application Views
-│   │   ├── services/   # API Integration
-│   │   └── templates/  # Resume Design Templates
-│
-└── PROJECT_STRUCTURE.md # Detailed Architecture Documentation
+### 1. Clone the Repository
+```bash
+git clone https://github.com/v9mirza/Resumex
+cd Resumex
 ```
 
+### 2. Backend Setup
+Configure and start the server.
+```bash
+cd backend
+npm install
+
+# Create .env file
+echo "PORT=3000
+MONGO_URI=mongodb://localhost:27017/resumex
+JWT_SECRET=your_super_secret_jwt_key" > .env
+
+npm start
+```
+*Server runs on `http://localhost:3000`*
+
+### 3. Frontend Setup
+Launch the user interface.
+```bash
+# Open a new terminal
+cd frontend
+npm install
+npm run dev
+```
+*App runs on `http://localhost:5173`*
+
 ---
 
-## 🛡️ License
+## Project Structure
 
-This project is open-source and available under the [MIT License](LICENSE).
+For a deep dive into the architecture, check out [PROJECT_STRUCTURE.md](./PROJECT_STRUCTURE.md).
+
+| Directory | Purpose |
+| :--- | :--- |
+| **`/backend`** | Express API, Database Models, Auth Logic |
+| **`/frontend`** | React App, UI Components, Resume Templates |
+
+---
+
+## Tech Stack Listing
+
+**Frontend**: React (Vite), Context API, Axios, CSS Variables, HTML2PDF.js  
+**Backend**: Node.js, Express.js, MongoDB (Mongoose), JWT, Bcrypt.js
+
+---
+
+<div align="center">
+  <p>Made by the Resumex Team</p>
+  <p>Licensed under MIT</p>
+</div>
