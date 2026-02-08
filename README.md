@@ -8,6 +8,7 @@
 [![Express](https://img.shields.io/badge/Framework-Express-000000?style=flat-square&logo=express&logoColor=white)](https://expressjs.com/)
 
 ## Features
+
 - Real-time editor with instant preview.
 - Multiple templates (Classic, Modern, Minimal).
 - Secure user accounts with JWT authentication.
@@ -16,12 +17,14 @@
 ## Quick Start
 
 1. **Clone**
+
    ```bash
    git clone https://github.com/v9mirza/Resumex
    cd Resumex
    ```
 
 2. **Backend**
+
    ```bash
    cd backend && npm install
    # Create .env (example)
@@ -34,8 +37,14 @@
    cd frontend && npm install && npm run dev
    ```
 
+## Admin Access
+
+To access the admin panel, you must manually update your user's `role` to `admin` directly in the MongoDB database.
+
 ## Structure
+
 See [PROJECT_STRUCTURE.md](./PROJECT_STRUCTURE.md) for architecture details.
 
 ---
+
 Made by [v9mirza](https://v9mirza.com/) | MIT License
