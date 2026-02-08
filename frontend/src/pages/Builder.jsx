@@ -17,7 +17,7 @@ const STEPS = [
 ];
 
 const Builder = () => {
-    const { resume, updateBasics, updateSection, setTemplate, setResume } = useResume();
+    const { resume, updateBasics, setSection, setTemplate, setResume } = useResume();
     const [currentStepIndex, setCurrentStepIndex] = useState(0);
     const [isSaving, setIsSaving] = useState(false);
     const navigate = useNavigate();
@@ -150,7 +150,7 @@ const Builder = () => {
                             step={currentStep}
                             resume={resume}
                             updateBasics={updateBasics}
-                            updateSection={updateSection}
+                            setSection={setSection}
                             setTemplate={setTemplate}
                         />
 

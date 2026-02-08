@@ -36,6 +36,13 @@ export const ResumeProvider = ({ children }) => {
         }));
     };
 
+    const setSection = (section, data) => {
+        setResume(prev => ({
+            ...prev,
+            [section]: data
+        }));
+    };
+
     const setTemplate = (templateId) => {
         setResume(prev => ({ ...prev, meta: { ...prev.meta, template: templateId } }));
     };
@@ -48,6 +55,7 @@ export const ResumeProvider = ({ children }) => {
         resume,
         updateBasics,
         updateSection,
+        setSection,
         setTemplate,
         resetResume,
         setResume
