@@ -29,8 +29,6 @@ const Experience = ({ data, update }) => {
         updateItem(index, 'description', lines);
     };
 
-    const fieldStyle = { marginBottom: '12px' };
-    const inputStyle = { width: '100%', marginBottom: '8px' };
     return (
         <div className="animate-fade-in">
             {data.map((item, index) => (

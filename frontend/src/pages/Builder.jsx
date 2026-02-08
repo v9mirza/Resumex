@@ -38,7 +38,7 @@ const Builder = () => {
             };
             loadResume();
         }
-    }, [id]);
+    }, [id, setResume]);
 
     const currentStep = STEPS[currentStepIndex].id;
 

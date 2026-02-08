@@ -7,8 +7,7 @@ const Basics = ({ data, update }) => {
     };
 
     // Basic styling for inputs is in global css
-    const fieldStyle = { marginBottom: '16px' };
-    const labelStyle = { display: 'block', marginBottom: '8px', fontWeight: 500, fontSize: '0.875rem' };
+    // Basic styling for inputs is in global css
 
     return (
         <div className="animate-fade-in">

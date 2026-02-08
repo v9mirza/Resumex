@@ -9,7 +9,7 @@ const Admin = () => {
     const [users, setUsers] = useState([]);
     const [resumes, setResumes] = useState([]);
     const [loading, setLoading] = useState(true);
-    const { logout, user } = useAuth();
+    const { logout } = useAuth();
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -40,7 +40,7 @@ const Admin = () => {
             // Remove resumes belonging to this user from the view immediately
             setResumes(prev => prev.filter(r => r.user?._id !== id));
             toast.success('User deleted');
-        } catch (error) {
+        } catch {
             toast.error('Failed to delete user');
         }
     };

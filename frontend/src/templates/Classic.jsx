@@ -19,7 +19,7 @@ const Classic = ({ resume }) => {
             {/* Summary */}
             {basics.summary && (
                 <section style={{ marginBottom: '24px', textAlign: 'center' }}>
-                    <p style={{ margin: 0, fontSize: '11pt', fontStyle: 'italic', maxWidth: '80%', margin: '0 auto' }}>
+                    <p style={{ fontSize: '11pt', fontStyle: 'italic', maxWidth: '80%', margin: '0 auto' }}>
                         {basics.summary}
                     </p>
                 </section>

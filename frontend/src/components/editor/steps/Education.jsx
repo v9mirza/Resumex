@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 const Education = ({ data, update }) => {
     const addEducation = () => {
@@ -19,9 +19,6 @@ const Education = ({ data, update }) => {
         newData[index] = { ...newData[index], [field]: value };
         update(newData);
     };
-
-    const fieldStyle = { marginBottom: '12px' };
-    const inputStyle = { width: '100%', marginBottom: '8px' };
 
     return (
         <div className="animate-fade-in">
