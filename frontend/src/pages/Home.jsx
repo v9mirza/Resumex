@@ -1,6 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { motion } from 'framer-motion';
+import { ShieldCheck, Cloud, FileJson, CheckCircle, LayoutTemplate, Star } from 'lucide-react';
+import LandingFooter from '../components/LandingFooter';
+import LandingNav from '../components/LandingNav';
 
 const AuthButtons = () => {
   const { user } = useAuth();
@@ -16,14 +20,19 @@ const AuthButtons = () => {
     <>
       <Link to="/login" style={{ color: 'var(--lp-text)', textDecoration: 'none', fontWeight: 500 }}>Log in</Link>
       <Link to="/register" style={{
-        padding: '8px 16px',
-        backgroundColor: 'var(--lp-text)',
-        color: 'var(--bg-app)',
+        padding: '10px 20px',
+        backgroundColor: 'var(--lp-accent)',
+        color: '#ffffff',
         textDecoration: 'none',
-        borderRadius: '4px',
+        borderRadius: '50px',
         fontWeight: 600,
-        fontSize: '0.9rem'
-      }}>Sign up</Link>
+        fontSize: '0.95rem',
+        boxShadow: '0 2px 4px rgba(0, 130, 201, 0.2)',
+        transition: 'transform 0.2s, background-color 0.2s'
+      }}
+        onMouseOver={(e) => { e.currentTarget.style.backgroundColor = 'var(--lp-accent-hover)'; e.currentTarget.style.transform = 'translateY(-1px)'; }}
+        onMouseOut={(e) => { e.currentTarget.style.backgroundColor = 'var(--lp-accent)'; e.currentTarget.style.transform = 'translateY(0)'; }}
+      >Sign up</Link>
     </>
   );
 };
@@ -31,75 +40,197 @@ const AuthButtons = () => {
 const Home = () => {
   return (
     <div className="landing-page">
-      <nav className="container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '24px 0' }}>
-        <span style={{ fontFamily: 'Georgia, serif', fontWeight: 600, fontSize: '1.25rem', color: 'var(--lp-text)' }}>Resumex</span>
-        <div style={{ display: 'flex', gap: '24px', alignItems: 'center' }}>
-          {/* Check if user is logged in, if so show Dashboard, else Login/Register */}
-          <AuthButtons />
-        </div>
-      </nav>
+      <LandingNav rightContent={<AuthButtons />} />
 
       {/* 
         1. Hero Section 
-        Establish authority immediately.
+        Premium Split Layout with Floating Mock UI
       */}
-      <section className="container" style={{ padding: '160px 0 120px', textAlign: 'center' }}>
-        {/* Large Serif Title */}
-        <h1 className="lp-brand-title">Resumex</h1>
+      <section className="container lp-section-hero" style={{ minHeight: '85vh', display: 'flex', alignItems: 'center', position: 'relative', overflow: 'hidden' }}>
+        {/* Subtle background gradient (primary accent orb) */}
+        <div style={{
+          position: 'absolute',
+          top: '20%',
+          left: '20%',
+          transform: 'translate(-50%, -50%)',
+          width: '700px',
+          height: '700px',
+          background: 'radial-gradient(ellipse at center, rgba(0,130,201,0.06) 0%, rgba(255,255,255,0) 70%)',
+          zIndex: 0,
+          pointerEvents: 'none'
+        }}></div>
 
-        <h2 className="lp-hero-title" style={{ maxWidth: '800px', margin: '0 auto 32px' }}>
-          Build a clear, professional resume.
-        </h2>
+        {/* Secondary Purple/Indigo Orb for mesh gradient feel */}
+        <div style={{
+          position: 'absolute',
+          bottom: '-10%',
+          right: '-10%',
+          width: '800px',
+          height: '800px',
+          background: 'radial-gradient(ellipse at center, rgba(99,102,241,0.04) 0%, rgba(255,255,255,0) 70%)',
+          zIndex: 0,
+          pointerEvents: 'none'
+        }}></div>
 
-        <p style={{ fontSize: '1.25rem', color: 'var(--lp-text-muted)', marginBottom: '48px', maxWidth: '600px', margin: '0 auto 64px' }}>
-          Create a clear, professional resume focused on structure, readability,
-          and the experience that actually matters.        </p>
+        <div className="hero-split-layout">
+          {/* Left Side: Text and CTA */}
+          <motion.div
+            className="hero-text-content"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
+          >
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '6px 16px', background: 'rgba(0,130,201,0.08)', borderRadius: '50px', marginBottom: '24px', color: 'var(--lp-accent)', fontWeight: 600, fontSize: '0.9rem' }}>
+              <Star size={16} /> Resumex 2.0 is Here
+            </div>
 
-        <Link to="/dashboard" className="btn-lp-primary">
-          Manage Resumes
-        </Link>
+            <h1 className="lp-hero-title">
+              Build a clean, <span className="text-gradient-blue">professional</span> resume in minutes.
+            </h1>
+
+            <p style={{ fontSize: '1.25rem', color: 'var(--lp-text-muted)', marginBottom: '40px', lineHeight: '1.6' }}>
+              Create a clean, standardized resume focused on structure, readability,
+              and the experience that actually matters. No formatting fights, just content.
+            </p>
+
+            <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', justifyContent: 'center' }}>
+              <Link to="/dashboard" className="btn-lp-primary" style={{ padding: '16px 36px', fontSize: '1.1rem' }}>
+                Start Building Free
+              </Link>
+              <a href="#features" style={{ padding: '16px 36px', fontSize: '1.1rem', color: 'var(--lp-text)', fontWeight: 600, textDecoration: 'none', border: '1px solid var(--lp-border)', borderRadius: '50px', transition: 'background-color 0.2s', display: 'flex', alignItems: 'center', justifyContent: 'center' }} onMouseOver={e => e.currentTarget.style.backgroundColor = 'var(--lp-bg-alt)'} onMouseOut={e => e.currentTarget.style.backgroundColor = 'transparent'}>
+                View Features
+              </a>
+            </div>
+          </motion.div>
+
+          {/* Right Side: Premium Floating Mock UI */}
+          <motion.div
+            className="hero-visual-content"
+            initial={{ opacity: 0, x: 40 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
+          >
+            <motion.div
+              animate={{ y: [0, -12, 0] }}
+              transition={{ repeat: Infinity, duration: 5, ease: "easeInOut" }}
+              style={{ perspective: '1000px' }}
+            >
+              <div className="mock-ui-container" style={{ height: '400px', display: 'flex', flexDirection: 'column', transform: 'rotateY(-4deg) rotateX(2deg)', boxShadow: '20px 30px 60px rgba(0,0,0,0.08)' }}>
+                <div className="mock-ui-header">
+                  <div className="mock-ui-dot" style={{ background: '#ff5f56' }}></div>
+                  <div className="mock-ui-dot" style={{ background: '#ffbd2e' }}></div>
+                  <div className="mock-ui-dot" style={{ background: '#27c93f' }}></div>
+                </div>
+                <div style={{ display: 'flex', gap: '24px', flex: 1, padding: '8px' }}>
+                  <div style={{ flex: 1, borderRight: '1px solid var(--lp-border)', paddingRight: '24px' }}>
+                    <div style={{ width: '60%', height: '14px', background: 'var(--lp-border)', borderRadius: '6px', marginBottom: '24px' }}></div>
+                    <div style={{ width: '100%', height: '10px', background: 'var(--lp-bg-alt)', borderRadius: '4px', marginBottom: '12px' }}></div>
+                    <div style={{ width: '90%', height: '10px', background: 'var(--lp-bg-alt)', borderRadius: '4px', marginBottom: '12px' }}></div>
+                    <div style={{ width: '95%', height: '10px', background: 'var(--lp-bg-alt)', borderRadius: '4px', marginBottom: '32px' }}></div>
+
+                    <div style={{ width: '40%', height: '14px', background: 'var(--lp-border)', borderRadius: '6px', marginBottom: '24px' }}></div>
+                    <div style={{ width: '100%', height: '10px', background: 'var(--lp-bg-alt)', borderRadius: '4px', marginBottom: '12px' }}></div>
+                    <div style={{ width: '85%', height: '10px', background: 'var(--lp-bg-alt)', borderRadius: '4px' }}></div>
+                  </div>
+                  <div style={{ flex: 1.2, background: 'var(--lp-bg-alt)', borderRadius: '12px', border: '1px solid var(--lp-border)', padding: '24px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', boxShadow: 'inset 0 2px 10px rgba(0,0,0,0.06)' }}>
+                    <LayoutTemplate size={56} color="var(--lp-text-muted)" />
+                    <p style={{ marginTop: '20px', color: 'var(--lp-text-muted)', fontSize: '0.95rem', fontWeight: 500 }}>Live PDF Output</p>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        </div>
       </section>
 
-      {/* 
-        2. Value Clarification
-        Answer: "What is this?" clearly.
-      */}
-      <section className="container" style={{ padding: '80px 0 120px', textAlign: 'center' }}>
-        <p className="lp-section-text" style={{ maxWidth: '640px', margin: '0 auto' }}>
-          Resumex is a structured, professional resume editor. It ensures your content is the only thing standing out—not the layout, not the template, but the work itself.
-        </p>
+      {/* Trusted By (Social Proof) */}
+      <section className="lp-section-trusted">
+        <div className="container" style={{ textAlign: 'center' }}>
+          <p style={{ fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: 600, color: 'var(--lp-text-muted)', marginBottom: '32px' }}>
+            Trusted by professionals securing roles at top companies
+          </p>
+          <div style={{ display: 'flex', justifyContent: 'center', gap: '48px', flexWrap: 'wrap', opacity: 0.5, filter: 'grayscale(100%)' }}>
+            {/* Abstract trusted logos */}
+            {['Acme Corp', 'Global Tech', 'Nexus', 'Stark Ind', 'Umbrella'].map((name, i) => (
+              <span key={name} style={{ fontSize: '1.25rem', fontWeight: 700, fontFamily: 'sans-serif' }}>{name}</span>
+            ))}
+          </div>
+        </div>
       </section>
 
-      {/* 
-        3. Engineered Principles (Formerly Philosophy)
-        Horizontal Grid of 3 Cards
-      */}
-      <section className="container" style={{ padding: '80px 0', borderTop: '1px solid var(--lp-border)' }}>
-        <p style={{ fontSize: '0.9rem', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--lp-text-muted)', marginBottom: '24px' }}>Engineered Principles</p>
+      <section id="features" className="lp-section-features">
+        <div className="container">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            style={{ textAlign: 'center', marginBottom: '64px' }}
+          >
+            <p style={{ fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: 600, color: 'var(--lp-accent)', marginBottom: '16px' }}>Engineered Principles</p>
+            <h2 className="lp-card-heading" style={{ fontSize: '2.5rem' }}>Designed for professionals.</h2>
+            <p style={{ fontSize: '1.15rem', color: 'var(--lp-text-muted)', maxWidth: '640px', margin: '16px auto 0' }}>It ensures your content is the only thing standing out—not the layout, not the template, but the work itself.</p>
+          </motion.div>
 
-        <div className="lp-grid-3">
-          <div className="lp-minimal-card">
-            <h3 className="lp-card-heading">Focused</h3>
-            <p className="lp-card-body">No distractions. No complex drag-and-drop. Just you and your career history.</p>
-          </div>
-          <div className="lp-minimal-card">
-            <h3 className="lp-card-heading">Secure Cloud</h3>
-            <p className="lp-card-body">Your resumes are encrypted and saved to the cloud. Access them from any device.</p>
-          </div>
-          <div className="lp-minimal-card">
-            <h3 className="lp-card-heading">Standard</h3>
-            <p className="lp-card-body">Clean, ATS-friendly PDF export that looks professional in any industry.</p>
+          <div className="lp-bento-grid">
+            {/* Bento Large Feature */}
+            <motion.div
+              className="lp-minimal-card bento-large"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+            >
+              <div style={{ background: 'rgba(0,130,201,0.08)', width: '56px', height: '56px', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '8px' }}>
+                <Cloud size={28} color="var(--lp-accent)" />
+              </div>
+              <h3 className="lp-card-heading" style={{ fontSize: '1.5rem' }}>Secure Cloud Sync</h3>
+              <p className="lp-card-body" style={{ fontSize: '1.05rem' }}>Your professional history is private. Resumex securely saves your data directly to the cloud, allowing you to access and update your resume from any device instantly without manual file transfers.</p>
+
+              <div style={{ marginTop: 'auto', paddingTop: '32px' }}>
+                <div className="lp-saved-badge" style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '16px', background: 'var(--lp-bg-alt)', borderRadius: '8px', border: '1px solid var(--lp-border)' }}>
+                  <CheckCircle size={20} color="var(--lp-success, #10b981)" />
+                  <span style={{ fontWeight: 500, fontSize: '0.95rem', color: 'var(--lp-text)' }}>Changes saved automatically</span>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Bento Small Top */}
+            <motion.div
+              className="lp-minimal-card"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, delay: 0.1 }}
+            >
+              <div style={{ background: 'var(--lp-bg-alt)', width: '48px', height: '48px', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '4px' }}>
+                <ShieldCheck size={24} color="var(--lp-text-muted)" />
+              </div>
+              <h3 className="lp-card-heading">Data Ownership</h3>
+              <p className="lp-card-body">We don't hold your data hostage. Export your entire career history as a standardized JSON structure anytime.</p>
+            </motion.div>
+
+            {/* Bento Small Bottom */}
+            <motion.div
+              className="lp-minimal-card"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, delay: 0.2 }}
+            >
+              <div style={{ background: 'var(--lp-bg-alt)', width: '48px', height: '48px', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '4px' }}>
+                <LayoutTemplate size={24} color="var(--lp-text-muted)" />
+              </div>
+              <h3 className="lp-card-heading">ATS Standardized</h3>
+              <p className="lp-card-body">Clean, minimal templates mathematically verified to parse correctly in Applicant Tracking Systems.</p>
+            </motion.div>
           </div>
         </div>
       </section>
 
       {/* 
-        4. Capabilities (2x2 Grid)
-        Reassure usefulness.
+        4. Capabilities
       */}
-      <section className="container" style={{ padding: '80px 0', borderTop: '1px solid var(--lp-border)', marginBottom: '80px' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
-          <p style={{ fontSize: '0.9rem', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--lp-text-muted)' }}>Capabilities</p>
+      <section className="container lp-section-capabilities">
+        <div style={{ textAlign: 'center', marginBottom: '48px' }}>
+          <p style={{ fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: 600, color: 'var(--lp-accent)', marginBottom: '16px' }}>Capabilities</p>
+          <h2 className="lp-card-heading" style={{ fontSize: '2rem' }}>Everything you need. Nothing you don't.</h2>
         </div>
 
         <div className="lp-grid-2">
@@ -122,30 +253,32 @@ const Home = () => {
         </div>
       </section>
 
-      {/* 
-        Footer (Minimal)
-        Closure. No Final CTA.
-      */}
-      <footer style={{ padding: '64px 0', borderTop: '1px solid var(--lp-border)' }}>
-        <div className="container" style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <div>
-              <span style={{ fontFamily: 'Georgia, serif', fontWeight: 400, fontSize: '1.25rem', color: 'var(--lp-text)' }}>Resumex</span>
-              <p style={{ marginTop: '8px', color: 'var(--lp-text-muted)', fontSize: '0.9rem' }}>
-                Quietly professional.
-              </p>
+      {/* CTA Section */}
+      <section className="lp-section-cta">
+        <div className="container">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            style={{ maxWidth: '700px', margin: '0 auto' }}
+          >
+            <h2 style={{ fontSize: '3rem', fontWeight: 700, color: 'var(--lp-text)', marginBottom: '24px', letterSpacing: '-0.02em' }}>
+              Your best resume yet.
+            </h2>
+            <p style={{ fontSize: '1.25rem', color: 'var(--lp-text-muted)', marginBottom: '48px', lineHeight: '1.6' }}>
+              Join professionals who have accelerated their careers with cleaner, structured data that recruiters love.
+            </p>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '16px' }}>
+              <Link to="/register" className="btn-lp-primary" style={{ padding: '16px 48px', fontSize: '1.15rem' }}>
+                Create Your Free Account
+              </Link>
+              <span style={{ fontSize: '0.85rem', color: 'var(--lp-text-muted)' }}>No credit card required. Setup takes 30 seconds.</span>
             </div>
-
-            <div style={{ display: 'flex', gap: '32px' }}>
-              <a href="https://github.com/v9mirza/resumex" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--lp-text-muted)', fontSize: '0.9rem', textDecoration: 'none' }}>GitHub</a>
-            </div>
-          </div>
-
-          <p style={{ color: 'var(--lp-text-muted)', fontSize: '0.8rem', opacity: 0.6 }}>
-            © {new Date().getFullYear()} Resumex
-          </p>
+          </motion.div>
         </div>
-      </footer>
+      </section>
+
+      <LandingFooter />
     </div>
   );
 };

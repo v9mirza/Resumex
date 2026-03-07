@@ -22,6 +22,9 @@ const Education = ({ data, update }) => {
 
     return (
         <div className="animate-fade-in">
+            <p style={{ fontSize: '0.9rem', color: 'var(--lp-text-muted)', marginBottom: '16px' }}>
+                List your most recent degrees, certifications, or courses that matter for this role.
+            </p>
             {data.map((item, index) => (
                 <div key={index} className="card" style={{ marginBottom: '24px' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '16px', alignItems: 'center' }}>

@@ -15,7 +15,12 @@ const Skills = ({ data, update }) => {
 
     return (
         <div className="animate-fade-in">
-            <p className="text-muted" style={{ marginBottom: '16px' }}>Enter your skills separated by commas.</p>
+            <p style={{ fontSize: '0.9rem', color: 'var(--lp-text-muted)', marginBottom: '16px' }}>
+                Group your tools and strengths into short, scannable lists – avoid long paragraphs.
+            </p>
+            <p className="text-muted" style={{ marginBottom: '16px' }}>
+                Enter your skills separated by commas. Group related tools together (e.g. “Frontend: React, TypeScript”).
+            </p>
             <textarea
                 className="form-textarea"
                 style={{ minHeight: '150px' }}

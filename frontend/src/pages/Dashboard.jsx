@@ -3,11 +3,39 @@ import { Link } from 'react-router-dom';
 import * as api from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
+import { FileText, PlusCircle } from 'lucide-react';
+import LandingNav from '../components/LandingNav';
 
 const Dashboard = () => {
     const [resumes, setResumes] = useState([]);
     const { logout, user } = useAuth();
     const [loading, setLoading] = useState(true);
+
+    const getTemplateLabel = (resume) => {
+        const templateId = resume.data?.meta?.template || resume.meta?.template || 'minimal';
+        switch (templateId) {
+            case 'classic':
+                return 'Classic';
+            case 'modern':
+                return 'Modern';
+            case 'minimal':
+            default:
+                return 'Minimal';
+        }
+    };
+
+    const formatUpdatedAt = (isoDate) => {
+        if (!isoDate) return 'Unknown';
+        const updated = new Date(isoDate);
+        const now = new Date();
+        const diffMs = now - updated;
+        const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+        if (diffDays === 0) return 'today';
+        if (diffDays === 1) return 'yesterday';
+        if (diffDays < 7) return `${diffDays} days ago`;
+        return updated.toLocaleDateString();
+    };
 
     useEffect(() => {
         const fetchResumes = async () => {
@@ -93,66 +121,203 @@ const Dashboard = () => {
     };
 
     return (
-        <div className="app-layout" style={{ flexDirection: 'column' }}>
-            {/* Header */}
-            <header style={{
-                height: '70px',
-                borderBottom: '1px solid var(--border-color)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                padding: '0 32px',
-                backgroundColor: 'var(--bg-app)',
-            }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                    <Link to="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <span style={{ fontFamily: 'Georgia, serif', fontWeight: 400, fontSize: '1.5rem', color: 'var(--text-main)' }}>Resumex</span>
-                    </Link>
-                </div>
-                <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
-                    <span className="text-body">{user?.email}</span>
-                    <Link to="/profile" style={{ color: 'var(--text-muted)', textDecoration: 'none', marginLeft: '16px' }}>Profile</Link>
-                    <button onClick={logout} className="btn" style={{ color: 'var(--text-muted)', background: 'transparent', border: 'none', cursor: 'pointer' }}>Logout</button>
-                </div>
-            </header>
+        <div className="landing-page">
+            <LandingNav
+                rightContent={
+                    <>
+                        <span style={{ fontSize: '0.9rem', color: 'var(--lp-text-muted)' }}>{user?.email}</span>
+                        <Link to="/profile" style={{ color: 'var(--lp-text)', textDecoration: 'none', fontWeight: 500 }}>Profile</Link>
+                        <button
+                            onClick={logout}
+                            className="btn"
+                            style={{ color: 'var(--lp-text-muted)', background: 'transparent', border: 'none', cursor: 'pointer', fontWeight: 500 }}
+                        >
+                            Logout
+                        </button>
+                    </>
+                }
+            />
 
-            <div className="main-content" style={{ padding: '48px', alignItems: 'flex-start', flexDirection: 'column', gap: '32px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%', maxWidth: '1000px', margin: '0 auto' }}>
-                    <h1 className="text-h1">My Resumes</h1>
-                    <Link to="/build" className="btn btn-primary" style={{ backgroundColor: 'var(--accent-color)', color: 'white', padding: '12px 24px', borderRadius: '6px' }}>
-                        + Create New Resume
-                    </Link>
-                </div>
-
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '24px', width: '100%', maxWidth: '1000px', margin: '0 auto' }}>
-                    {loading ? (
-                        <p className="text-body">Loading...</p>
-                    ) : resumes.length === 0 ? (
-                        <div className="card" style={{ gridColumn: '1/-1', textAlign: 'center', padding: '64px' }}>
-                            <p className="text-h3">No resumes yet</p>
-                            <p className="text-body" style={{ marginBottom: '24px' }}>Create your first professional resume now.</p>
-                            <Link to="/build" className="btn" style={{ color: 'var(--accent-color)' }}>Start Building &rarr;</Link>
+            <main className="container" style={{ padding: '72px 0 96px' }}>
+                {/* Dashboard header */}
+                <section style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginBottom: '40px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap', justifyContent: 'space-between' }}>
+                        <div>
+                            <p style={{ fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '0.12em', fontWeight: 600, color: 'var(--lp-accent)', marginBottom: '6px' }}>
+                                Dashboard
+                            </p>
+                            <h1 style={{ fontSize: '2.3rem', fontWeight: 700, letterSpacing: '-0.03em', margin: 0, color: 'var(--lp-text)' }}>
+                                Your resumes
+                            </h1>
+                            <p style={{ fontSize: '0.95rem', color: 'var(--lp-text-muted)', marginTop: '6px', maxWidth: '520px' }}>
+                                Create, update, and export clean, professional resumes from one place.
+                            </p>
                         </div>
-                    ) : (
-                        resumes.map(resume => (
-                            <div key={resume._id} className="card" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', minHeight: '180px' }}>
-                                <div>
-                                    <h3 className="text-h3" style={{ marginBottom: '8px' }}>{resume.title}</h3>
-                                    <p className="text-sm">Last updated: {new Date(resume.updatedAt).toLocaleDateString()}</p>
+                        <Link
+                            to="/build"
+                            className="btn-lp-primary"
+                            style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', fontSize: '0.95rem', padding: '12px 24px', whiteSpace: 'nowrap' }}
+                        >
+                            <PlusCircle size={18} />
+                            New resume
+                        </Link>
+                    </div>
+                </section>
+
+                {/* Content / grid */}
+                <section
+                    style={{
+                        display: 'grid',
+                        gridTemplateColumns: 'minmax(0, 1.8fr)',
+                        gap: '24px'
+                    }}
+                >
+                    <div className="lp-minimal-card" style={{ padding: '32px 28px' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px', gap: '12px' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                <div style={{ width: '32px', height: '32px', borderRadius: '999px', backgroundColor: '#e0f2fe', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                    <FileText size={16} color="#0369a1" />
                                 </div>
-                                <div style={{ marginTop: '24px', display: 'flex', gap: '12px' }}>
-                                    <Link to={`/build/${resume._id}`} className="btn btn-primary" style={{ flex: 1, textAlign: 'center', backgroundColor: 'var(--bg-input)', color: 'var(--text-main)' }}>
-                                        Edit
-                                    </Link>
-                                    <button onClick={() => handleDelete(resume._id)} className="btn" style={{ color: '#ef4444', background: 'transparent', border: 'none', padding: '0 12px', cursor: 'pointer' }}>
-                                        Delete
-                                    </button>
-                                </div>
+                                <h2 className="lp-card-heading" style={{ marginBottom: 0 }}>Saved resumes</h2>
                             </div>
-                        ))
-                    )}
-                </div>
-            </div>
+                            {!loading && (
+                                <span style={{ fontSize: '0.8rem', color: 'var(--lp-text-muted)' }}>
+                                    {resumes.length} {resumes.length === 1 ? 'resume' : 'resumes'}
+                                </span>
+                            )}
+                        </div>
+
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '20px' }}>
+                            {loading ? (
+                                <p style={{ fontSize: '0.9rem', color: 'var(--lp-text-muted)' }}>Loading your resumes…</p>
+                            ) : resumes.length === 0 ? (
+                                <div style={{ textAlign: 'center', padding: '32px 16px' }}>
+                                    <p style={{ fontWeight: 600, marginBottom: '8px', color: 'var(--lp-text)' }}>No resumes yet</p>
+                                    <p style={{ fontSize: '0.9rem', color: 'var(--lp-text-muted)', marginBottom: '20px' }}>
+                                        Start by creating your first resume. You can always duplicate and refine later.
+                                    </p>
+                                    <div
+                                        style={{
+                                            background: 'var(--lp-bg-alt)',
+                                            border: '1px solid var(--lp-border)',
+                                            borderRadius: '12px',
+                                            padding: '20px 24px',
+                                            marginBottom: '20px',
+                                            textAlign: 'left',
+                                            maxWidth: '320px',
+                                            marginLeft: 'auto',
+                                            marginRight: 'auto'
+                                        }}
+                                    >
+                                        <p style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--lp-text-muted)', marginBottom: '12px', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+                                            Get started
+                                        </p>
+                                        <ol style={{ margin: 0, paddingLeft: '20px', fontSize: '0.95rem', color: 'var(--lp-text)', lineHeight: 1.8 }}>
+                                            <li>
+                                                <Link to="/build" style={{ color: 'var(--lp-accent)', fontWeight: 500 }}>Create your first resume</Link>
+                                            </li>
+                                            <li>
+                                                <span style={{ color: 'var(--lp-text-muted)' }}>Export to PDF</span> (after saving, open Preview)
+                                            </li>
+                                        </ol>
+                                    </div>
+                                    <Link
+                                        to="/build"
+                                        className="btn-lp-primary"
+                                        style={{ padding: '10px 20px', fontSize: '0.95rem' }}
+                                    >
+                                        Create a resume
+                                    </Link>
+                                </div>
+                            ) : (
+                                resumes.map(resume => (
+                                    <article
+                                        key={resume._id}
+                                        className="lp-minimal-card"
+                                        style={{
+                                            padding: '20px 18px',
+                                            boxShadow: 'none',
+                                            borderRadius: '16px',
+                                            gap: '12px'
+                                        }}
+                                    >
+                                        <div>
+                                            <h3 className="lp-card-heading" style={{ marginBottom: '4px' }}>{resume.title}</h3>
+                                            <p style={{ fontSize: '0.8rem', color: 'var(--lp-text-muted)' }}>
+                                                {getTemplateLabel(resume)} • Updated {formatUpdatedAt(resume.updatedAt)}
+                                            </p>
+                                        </div>
+                                        <div style={{ display: 'flex', gap: '8px', marginTop: '16px', alignItems: 'center', flexWrap: 'wrap' }}>
+                                            <Link
+                                                to={`/build/${resume._id}`}
+                                                className="btn-lp-primary"
+                                                style={{
+                                                    flex: 1,
+                                                    justifyContent: 'center',
+                                                    padding: '10px 0',
+                                                    fontSize: '0.9rem'
+                                                }}
+                                            >
+                                                Edit
+                                            </Link>
+                                            <button
+                                                onClick={async () => {
+                                                    const loadingToast = toast.loading('Duplicating…');
+                                                    try {
+                                                        const { data } = await api.getResume(resume._id);
+                                                        const source = data.data || {};
+                                                        const baseTitle = resume.title || data.title || 'Untitled resume';
+                                                        const { data: created } = await api.createResume({
+                                                            title: `${baseTitle} (Copy)`,
+                                                            data: source
+                                                        });
+                                                        setResumes(prev => [created, ...prev]);
+                                                        toast.success('Resume duplicated', { id: loadingToast });
+                                                    } catch (error) {
+                                                        console.error('Failed to duplicate resume', error);
+                                                        toast.error('Failed to duplicate resume', { id: loadingToast });
+                                                    }
+                                                }}
+                                                className="btn-lp-secondary"
+                                                style={{
+                                                    padding: '8px 14px',
+                                                    borderRadius: '999px',
+                                                    border: '1px solid var(--lp-border)',
+                                                    background: 'var(--lp-bg-alt)',
+                                                    color: 'var(--lp-text)',
+                                                    fontSize: '0.8rem',
+                                                    fontWeight: 500,
+                                                    cursor: 'pointer',
+                                                    transition: 'background-color 0.15s ease, border-color 0.15s ease'
+                                                }}
+                                            >
+                                                Duplicate
+                                            </button>
+                                            <button
+                                                onClick={() => handleDelete(resume._id)}
+                                                className="btn-lp-danger"
+                                                style={{
+                                                    padding: '8px 14px',
+                                                    borderRadius: '999px',
+                                                    border: '1px solid rgba(239, 68, 68, 0.5)',
+                                                    background: 'rgba(239, 68, 68, 0.12)',
+                                                    color: '#ef4444',
+                                                    fontSize: '0.8rem',
+                                                    fontWeight: 500,
+                                                    cursor: 'pointer',
+                                                    transition: 'background-color 0.15s ease, border-color 0.15s ease'
+                                                }}
+                                            >
+                                                Delete
+                                            </button>
+                                        </div>
+                                    </article>
+                                ))
+                            )}
+                        </div>
+                    </div>
+                </section>
+            </main>
         </div>
     );
 };

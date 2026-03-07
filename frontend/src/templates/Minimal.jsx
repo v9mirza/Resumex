@@ -2,13 +2,25 @@ import React from 'react';
 
 const Minimal = ({ resume }) => {
     const { basics, education, experience, projects, skills } = resume;
+    const name = basics.name || '';
+    const isLongName = name.length > 28;
 
     return (
-        <div style={{ fontFamily: 'var(--font-main)', lineHeight: 1.5, color: '#000' }}>
+        <div style={{ fontFamily: 'var(--font-main)', lineHeight: 1.5, color: '#000', wordBreak: 'break-word', overflowWrap: 'anywhere' }}>
             {/* Header */}
             <header style={{ marginBottom: '32px' }}>
-                <h1 style={{ fontSize: '32pt', fontWeight: 700, letterSpacing: '-1px', margin: '0 0 16px 0', lineHeight: 1 }}>
-                    {basics.name}
+                <h1
+                    style={{
+                        fontSize: isLongName ? '26pt' : '32pt',
+                        fontWeight: 700,
+                        letterSpacing: '-1px',
+                        margin: '0 0 16px 0',
+                        lineHeight: 1.05,
+                        wordBreak: 'break-word',
+                        overflowWrap: 'break-word'
+                    }}
+                >
+                    {name}
                 </h1>
                 <div style={{ fontSize: '10pt', display: 'flex', flexWrap: 'wrap', gap: '16px', color: '#444' }}>
                     {basics.email && <span>{basics.email}</span>}
@@ -93,7 +105,7 @@ const Minimal = ({ resume }) => {
                     </h3>
                     <div style={{ fontSize: '10pt', lineHeight: 1.6 }}>
                         {skills.map((skill, i) => (
-                            <span key={i} style={{ marginRight: '8px', whiteSpace: 'nowrap' }}>
+                            <span key={i} style={{ marginRight: '8px', display: 'inline-block' }}>
                                 {skill}{i < skills.length - 1 ? ' •' : ''}
                             </span>
                         ))}

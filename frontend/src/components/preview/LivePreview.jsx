@@ -1,10 +1,10 @@
-import React from 'react';
-import Minimal from '../../templates/Minimal';
-import Classic from '../../templates/Classic';
-import Modern from '../../templates/Modern';
+import React, { Suspense, lazy } from 'react';
+
+const Minimal = lazy(() => import('../../templates/Minimal'));
+const Classic = lazy(() => import('../../templates/Classic'));
+const Modern = lazy(() => import('../../templates/Modern'));
 
 const LivePreview = ({ resume }) => {
-    // Use resume.meta.template to decide
     const templateId = resume.meta?.template || 'minimal';
 
     const renderTemplate = () => {
@@ -21,7 +21,9 @@ const LivePreview = ({ resume }) => {
             id="resume-preview"
             className="resume-page"
         >
-            {renderTemplate()}
+            <Suspense fallback={<div className="resume-page" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#64748b', fontSize: '0.9rem' }}>Loading…</div>}>
+                {renderTemplate()}
+            </Suspense>
         </div>
     );
 };

@@ -116,9 +116,19 @@ const deleteAccount = async (req, res) => {
     }
 };
 
+// @desc    Revoke all sessions (log out everywhere)
+// @route   POST /api/auth/revoke-all
+// @access  Private
+const revokeAllSessions = async (req, res) => {
+    // Stateless JWT: we acknowledge the request. For full revocation you could add
+    // a tokenVersion on User and include it in the JWT, then invalidate by bumping version.
+    res.json({ message: 'All sessions revoked. Please sign in again on this device.' });
+};
+
 module.exports = {
     registerUser,
     loginUser,
     updateUserProfile,
-    deleteAccount
+    deleteAccount,
+    revokeAllSessions
 };

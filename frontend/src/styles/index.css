@@ -2,34 +2,6 @@
   --font-main: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   --font-serif: 'Georgia', serif;
 
-  /* Quiet Confidence Palette (Deep Graphite) */
-  --bg-app: #18181b;
-  /* Zinc 950 - Main Background */
-  --bg-panel: #18181b;
-  /* Match app bg for matte look */
-  --bg-sidebar: #18181b;
-  --bg-input: #27272a;
-  /* Zinc 900 - Inputs */
-  --bg-card: rgba(255, 255, 255, 0.02);
-
-  --text-main: #f4f4f5;
-  /* Zinc 100 */
-  --text-muted: #a1a1aa;
-  /* Zinc 400 */
-  --text-dim: #52525b;
-  /* Zinc 600 */
-
-  --accent-color: #6366f1;
-  /* Indigo 500 */
-  --accent-hover: #4f46e5;
-  /* Indigo 600 */
-
-  --border-color: #27272a;
-  /* Zinc 900 */
-  --border-focus: #3f3f46;
-  /* Zinc 700 */
-  --border-active: #6366f1;
-
   --spacing-xs: 4px;
   --spacing-sm: 8px;
   --spacing-md: 16px;
@@ -43,6 +15,46 @@
 
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+}
+
+:root[data-theme='dark'] {
+  /* GitHub Dark–style palette */
+  --bg-app: #0d1117;
+  --bg-panel: #0d1117;
+  --bg-sidebar: #161b22;
+  --bg-input: #0d1117;
+  --bg-card: #161b22;
+
+  --text-main: #c9d1d9;
+  --text-muted: #8b949e;
+  --text-dim: #6e7681;
+
+  --accent-color: #58a6ff;
+  --accent-hover: #79c0ff;
+
+  --border-color: #30363d;
+  --border-focus: #484f58;
+  --border-active: #58a6ff;
+}
+
+:root[data-theme='light'] {
+  /* Light theme palette */
+  --bg-app: #f3f4f6;
+  --bg-panel: #ffffff;
+  --bg-sidebar: #f9fafb;
+  --bg-input: #ffffff;
+  --bg-card: #ffffff;
+
+  --text-main: #0f172a;
+  --text-muted: #6b7280;
+  --text-dim: #9ca3af;
+
+  --accent-color: #6366f1;
+  --accent-hover: #4f46e5;
+
+  --border-color: #e5e7eb;
+  --border-focus: #cbd5f5;
+  --border-active: #6366f1;
 }
 
 * {
@@ -106,7 +118,7 @@ ul {
 .preview-panel {
   width: 100%;
   background-color: #121212;
-  /* Dark contrast background */
+  /* Dark contrast background (overridden in landing layout) */
   padding: var(--spacing-lg);
   /* Reduced padding for mobile */
   display: flex;
@@ -123,6 +135,10 @@ ul {
   align-items: center;
   padding: 40px;
   background-color: #F3F4F6;
+}
+
+:root[data-theme='dark'] .preview-container {
+  background-color: var(--lp-bg);
 }
 
 /* Desktop Styles */
@@ -283,6 +299,16 @@ ul {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
+:root[data-theme='dark'] .landing-page .card {
+  background-color: var(--lp-input-bg);
+  border-color: var(--lp-border);
+}
+
+:root[data-theme='dark'] .landing-page .card:hover {
+  border-color: #484f58;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
 /* A4 Paper Preview Container */
 .paper-preview {
   /* This container handles the scaling/positioning */
@@ -302,7 +328,7 @@ ul {
   /* Compensate for whitespace */
 }
 
-/* The actual resume page content */
+/* The actual resume page content – always light (white paper, dark text) for preview and export */
 .resume-page {
   width: 210mm;
   min-height: 297mm;
@@ -311,7 +337,6 @@ ul {
   padding: 15mm;
   box-sizing: border-box;
   box-shadow: 0 0 50px rgba(0, 0, 0, 0.15);
-  /* Softer shadow */
   overflow: hidden;
 }
 
@@ -445,20 +470,19 @@ ul {
 /* Landing Page Specific Styles - Modern Dark Theme */
 /* Landing Page Specific Styles - Modern Clean Light Theme */
 /* Landing Page Specific Styles - Quiet Confidence (Deep Graphite) */
+/* Landing Page Specific Styles */
 .landing-page {
-  /* Deep Graphite Palette */
-  --lp-bg: #18181b;
-  /* Zinc 950 - Graphite Base */
-  --lp-bg-alt: #18181b;
-  /* Same as base for matte feel (no panels) */
-  --lp-text: #f4f4f5;
-  /* Zinc 100 - Soft White */
-  --lp-text-muted: #a1a1aa;
-  /* Zinc 400 - Muted Gray */
-  --lp-accent: #6366f1;
-  /* Indigo 500 - Professional Accent */
-  --lp-border: #27272a;
-  /* Zinc 900 - Very subtle */
+  /* Default (light) palette */
+  --lp-bg: #ffffff;
+  --lp-bg-alt: #f8f9fa;
+  --lp-text: #1a1a1a;
+  --lp-text-muted: #606060;
+  --lp-accent: #0082c9;
+  --lp-accent-hover: #006097;
+  --lp-accent-subtle: rgba(0, 130, 201, 0.08);
+  --lp-border: #e2e8f0;
+  --lp-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  --lp-input-bg: #ffffff;
 
   background-color: var(--lp-bg);
   color: var(--lp-text);
@@ -469,12 +493,348 @@ ul {
   -webkit-font-smoothing: antialiased;
 }
 
+:root[data-theme='dark'] .landing-page {
+  /* GitHub Dark–style for marketing/builder pages */
+  --lp-bg: #0d1117;
+  --lp-bg-alt: #161b22;
+  --lp-text: #c9d1d9;
+  --lp-text-muted: #8b949e;
+  --lp-accent: #58a6ff;
+  --lp-accent-hover: #79c0ff;
+  --lp-accent-subtle: rgba(88, 166, 255, 0.12);
+  --lp-border: #30363d;
+  --lp-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  --lp-input-bg: #0d1117;
+  --lp-success: #3fb950;
+}
+
+/* Landing layout overrides for shared components */
+.landing-page .editor-panel {
+  background-color: var(--lp-bg);
+}
+
+.landing-page .preview-panel {
+  background-color: var(--lp-bg-alt);
+}
+
+.landing-page .form-label {
+  color: var(--lp-text);
+}
+
+.landing-page .form-input,
+.landing-page .form-textarea {
+  background-color: #ffffff;
+  border-color: var(--lp-border);
+  color: var(--lp-text);
+}
+
+.landing-page .form-input::placeholder,
+.landing-page .form-textarea::placeholder {
+  color: var(--lp-text-muted);
+}
+
+/* Dark mode: dark inputs and cards for cohesion */
+:root[data-theme='dark'] .landing-page .form-input,
+:root[data-theme='dark'] .landing-page .form-textarea {
+  background-color: var(--lp-input-bg);
+  border-color: var(--lp-border);
+  color: var(--lp-text);
+}
+
+:root[data-theme='dark'] .landing-page .form-input::placeholder,
+:root[data-theme='dark'] .landing-page .form-textarea::placeholder {
+  color: var(--lp-text-muted);
+}
+
+:root[data-theme='dark'] .landing-page .form-label {
+  color: var(--lp-text);
+}
+
+.landing-page .text-body,
+.landing-page .text-sm {
+  color: var(--lp-text-muted);
+}
+
 .container {
   width: 100%;
-  max-width: 900px;
-  /* Tighter container for reading */
+  max-width: 1100px;
+  /* Wider container for premium bento layouts */
   margin: 0 auto;
   padding: 0 24px;
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 0 16px;
+  }
+
+  /* Builder: mobile-first single column (editor only) */
+  .builder-main {
+    padding: 32px 0 56px;
+  }
+
+  .builder-preview {
+    display: none;
+  }
+}
+
+/* Responsive Section Paddings */
+.lp-section-hero {
+  padding: 100px 0;
+}
+
+.lp-section-trusted {
+  border-top: 1px solid var(--lp-border);
+  border-bottom: 1px solid var(--lp-border);
+  padding: 48px 0;
+  background-color: #fafafa;
+}
+
+:root[data-theme='dark'] .lp-section-trusted {
+  background-color: var(--lp-bg-alt);
+}
+
+.lp-section-features {
+  background-color: var(--lp-bg-alt);
+  padding: 120px 0;
+}
+
+.lp-section-capabilities {
+  padding: 100px 0 80px;
+}
+
+.lp-section-cta {
+  background-color: var(--lp-bg-alt);
+  padding: 100px 0;
+  border-top: 1px solid var(--lp-border);
+  text-align: center;
+}
+
+/* Glassmorphism Navbar */
+.lp-glass-nav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(226, 232, 240, 0.6);
+  padding: 16px 0;
+  transition: all 0.3s ease;
+}
+
+:root[data-theme='dark'] .lp-glass-nav {
+  background: rgba(13, 17, 23, 0.85);
+  border-bottom-color: var(--lp-border);
+}
+
+/* Shared navbar layout (Home + Auth) */
+.lp-nav-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+
+.lp-nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.lp-nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.lp-nav-text {
+  font-size: 0.9rem;
+  color: var(--lp-text-muted);
+}
+
+.lp-nav-cta {
+  padding: 10px 20px;
+  font-size: 0.95rem;
+}
+
+/* Premium Split Hero Layout */
+.hero-split-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 64px;
+  width: 100%;
+  position: relative;
+  z-index: 1;
+}
+
+.hero-text-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  width: 100%;
+}
+
+.hero-visual-content {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  /* Mobile scaling for mock UI */
+  transform-origin: center top;
+}
+
+/* Auth & Legal pages layout */
+.auth-page-main {
+  min-height: calc(100vh - 80px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 0;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 420px;
+}
+
+.legal-page-main {
+  padding: 80px 0;
+}
+
+/* Profile layout */
+.profile-grid {
+  display: grid;
+  gap: 24px;
+  margin-top: 8px;
+}
+
+@media (min-width: 900px) {
+  .profile-grid {
+    grid-template-columns: 2fr 1.1fr;
+    align-items: flex-start;
+  }
+}
+
+/* Builder layout */
+.builder-main {
+  display: grid;
+  grid-template-columns: minmax(320px, 0.8fr) minmax(480px, 1.2fr);
+  gap: 40px;
+  align-items: flex-start;
+  padding: 48px 0 80px;
+}
+
+.builder-editor-inner {
+  background-color: #ffffff;
+  border-radius: 20px;
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.06);
+  padding: 32px 32px 40px;
+  max-width: 640px;
+  display: flex;
+  flex-direction: column;
+  min-height: 420px;
+}
+
+:root[data-theme='dark'] .builder-editor-inner {
+  background-color: var(--lp-bg-alt);
+  border-color: var(--lp-border);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.3);
+}
+
+.builder-editor-footer {
+  margin-top: auto;
+  display: flex;
+  justify-content: space-between;
+  padding-top: 24px;
+  border-top: 1px solid var(--lp-border);
+}
+
+.builder-preview {
+  background-color: transparent;
+  border-radius: 24px;
+  padding: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+@media (max-width: 1024px) {
+  .builder-main {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 32px;
+  }
+
+  .builder-preview {
+    padding: 24px 8px;
+  }
+}
+
+@media (max-width: 768px) {
+  .lp-nav-bar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .lp-nav-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .auth-page-main {
+    padding: 56px 0 40px;
+    align-items: flex-start;
+  }
+
+  .legal-page-main {
+    padding: 56px 0 40px;
+  }
+  .hero-split-layout {
+    gap: 40px;
+  }
+
+  .hero-visual-content {
+    transform: scale(0.85);
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-visual-content {
+    transform: scale(0.7);
+  }
+}
+
+@media (min-width: 1024px) {
+  .hero-split-layout {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 48px;
+  }
+
+  .hero-text-content {
+    align-items: flex-start;
+    text-align: left;
+    max-width: 55%;
+  }
+
+  .hero-text-content .btn-lp-primary {
+    margin: 0;
+  }
+
+  .hero-text-content div[style*="justify-content: center"] {
+    justify-content: flex-start !important;
+  }
+
+  .hero-visual-content {
+    max-width: 45%;
+    justify-content: flex-end;
+  }
 }
 
 /* Typography & Layout - Minimal */
@@ -490,12 +850,20 @@ ul {
 }
 
 .lp-hero-title {
-  font-size: 3rem;
-  line-height: 1.1;
-  font-weight: 600;
-  letter-spacing: -0.02em;
+  font-size: 3.5rem;
+  line-height: 1.15;
+  font-weight: 700;
+  letter-spacing: -0.03em;
   color: var(--lp-text);
-  margin-bottom: 32px;
+  margin-bottom: 24px;
+}
+
+/* Add gradient text option */
+.text-gradient-blue {
+  background: linear-gradient(135deg, #0082c9 0%, #00d2ff 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .lp-section-text {
@@ -505,56 +873,104 @@ ul {
   font-weight: 400;
 }
 
-/* Primary Button - Restrained */
+/* Primary Button */
 .btn-lp-primary {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   background: var(--lp-accent);
   color: #ffffff;
-  font-weight: 500;
-  padding: 14px 32px;
-  border-radius: 6px;
-  /* Slight rounding, not pill */
-  transition: opacity 0.2s;
-  font-size: 1rem;
+  font-weight: 600;
+  padding: 12px 28px;
+  border-radius: 50px;
+  /* Pill shape often used in clean apps */
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 1.05rem;
   border: none;
   cursor: pointer;
   text-decoration: none;
+  box-shadow: 0 4px 14px rgba(0, 130, 201, 0.25);
 }
 
 .btn-lp-primary:hover {
-  opacity: 0.9;
+  background-color: var(--lp-accent-hover);
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 8px 20px rgba(0, 130, 201, 0.35);
 }
 
-/* Card Grids */
+/* Accessible focus states for interactive elements */
+.landing-page button:focus-visible,
+.landing-page a:focus-visible {
+  outline: 2px solid var(--lp-accent);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 1px rgba(0, 130, 201, 0.25);
+}
+
+/* Card Grids - Standard */
 .lp-grid-3 {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 24px;
-  margin-top: 48px;
+  gap: 32px;
 }
 
 .lp-grid-2 {
   display: grid;
   grid-template-columns: 1fr;
+  gap: 32px;
+}
+
+/* Premium Bento Grid */
+.lp-bento-grid {
+  display: grid;
+  grid-template-columns: 1fr;
   gap: 24px;
-  margin-top: 48px;
+}
+
+@media (min-width: 1024px) {
+  .lp-bento-grid {
+    grid-template-columns: 1.5fr 1fr;
+    grid-template-rows: auto auto;
+  }
+
+  .bento-large {
+    grid-row: span 2;
+  }
 }
 
 .lp-minimal-card {
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid var(--lp-border);
-  padding: 24px;
-  border-radius: 8px;
-  transition: border-color 0.2s;
+  background: #ffffff;
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  padding: 48px 40px;
+  /* Increased padding for premium airy feel */
+  border-radius: 20px;
+  /* Softer, rounder corners */
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  /* Bouncy spring transition */
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+  position: relative;
+  overflow: hidden;
 }
 
 .lp-minimal-card:hover {
-  border-color: #3f3f46;
+  border-color: #cbd5e1;
+  transform: translateY(-8px);
+  /* slightly more lift */
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.06);
+  /* softer, wider shadow */
+}
+
+:root[data-theme='dark'] .lp-minimal-card {
+  background: var(--lp-bg-alt);
+  border-color: var(--lp-border);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+}
+
+:root[data-theme='dark'] .lp-minimal-card:hover {
+  border-color: #484f58;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35);
 }
 
 .lp-card-heading {
@@ -595,9 +1011,119 @@ ul {
 
   .lp-hero-title {
     font-size: 2.25rem;
+    line-height: 1.2;
+    margin-bottom: 16px;
   }
 
   .lp-section-text {
     font-size: 1.125rem;
   }
+
+  /* Reduce massive padding on mobile */
+  .lp-minimal-card {
+    padding: 32px 24px;
+  }
+
+  .lp-card-heading {
+    font-size: 1.25rem;
+  }
+
+  /* Responsive Section Padings */
+  .lp-section-hero {
+    padding: 60px 0 40px;
+  }
+
+  .lp-section-trusted {
+    padding: 32px 0;
+  }
+
+  .lp-section-features {
+    padding: 64px 0;
+  }
+
+  .lp-section-capabilities {
+    padding: 64px 0 40px;
+  }
+
+  .lp-section-cta {
+    padding: 64px 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .lp-nav-actions {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .lp-nav-cta {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .lp-hero-title {
+    font-size: 2rem;
+  }
+
+  .btn-lp-primary {
+    width: 100%;
+  }
+
+  .hero-text-content .btn-lp-primary~a {
+    width: 100%;
+    margin-top: 8px;
+  }
+}
+
+/* Feature Mockups (for visual flair) */
+.mock-ui-container {
+  background: #fff;
+  border: 1px solid var(--lp-border);
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+  position: relative;
+  overflow: hidden;
+}
+
+.mock-ui-header {
+  height: 24px;
+  width: 100%;
+  border-bottom: 1px solid var(--lp-border);
+  margin-bottom: 16px;
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.mock-ui-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #e2e8f0;
+}
+
+:root[data-theme='dark'] .mock-ui-container {
+  background: var(--lp-bg-alt);
+  border-color: var(--lp-border);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35);
+}
+
+:root[data-theme='dark'] .mock-ui-header {
+  border-bottom-color: var(--lp-border);
+}
+
+:root[data-theme='dark'] .mock-ui-dot {
+  background: #484f58;
+}
+
+/* Toasts: ensure theme colors apply (toasts can be portaled to body) */
+[data-theme='dark'] .lp-toast,
+[data-theme='dark'] .lp-toast span {
+  color: var(--text-main) !important;
+}
+
+/* Dashboard resume card subtitle: slightly brighter in dark for readability */
+:root[data-theme='dark'] .lp-minimal-card .lp-card-heading + p {
+  color: #8b949e;
 }

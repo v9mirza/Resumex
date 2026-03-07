@@ -4,7 +4,7 @@ const Modern = ({ resume }) => {
     const { basics, education, experience, projects, skills } = resume;
 
     return (
-        <div style={{ fontFamily: 'Helvetica, Arial, sans-serif', lineHeight: 1.4, color: '#000', display: 'flex', height: '100%', minHeight: '100vh' }}>
+        <div style={{ fontFamily: 'Helvetica, Arial, sans-serif', lineHeight: 1.4, color: '#000', display: 'flex', height: '100%', minHeight: '100vh', wordBreak: 'break-word', overflowWrap: 'anywhere' }}>
 
             {/* Sidebar */}
             <aside style={{ width: '30%', borderRight: '1px solid #ddd', paddingRight: '20px' }}>

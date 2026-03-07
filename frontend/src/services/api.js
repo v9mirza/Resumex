@@ -22,6 +22,7 @@ export const login = (formData) => API.post('/auth/login', formData);
 export const register = (formData) => API.post('/auth/register', formData);
 export const updateProfile = (data) => API.put('/auth/profile', data);
 export const deleteAccount = () => API.delete('/auth/profile');
+export const revokeAllSessions = () => API.post('/auth/revoke-all');
 export const getResumes = () => API.get('/resumes');
 export const getResume = (id) => API.get(`/resumes/${id}`);
 export const createResume = (resumeData) => API.post('/resumes', resumeData);

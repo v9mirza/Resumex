@@ -1,6 +1,10 @@
-import React from 'react';
+import React, { useRef } from 'react';
 
-const Basics = ({ data, update }) => {
+const Basics = ({ data, update, errors = {} }) => {
+    const emailRef = useRef(null);
+    const phoneRef = useRef(null);
+    const locationRef = useRef(null);
+
     const handleChange = (e) => {
         const { name, value } = e.target;
         update(name, value);
@@ -11,7 +15,9 @@ const Basics = ({ data, update }) => {
 
     return (
         <div className="animate-fade-in">
-
+            <p style={{ fontSize: '0.9rem', color: 'var(--lp-text-muted)', marginBottom: '16px' }}>
+                Start with the essentials: how recruiters can contact you and where you’re based.
+            </p>
             <div className="form-group">
                 <label className="form-label">Full Name</label>
                 <input
@@ -20,10 +26,23 @@ const Basics = ({ data, update }) => {
                     name="name"
                     value={data.name}
                     onChange={handleChange}
+                    onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                            e.preventDefault();
+                            if (emailRef.current) {
+                                emailRef.current.focus();
+                            }
+                        }
+                    }}
                     placeholder="Jane Doe"
                     autoComplete="name"
                     required
+                    data-error-id="basics.name"
+                    style={errors['basics.name'] ? { borderColor: '#dc2626' } : undefined}
                 />
+                {errors['basics.name'] && (
+                    <p style={{ fontSize: '0.8rem', color: '#dc2626', marginTop: '4px' }}>{errors['basics.name']}</p>
+                )}
             </div>
 
             <div className="form-group">
@@ -34,10 +53,24 @@ const Basics = ({ data, update }) => {
                     name="email"
                     value={data.email}
                     onChange={handleChange}
+                    ref={emailRef}
+                    onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                            e.preventDefault();
+                            if (phoneRef.current) {
+                                phoneRef.current.focus();
+                            }
+                        }
+                    }}
                     placeholder="jane@example.com"
                     autoComplete="email"
                     required
+                    data-error-id="basics.email"
+                    style={errors['basics.email'] ? { borderColor: '#dc2626' } : undefined}
                 />
+                {errors['basics.email'] && (
+                    <p style={{ fontSize: '0.8rem', color: '#dc2626', marginTop: '4px' }}>{errors['basics.email']}</p>
+                )}
             </div>
 
             <div className="form-group">
@@ -48,6 +81,15 @@ const Basics = ({ data, update }) => {
                     name="phone"
                     value={data.phone}
                     onChange={handleChange}
+                    ref={phoneRef}
+                    onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                            e.preventDefault();
+                            if (locationRef.current) {
+                                locationRef.current.focus();
+                            }
+                        }
+                    }}
                     placeholder="(555) 123-4567"
                     pattern="[0-9+\-\. ]*"
                     autoComplete="tel"
@@ -62,6 +104,7 @@ const Basics = ({ data, update }) => {
                     name="location"
                     value={data.location}
                     onChange={handleChange}
+                    ref={locationRef}
                     placeholder="City, Country"
                     autoComplete="address-level2"
                 />

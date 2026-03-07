@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
+import LandingNav from '../components/LandingNav';
 
 const Register = () => {
     const [email, setEmail] = useState('');
@@ -28,83 +29,82 @@ const Register = () => {
     };
 
     return (
-        <div style={{
-            minHeight: '100vh',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            backgroundColor: 'var(--bg-app)',
-            position: 'relative' // Ensure relative positioning for absolute child
-        }}>
-            <Link to="/" style={{ position: 'absolute', top: '32px', left: '32px', textDecoration: 'none' }}>
-                <span style={{ fontFamily: 'Georgia, serif', fontWeight: 700, fontSize: '1.5rem', color: '#f4f4f5' }}>Resumex</span>
-            </Link>
-            <div style={{
-                width: '100%',
-                maxWidth: '400px',
-                padding: '40px',
-                backgroundColor: 'rgba(255, 255, 255, 0.03)',
-                borderRadius: '12px',
-                border: '1px solid var(--border-color)'
-            }}>
-                <h2 className="text-h1" style={{ textAlign: 'center', marginBottom: '32px' }}>Create Account</h2>
+        <div className="landing-page">
+            <LandingNav
+                rightContent={
+                    <>
+                        <span className="lp-nav-text">Already have an account?</span>
+                        <Link to="/login" className="btn-lp-primary lp-nav-cta">
+                            Log in
+                        </Link>
+                    </>
+                }
+            />
 
-                {error && <div style={{ color: '#ef4444', marginBottom: '16px', textAlign: 'center' }}>{error}</div>}
+            <main className="container auth-page-main">
+                <div className="lp-minimal-card auth-card">
+                    <h2 style={{ fontSize: '2rem', fontWeight: 700, letterSpacing: '-0.03em', marginBottom: '12px', color: 'var(--lp-text)', textAlign: 'center' }}>
+                        Create your account
+                    </h2>
+                    <p style={{ fontSize: '0.95rem', color: 'var(--lp-text-muted)', marginBottom: '24px', textAlign: 'center' }}>
+                        Start building structured, ATS-friendly resumes in minutes.
+                    </p>
 
-                <form onSubmit={handleSubmit}>
-                    <div className="form-group">
-                        <label className="form-label">Email</label>
-                        <input
-                            type="email"
-                            className="form-input"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            required
-                        />
+                    {error && <div style={{ color: '#ef4444', marginBottom: '16px', textAlign: 'center', fontSize: '0.9rem' }}>{error}</div>}
+
+                    <form onSubmit={handleSubmit}>
+                        <div className="form-group">
+                            <label className="form-label" style={{ color: 'var(--lp-text)' }}>Email</label>
+                            <input
+                                type="email"
+                                className="form-input"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                required
+                            />
+                        </div>
+
+                        <div className="form-group">
+                            <label className="form-label" style={{ color: 'var(--lp-text)' }}>Password</label>
+                            <input
+                                type="password"
+                                className="form-input"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                required
+                            />
+                        </div>
+
+                        <div className="form-group">
+                            <label className="form-label" style={{ color: 'var(--lp-text)' }}>Confirm Password</label>
+                            <input
+                                type="password"
+                                className="form-input"
+                                value={confirmPassword}
+                                onChange={(e) => setConfirmPassword(e.target.value)}
+                                required
+                            />
+                        </div>
+
+                        <button
+                            type="submit"
+                            className="btn-lp-primary"
+                            style={{ width: '100%', marginTop: '8px' }}
+                        >
+                            Sign up
+                        </button>
+                    </form>
+
+                    <div style={{ marginTop: '20px', textAlign: 'center' }}>
+                        <span style={{ fontSize: '0.9rem', color: 'var(--lp-text-muted)' }}>
+                            Already have an account?{' '}
+                            <Link to="/login" style={{ color: 'var(--lp-accent)', fontWeight: 500 }}>
+                                Log in
+                            </Link>
+                        </span>
                     </div>
-
-                    <div className="form-group">
-                        <label className="form-label">Password</label>
-                        <input
-                            type="password"
-                            className="form-input"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            required
-                        />
-                    </div>
-
-                    <div className="form-group">
-                        <label className="form-label">Confirm Password</label>
-                        <input
-                            type="password"
-                            className="form-input"
-                            value={confirmPassword}
-                            onChange={(e) => setConfirmPassword(e.target.value)}
-                            required
-                        />
-                    </div>
-
-                    <button type="submit" className="btn btn-primary" style={{
-                        width: '100%',
-                        padding: '12px',
-                        marginTop: '16px',
-                        backgroundColor: 'var(--accent-color)',
-                        color: 'white',
-                        border: 'none',
-                        cursor: 'pointer',
-                        borderRadius: '6px'
-                    }}>
-                        Sign Up
-                    </button>
-                </form>
-
-                <div style={{ marginTop: '24px', textAlign: 'center' }}>
-                    <span className="text-body" style={{ fontSize: '0.9rem' }}>
-                        Already have an account? <Link to="/login" style={{ color: 'var(--accent-color)' }}>Sign in</Link>
-                    </span>
                 </div>
-            </div>
+            </main>
         </div>
     );
 };

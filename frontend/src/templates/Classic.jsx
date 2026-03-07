@@ -4,11 +4,11 @@ const Classic = ({ resume }) => {
     const { basics, education, experience, projects, skills } = resume;
 
     return (
-        <div style={{ fontFamily: 'Georgia, Times New Roman, serif', lineHeight: 1.5, color: '#000' }}>
+        <div style={{ fontFamily: 'Georgia, Times New Roman, serif', lineHeight: 1.5, color: '#000', wordBreak: 'break-word', overflowWrap: 'anywhere' }}>
 
             {/* Header */}
             <header style={{ marginBottom: '32px', textAlign: 'center', borderBottom: '2px solid black', paddingBottom: '24px' }}>
-                <h1 style={{ fontSize: '28pt', fontWeight: 'bold', margin: '0 0 12px 0' }}>
+                <h1 style={{ fontSize: '28pt', fontWeight: 'bold', margin: '0 0 12px 0', wordBreak: 'break-word', overflowWrap: 'break-word' }}>
                     {basics.name}
                 </h1>
                 <div style={{ fontSize: '10pt' }}>
