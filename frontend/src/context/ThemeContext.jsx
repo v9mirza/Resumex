@@ -7,10 +7,7 @@ export const ThemeProvider = ({ children }) => {
         if (typeof window === 'undefined') return 'light';
         const stored = window.localStorage.getItem('theme');
         if (stored === 'light' || stored === 'dark') return stored;
-        // Prefer OS setting on first load
-        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-            return 'dark';
-        }
+        // Default to light mode for first-time visitors
         return 'light';
     });
 
