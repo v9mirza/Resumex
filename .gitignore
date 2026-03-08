@@ -1,6 +1,16 @@
-# Node modules (root)
+# Dependencies
 node_modules
 
 # Local environment files (do not commit)
+.env
 backend/.env
+frontend/.env
+
+# Build output
+dist/
+
+# OS / editor
+.DS_Store
+*.log
+*.local
 

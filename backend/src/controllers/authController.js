@@ -6,7 +6,9 @@ const User = require('../models/User');
 // @route   POST /api/auth/register
 // @access  Public
 const registerUser = async (req, res) => {
-    const { email, password } = req.body;
+    const rawEmail = req.body.email;
+    const email = typeof rawEmail === 'string' ? rawEmail.trim().toLowerCase() : '';
+    const password = typeof req.body.password === 'string' ? req.body.password.trim() : '';
 
     if (!email || !password) {
         return res.status(400).json({ message: 'Please add all fields' });
@@ -45,7 +47,9 @@ const registerUser = async (req, res) => {
 // @route   POST /api/auth/login
 // @access  Public
 const loginUser = async (req, res) => {
-    const { email, password } = req.body;
+    const rawEmail = req.body.email;
+    const email = typeof rawEmail === 'string' ? rawEmail.trim().toLowerCase() : '';
+    const password = typeof req.body.password === 'string' ? req.body.password.trim() : '';
 
     // Check for user email
     const user = await User.findOne({ email });

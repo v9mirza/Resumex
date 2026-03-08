@@ -61,6 +61,28 @@ const ProtectedRoute = ({ children }) => {
     return children;
 };
 
+const AdminRoute = ({ children }) => {
+    const { user, loading } = useAuth();
+    if (loading) {
+        return (
+            <div style={{
+                minHeight: '100vh',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                background: 'var(--lp-bg, #fff)',
+                color: 'var(--lp-text-muted, #666)',
+                fontSize: '0.95rem'
+            }}>
+                Checking session…
+            </div>
+        );
+    }
+    if (!user) return <Navigate to="/login" />;
+    if (user.role !== 'admin') return <Navigate to="/dashboard" replace />;
+    return children;
+};
+
 function App() {
     return (
         <ThemeProvider>
@@ -114,9 +136,9 @@ function App() {
                                     </ProtectedRoute>
                                 } />
                                 <Route path="/admin" element={
-                                    <ProtectedRoute>
+                                    <AdminRoute>
                                         <Admin />
-                                    </ProtectedRoute>
+                                    </AdminRoute>
                                 } />
                             </Routes>
                         </Suspense>
