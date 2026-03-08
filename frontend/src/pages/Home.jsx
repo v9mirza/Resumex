@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { motion } from 'framer-motion';
-import { ShieldCheck, Cloud, FileJson, CheckCircle, LayoutTemplate, Star } from 'lucide-react';
+import { ShieldCheck, Cloud, FileJson, CheckCircle, LayoutTemplate, Star, Copy, Eye, Github } from 'lucide-react';
 import LandingFooter from '../components/LandingFooter';
 import LandingNav from '../components/LandingNav';
 
@@ -97,7 +97,7 @@ const Home = () => {
               <Link to="/dashboard" className="btn-lp-primary" style={{ padding: '16px 36px', fontSize: '1.1rem' }}>
                 Start Building Free
               </Link>
-              <a href="#features" style={{ padding: '16px 36px', fontSize: '1.1rem', color: 'var(--lp-text)', fontWeight: 600, textDecoration: 'none', border: '1px solid var(--lp-border)', borderRadius: '50px', transition: 'background-color 0.2s', display: 'flex', alignItems: 'center', justifyContent: 'center' }} onMouseOver={e => e.currentTarget.style.backgroundColor = 'var(--lp-bg-alt)'} onMouseOut={e => e.currentTarget.style.backgroundColor = 'transparent'}>
+              <a href="#features" className="btn-lp-secondary" style={{ padding: '16px 36px', fontSize: '1.1rem' }}>
                 View Features
               </a>
             </div>
@@ -145,14 +145,13 @@ const Home = () => {
 
       {/* Trusted By (Social Proof) */}
       <section className="lp-section-trusted">
-        <div className="container" style={{ textAlign: 'center' }}>
-          <p style={{ fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: 600, color: 'var(--lp-text-muted)', marginBottom: '32px' }}>
+        <div className="container" style={{ textAlign: 'center', position: 'relative', zIndex: 1 }}>
+          <p className="lp-trusted-eyebrow">
             Trusted by professionals securing roles at top companies
           </p>
-          <div style={{ display: 'flex', justifyContent: 'center', gap: '48px', flexWrap: 'wrap', opacity: 0.5, filter: 'grayscale(100%)' }}>
-            {/* Abstract trusted logos */}
-            {['Acme Corp', 'Global Tech', 'Nexus', 'Stark Ind', 'Umbrella'].map((name, i) => (
-              <span key={name} style={{ fontSize: '1.25rem', fontWeight: 700, fontFamily: 'sans-serif' }}>{name}</span>
+          <div className="lp-trusted-logos">
+            {['Acme Corp', 'Global Tech', 'Nexus', 'Stark Ind', 'Umbrella'].map((name) => (
+              <span key={name} className="lp-trusted-logo-item">{name}</span>
             ))}
           </div>
         </div>
@@ -166,9 +165,11 @@ const Home = () => {
             viewport={{ once: true, margin: "-100px" }}
             style={{ textAlign: 'center', marginBottom: '64px' }}
           >
-            <p style={{ fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: 600, color: 'var(--lp-accent)', marginBottom: '16px' }}>Engineered Principles</p>
-            <h2 className="lp-card-heading" style={{ fontSize: '2.5rem' }}>Designed for professionals.</h2>
-            <p style={{ fontSize: '1.15rem', color: 'var(--lp-text-muted)', maxWidth: '640px', margin: '16px auto 0' }}>It ensures your content is the only thing standing out—not the layout, not the template, but the work itself.</p>
+            <p className="lp-section-eyebrow">Engineered Principles</p>
+            <h2 className="lp-section-title">Designed for professionals.</h2>
+            <p className="lp-section-subtitle">
+              It ensures your content is the only thing standing out—not the layout, not the template, but the work itself.
+            </p>
           </motion.div>
 
           <div className="lp-bento-grid">
@@ -224,32 +225,39 @@ const Home = () => {
         </div>
       </section>
 
-      {/* 
-        4. Capabilities
-      */}
+      {/* Capabilities */}
       <section className="container lp-section-capabilities">
-        <div style={{ textAlign: 'center', marginBottom: '48px' }}>
-          <p style={{ fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: 600, color: 'var(--lp-accent)', marginBottom: '16px' }}>Capabilities</p>
-          <h2 className="lp-card-heading" style={{ fontSize: '2rem' }}>Everything you need. Nothing you don't.</h2>
-        </div>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          style={{ textAlign: 'center', marginBottom: '48px' }}
+        >
+          <p className="lp-section-eyebrow">Capabilities</p>
+          <h2 className="lp-section-title">Everything you need. Nothing you don't.</h2>
+        </motion.div>
 
         <div className="lp-grid-2">
-          <div className="lp-minimal-card">
+          <motion.div className="lp-minimal-card lp-capability-card" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
+            <div className="lp-capability-icon"><Copy size={22} /></div>
             <h3 className="lp-card-heading">Multiple Versions</h3>
             <p className="lp-card-body">Maintain specific versions for different roles without duplicating your entire history.</p>
-          </div>
-          <div className="lp-minimal-card">
+          </motion.div>
+          <motion.div className="lp-minimal-card lp-capability-card" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, delay: 0.05 }}>
+            <div className="lp-capability-icon"><Eye size={22} /></div>
             <h3 className="lp-card-heading">Real-time Preview</h3>
             <p className="lp-card-body">Instant rendering as you type. No loading screens or refresh cycles.</p>
-          </div>
-          <div className="lp-minimal-card">
+          </motion.div>
+          <motion.div className="lp-minimal-card lp-capability-card" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, delay: 0.1 }}>
+            <div className="lp-capability-icon"><FileJson size={22} /></div>
             <h3 className="lp-card-heading">JSON Export</h3>
             <p className="lp-card-body">Own your data. Export your resume as a standardized JSON structure.</p>
-          </div>
-          <div className="lp-minimal-card">
+          </motion.div>
+          <motion.div className="lp-minimal-card lp-capability-card" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, delay: 0.15 }}>
+            <div className="lp-capability-icon"><Github size={22} /></div>
             <h3 className="lp-card-heading">Open Source</h3>
             <p className="lp-card-body">Transparency you can trust. Code is available for review on GitHub.</p>
-          </div>
+          </motion.div>
         </div>
       </section>
 
@@ -257,22 +265,29 @@ const Home = () => {
       <section className="lp-section-cta">
         <div className="container">
           <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            whileInView={{ opacity: 1, scale: 1 }}
+            initial={{ opacity: 0, y: 12 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            style={{ maxWidth: '700px', margin: '0 auto' }}
+            className="lp-cta-card"
           >
-            <h2 style={{ fontSize: '3rem', fontWeight: 700, color: 'var(--lp-text)', marginBottom: '24px', letterSpacing: '-0.02em' }}>
+            <h2 className="lp-cta-title">
               Your best resume yet.
             </h2>
-            <p style={{ fontSize: '1.25rem', color: 'var(--lp-text-muted)', marginBottom: '48px', lineHeight: '1.6' }}>
+            <p className="lp-cta-subtitle">
               Join professionals who have accelerated their careers with cleaner, structured data that recruiters love.
             </p>
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '16px' }}>
-              <Link to="/register" className="btn-lp-primary" style={{ padding: '16px 48px', fontSize: '1.15rem' }}>
+            <div className="lp-cta-actions">
+              <Link to="/register" className="btn-lp-primary">
                 Create Your Free Account
               </Link>
-              <span style={{ fontSize: '0.85rem', color: 'var(--lp-text-muted)' }}>No credit card required. Setup takes 30 seconds.</span>
+              <div className="lp-cta-trust">
+                <span className="lp-cta-trust-item"><CheckCircle size={14} /> Free forever</span>
+                <span className="lp-cta-trust-item"><CheckCircle size={14} /> No credit card</span>
+                <span className="lp-cta-trust-item"><CheckCircle size={14} /> 30 second setup</span>
+              </div>
+              <p className="lp-cta-login">
+                Already have an account? <Link to="/login">Log in</Link>
+              </p>
             </div>
           </motion.div>
         </div>

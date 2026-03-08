@@ -1,7 +1,15 @@
 import axios from 'axios';
 
+const baseURL =
+    import.meta.env.VITE_API_URL ||
+    (import.meta.env.DEV ? 'http://localhost:3000/api' : '');
+
+if (!baseURL) {
+    throw new Error('VITE_API_URL is not set for production build');
+}
+
 const API = axios.create({
-    baseURL: 'http://localhost:3000/api', // Make sure this matches your backend port
+    baseURL,
 });
 
 // Add a request interceptor to attach the Token
@@ -17,6 +25,22 @@ API.interceptors.request.use((config) => {
 }, (error) => {
     return Promise.reject(error);
 });
+
+// On 401, clear session and redirect to login (session expired / invalid token)
+API.interceptors.response.use(
+    (response) => response,
+    (error) => {
+        if (error.response?.status === 401) {
+            localStorage.removeItem('user');
+            const path = window.location.pathname || '';
+            const search = '?session_expired=1';
+            if (!path.startsWith('/login')) {
+                window.location.assign(`/login${search}`);
+            }
+        }
+        return Promise.reject(error);
+    }
+);
 
 export const login = (formData) => API.post('/auth/login', formData);
 export const register = (formData) => API.post('/auth/register', formData);

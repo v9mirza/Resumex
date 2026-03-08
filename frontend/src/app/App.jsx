@@ -1,5 +1,5 @@
-import React, { Suspense, lazy } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import React, { Suspense, lazy, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider, useAuth } from '../context/AuthContext';
 import { ResumeProvider } from '../state/useResume.jsx';
@@ -16,9 +16,47 @@ const Profile = lazy(() => import('../pages/Profile'));
 const LegalPrivacy = lazy(() => import('../pages/LegalPrivacy'));
 const LegalTerms = lazy(() => import('../pages/LegalTerms'));
 
+const TITLE_BASE = 'Resumex';
+
+const routeTitles = {
+    '/': `Home – ${TITLE_BASE}`,
+    '/login': `Login – ${TITLE_BASE}`,
+    '/register': `Register – ${TITLE_BASE}`,
+    '/privacy-policy': `Privacy Policy – ${TITLE_BASE}`,
+    '/terms-of-service': `Terms of Service – ${TITLE_BASE}`,
+    '/dashboard': `Dashboard – ${TITLE_BASE}`,
+    '/build': `New resume – ${TITLE_BASE}`,
+    '/preview': `Preview – ${TITLE_BASE}`,
+    '/profile': `Profile – ${TITLE_BASE}`,
+    '/admin': `Admin – ${TITLE_BASE}`,
+};
+
+function DocumentTitle() {
+    const { pathname } = useLocation();
+    useEffect(() => {
+        const title = routeTitles[pathname] ?? (/^\/build\/[^/]+$/.test(pathname) ? `Edit resume – ${TITLE_BASE}` : TITLE_BASE);
+        document.title = title;
+    }, [pathname]);
+    return null;
+}
+
 const ProtectedRoute = ({ children }) => {
     const { user, loading } = useAuth();
-    if (loading) return <div>Loading...</div>;
+    if (loading) {
+        return (
+            <div style={{
+                minHeight: '100vh',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                background: 'var(--lp-bg, #fff)',
+                color: 'var(--lp-text-muted, #666)',
+                fontSize: '0.95rem'
+            }}>
+                Checking session…
+            </div>
+        );
+    }
     if (!user) return <Navigate to="/login" />;
     return children;
 };
@@ -42,6 +80,7 @@ function App() {
                         }}
                     />
                     <Router>
+                        <DocumentTitle />
                         <Suspense fallback={<div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--lp-bg)', color: 'var(--lp-text-muted)', fontSize: '0.95rem' }}>Loading…</div>}>
                             <Routes>
                                 <Route path="/" element={<Home />} />

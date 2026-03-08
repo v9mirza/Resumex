@@ -10,6 +10,7 @@ const Dashboard = () => {
     const [resumes, setResumes] = useState([]);
     const { logout, user } = useAuth();
     const [loading, setLoading] = useState(true);
+    const [duplicatingId, setDuplicatingId] = useState(null);
 
     const getTemplateLabel = (resume) => {
         const templateId = resume.data?.meta?.template || resume.meta?.template || 'minimal';
@@ -57,7 +58,7 @@ const Dashboard = () => {
         toast((t) => (
             <div style={{ display: 'flex', alignItems: 'center', gap: '16px', minWidth: '280px' }}>
                 <div style={{ flex: 1 }}>
-                    <p style={{ margin: 0, fontWeight: 600, fontSize: '0.9rem', color: 'var(--text-main)' }}>Delete Resume?</p>
+                    <p style={{ margin: 0, fontWeight: 600, fontSize: '0.9rem', color: 'var(--text-main)' }}>Permanently delete this resume?</p>
                     <p style={{ margin: '2px 0 0', fontSize: '0.8rem', color: 'var(--text-muted)' }}>This cannot be undone.</p>
                 </div>
                 <div style={{ display: 'flex', gap: '8px' }}>
@@ -262,7 +263,7 @@ const Dashboard = () => {
                                             </Link>
                                             <button
                                                 onClick={async () => {
-                                                    const loadingToast = toast.loading('Duplicating…');
+                                                    setDuplicatingId(resume._id);
                                                     try {
                                                         const { data } = await api.getResume(resume._id);
                                                         const source = data.data || {};
@@ -272,12 +273,15 @@ const Dashboard = () => {
                                                             data: source
                                                         });
                                                         setResumes(prev => [created, ...prev]);
-                                                        toast.success('Resume duplicated', { id: loadingToast });
+                                                        toast.success('Resume duplicated');
                                                     } catch (error) {
                                                         console.error('Failed to duplicate resume', error);
-                                                        toast.error('Failed to duplicate resume', { id: loadingToast });
+                                                        toast.error('Failed to duplicate resume');
+                                                    } finally {
+                                                        setDuplicatingId(null);
                                                     }
                                                 }}
+                                                disabled={duplicatingId === resume._id}
                                                 className="btn-lp-secondary"
                                                 style={{
                                                     padding: '8px 14px',
@@ -287,11 +291,12 @@ const Dashboard = () => {
                                                     color: 'var(--lp-text)',
                                                     fontSize: '0.8rem',
                                                     fontWeight: 500,
-                                                    cursor: 'pointer',
-                                                    transition: 'background-color 0.15s ease, border-color 0.15s ease'
+                                                    cursor: duplicatingId === resume._id ? 'wait' : 'pointer',
+                                                    transition: 'background-color 0.15s ease, border-color 0.15s ease',
+                                                    opacity: duplicatingId === resume._id ? 0.7 : 1
                                                 }}
                                             >
-                                                Duplicate
+                                                {duplicatingId === resume._id ? 'Duplicating…' : 'Duplicate'}
                                             </button>
                                             <button
                                                 onClick={() => handleDelete(resume._id)}

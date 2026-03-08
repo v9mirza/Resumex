@@ -586,28 +586,224 @@ ul {
 .lp-section-trusted {
   border-top: 1px solid var(--lp-border);
   border-bottom: 1px solid var(--lp-border);
-  padding: 48px 0;
-  background-color: #fafafa;
+  padding: 56px 0;
+  background: linear-gradient(180deg, var(--lp-bg) 0%, var(--lp-bg-alt) 50%, var(--lp-bg) 100%);
+  position: relative;
 }
 
-:root[data-theme='dark'] .lp-section-trusted {
-  background-color: var(--lp-bg-alt);
+.lp-section-trusted::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 80% 50% at 50% 50%, rgba(0, 130, 201, 0.03) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+:root[data-theme='dark'] .lp-section-trusted::before {
+  background: radial-gradient(ellipse 80% 50% at 50% 50%, rgba(0, 130, 201, 0.05) 0%, transparent 70%);
 }
 
 .lp-section-features {
-  background-color: var(--lp-bg-alt);
+  background: linear-gradient(180deg, var(--lp-bg-alt) 0%, var(--lp-bg) 30%, var(--lp-bg-alt) 100%);
   padding: 120px 0;
+  position: relative;
+}
+
+.lp-section-features .lp-section-eyebrow {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-weight: 600;
+  color: var(--lp-accent);
+  margin-bottom: 12px;
+}
+
+.lp-section-features .lp-section-title {
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--lp-text);
+  margin-bottom: 12px;
+}
+
+.lp-section-features .lp-section-subtitle {
+  font-size: 1.1rem;
+  color: var(--lp-text-muted);
+  max-width: 560px;
+  margin: 0 auto;
+  line-height: 1.6;
 }
 
 .lp-section-capabilities {
   padding: 100px 0 80px;
+  position: relative;
+}
+
+.lp-section-capabilities .lp-section-eyebrow {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-weight: 600;
+  color: var(--lp-accent);
+  margin-bottom: 12px;
+}
+
+.lp-section-capabilities .lp-section-title {
+  font-size: clamp(1.5rem, 3.5vw, 2rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--lp-text);
+}
+
+.lp-section-capabilities .lp-capability-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 32px 28px;
+}
+
+.lp-section-capabilities .lp-capability-card .lp-capability-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 130, 201, 0.08);
+  color: var(--lp-accent);
+}
+
+.lp-section-capabilities .lp-capability-card .lp-card-heading {
+  font-size: 1.1rem;
+  margin-bottom: 0;
 }
 
 .lp-section-cta {
-  background-color: var(--lp-bg-alt);
-  padding: 100px 0;
+  background: linear-gradient(180deg, var(--lp-bg-alt) 0%, var(--lp-bg) 50%, var(--lp-bg-alt) 100%);
+  padding: 120px 0;
   border-top: 1px solid var(--lp-border);
   text-align: center;
+  position: relative;
+}
+
+.lp-section-cta::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 70% 60% at 50% 80%, rgba(0, 130, 201, 0.08) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+/* SaaS-style CTA card: gradient border effect + glow */
+.lp-cta-card {
+  position: relative;
+  z-index: 1;
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 56px 48px;
+  background: var(--lp-bg);
+  border-radius: 24px;
+  box-shadow: 0 1px 0 0 rgba(255, 255, 255, 0.5) inset, 0 24px 48px -12px rgba(0, 0, 0, 0.12), 0 0 0 1px var(--lp-border);
+}
+
+/* Gradient border via pseudo-element (SaaS premium feel) */
+.lp-cta-card::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: 25px;
+  padding: 1px;
+  background: linear-gradient(135deg, rgba(0, 130, 201, 0.4) 0%, rgba(0, 130, 201, 0.1) 40%, transparent 60%, rgba(99, 102, 241, 0.1) 100%);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+:root[data-theme='dark'] .lp-cta-card {
+  box-shadow: 0 1px 0 0 rgba(255, 255, 255, 0.03) inset, 0 24px 48px -12px rgba(0, 0, 0, 0.4), 0 0 0 1px var(--lp-border);
+}
+
+:root[data-theme='dark'] .lp-cta-card::before {
+  background: linear-gradient(135deg, rgba(88, 166, 255, 0.35) 0%, rgba(88, 166, 255, 0.08) 40%, transparent 60%, rgba(99, 102, 241, 0.08) 100%);
+}
+
+.lp-cta-card .lp-cta-title {
+  font-size: clamp(1.875rem, 4.5vw, 2.75rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--lp-text);
+  margin-bottom: 12px;
+  line-height: 1.2;
+}
+
+.lp-cta-card .lp-cta-subtitle {
+  font-size: 1.125rem;
+  color: var(--lp-text-muted);
+  line-height: 1.65;
+  margin-bottom: 28px;
+  max-width: 420px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.lp-cta-card .lp-cta-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.lp-cta-card .btn-lp-primary {
+  min-width: 220px;
+  padding: 14px 32px;
+  font-size: 1.05rem;
+}
+
+.lp-cta-trust {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 8px 20px;
+  margin-top: 20px;
+}
+
+.lp-cta-trust-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8125rem;
+  color: var(--lp-text-muted);
+  font-weight: 500;
+}
+
+.lp-cta-trust-item svg {
+  flex-shrink: 0;
+  color: var(--lp-success, #10b981);
+}
+
+.lp-cta-login {
+  font-size: 0.9rem;
+  color: var(--lp-text-muted);
+  margin-top: 8px;
+}
+
+.lp-cta-login a {
+  color: var(--lp-accent);
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.lp-cta-login a:hover {
+  text-decoration: underline;
+}
+
+.lp-cta-note {
+  font-size: 0.8125rem;
+  color: var(--lp-text-muted);
+  margin-top: 4px;
 }
 
 /* Glassmorphism Navbar */
@@ -704,6 +900,141 @@ ul {
 
 .legal-page-main {
   padding: 80px 0;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+/* Legal document layout and typography */
+.legal-doc-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 48px;
+  border-bottom: 1px solid var(--lp-border);
+  padding-bottom: 24px;
+}
+
+.legal-doc-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--lp-text-muted);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.legal-doc-back:hover {
+  color: var(--lp-accent);
+}
+
+.legal-doc-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.legal-doc-brand span {
+  font-weight: 700;
+  font-size: 1.1rem;
+  letter-spacing: -0.01em;
+  color: var(--lp-text);
+}
+
+.legal-doc-hero {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
+.legal-doc-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--lp-accent-subtle, rgba(0, 130, 201, 0.1));
+  color: var(--lp-accent);
+}
+
+:root[data-theme='dark'] .legal-doc-icon {
+  background: rgba(88, 166, 255, 0.15);
+}
+
+.legal-doc-title {
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin: 0;
+  color: var(--lp-text);
+}
+
+.legal-doc-updated {
+  color: var(--lp-text-muted);
+  font-size: 0.95rem;
+  margin-bottom: 48px;
+}
+
+.legal-doc-body {
+  padding-bottom: 80px;
+}
+
+.legal-doc-section {
+  margin-bottom: 40px;
+}
+
+.legal-doc-section h2 {
+  font-size: 1.35rem;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: var(--lp-text);
+  letter-spacing: -0.01em;
+}
+
+.legal-doc-section h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-top: 20px;
+  margin-bottom: 8px;
+  color: var(--lp-text);
+}
+
+.legal-doc-section p,
+.legal-doc-section li {
+  color: var(--lp-text-muted);
+  line-height: 1.75;
+  margin-bottom: 12px;
+}
+
+.legal-doc-section p:last-child,
+.legal-doc-section li:last-child {
+  margin-bottom: 0;
+}
+
+.legal-doc-section ul {
+  padding-left: 24px;
+  list-style-type: disc;
+  margin-bottom: 16px;
+}
+
+.legal-doc-section ul li {
+  margin-bottom: 8px;
+}
+
+.legal-doc-section strong {
+  color: var(--lp-text);
+  font-weight: 600;
+}
+
+.legal-doc-section a {
+  color: var(--lp-accent);
+  text-decoration: none;
+}
+
+.legal-doc-section a:hover {
+  text-decoration: underline;
 }
 
 /* Profile layout */
@@ -898,12 +1229,43 @@ ul {
   box-shadow: 0 8px 20px rgba(0, 130, 201, 0.35);
 }
 
+/* Secondary / outline button for SaaS landing */
+.btn-lp-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  color: var(--lp-text);
+  font-weight: 600;
+  padding: 12px 28px;
+  border-radius: 50px;
+  border: 1px solid var(--lp-border);
+  transition: all 0.2s ease;
+  font-size: 1rem;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.btn-lp-secondary:hover {
+  background: var(--lp-bg-alt);
+  border-color: var(--lp-text-muted);
+  color: var(--lp-text);
+}
+
 /* Accessible focus states for interactive elements */
 .landing-page button:focus-visible,
-.landing-page a:focus-visible {
+.landing-page a:focus-visible,
+.builder-editor button:focus-visible,
+.builder-main button:focus-visible,
+.builder-main a:focus-visible {
   outline: 2px solid var(--lp-accent);
   outline-offset: 2px;
   box-shadow: 0 0 0 1px rgba(0, 130, 201, 0.25);
+}
+
+.landing-page .btn-lp-secondary:focus-visible {
+  border-color: var(--lp-accent);
+  box-shadow: 0 0 0 2px rgba(0, 130, 201, 0.2);
 }
 
 /* Card Grids - Standard */
@@ -1050,6 +1412,21 @@ ul {
   }
 }
 
+@media (max-width: 600px) {
+  .lp-cta-card {
+    padding: 40px 24px;
+  }
+
+  .lp-cta-card .lp-cta-title {
+    font-size: 1.625rem;
+  }
+
+  .lp-cta-trust {
+    flex-direction: column;
+    gap: 8px;
+  }
+}
+
 @media (max-width: 480px) {
   .lp-nav-actions {
     flex-direction: column;
@@ -1126,4 +1503,98 @@ ul {
 /* Dashboard resume card subtitle: slightly brighter in dark for readability */
 :root[data-theme='dark'] .lp-minimal-card .lp-card-heading + p {
   color: #8b949e;
+}
+
+/* Trusted logos strip */
+.lp-trusted-logos {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 40px;
+  flex-wrap: wrap;
+  opacity: 0.7;
+  filter: grayscale(100%);
+  position: relative;
+  z-index: 1;
+}
+
+.lp-trusted-logo-item {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--lp-text-muted);
+  letter-spacing: -0.02em;
+  padding: 8px 16px;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.02);
+  border: 1px solid var(--lp-border);
+}
+
+:root[data-theme='dark'] .lp-trusted-logo-item {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.lp-trusted-eyebrow {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 600;
+  color: var(--lp-text-muted);
+  margin-bottom: 24px;
+  position: relative;
+  z-index: 1;
+}
+
+/* Landing Footer */
+.lp-footer {
+  padding: 72px 0 40px;
+  background: var(--lp-bg);
+  border-top: 1px solid var(--lp-border);
+}
+
+.lp-footer-inner {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 48px;
+}
+
+.lp-footer-brand {
+  max-width: 300px;
+}
+
+.lp-footer-brand .lp-footer-tagline {
+  color: var(--lp-text-muted);
+  font-size: 0.95rem;
+  line-height: 1.6;
+  margin-top: 12px;
+}
+
+.lp-footer-links {
+  display: flex;
+  gap: 48px;
+  flex-wrap: wrap;
+}
+
+.lp-footer-column {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.lp-footer-column-title {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--lp-text);
+  margin-bottom: 4px;
+}
+
+.lp-footer-column a {
+  color: var(--lp-text-muted);
+  font-size: 0.9rem;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.lp-footer-column a:hover {
+  color: var(--lp-accent);
 }

@@ -8,6 +8,7 @@ const Register = () => {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [error, setError] = useState('');
+    const [acceptedLegal, setAcceptedLegal] = useState(false);
     const { register } = useAuth();
     const navigate = useNavigate();
 
@@ -17,6 +18,11 @@ const Register = () => {
 
         if (password !== confirmPassword) {
             setError("Passwords do not match");
+            return;
+        }
+
+        if (!acceptedLegal) {
+            setError("You must agree to the Terms of Service and Privacy Policy to continue.");
             return;
         }
 
@@ -84,6 +90,37 @@ const Register = () => {
                                 onChange={(e) => setConfirmPassword(e.target.value)}
                                 required
                             />
+                        </div>
+
+                        <div className="form-group" style={{ marginTop: '-8px', marginBottom: '16px' }}>
+                            <label
+                                style={{
+                                    display: 'flex',
+                                    alignItems: 'flex-start',
+                                    gap: 8,
+                                    fontSize: '0.85rem',
+                                    color: 'var(--lp-text-muted)',
+                                    cursor: 'pointer'
+                                }}
+                            >
+                                <input
+                                    type="checkbox"
+                                    checked={acceptedLegal}
+                                    onChange={(e) => setAcceptedLegal(e.target.checked)}
+                                    required
+                                    style={{ marginTop: 3 }}
+                                />
+                                <span>
+                                    I agree to the{' '}
+                                    <Link to="/terms-of-service" style={{ color: 'var(--lp-accent)', fontWeight: 500 }}>
+                                        Terms of Service
+                                    </Link>{' '}
+                                    and{' '}
+                                    <Link to="/privacy-policy" style={{ color: 'var(--lp-accent)', fontWeight: 500 }}>
+                                        Privacy Policy
+                                    </Link>.
+                                </span>
+                            </label>
                         </div>
 
                         <button

@@ -7,9 +7,20 @@ import LandingNav from '../components/LandingNav';
 import html2pdf from 'html2pdf.js';
 import toast from 'react-hot-toast';
 
+const isEmptyResume = (resume) => {
+  const name = (resume.basics?.name || '').trim();
+  const hasSections =
+    (resume.experience && resume.experience.length > 0) ||
+    (resume.education && resume.education.length > 0) ||
+    (resume.skills && resume.skills.length > 0) ||
+    (resume.projects && resume.projects.length > 0);
+  return !name && !hasSections;
+};
+
 const Preview = () => {
   const { resume } = useResume();
 
+  const empty = isEmptyResume(resume);
   const templateId = resume.meta?.template || 'minimal';
   const templateLabel =
     templateId === 'classic' ? 'Classic' : templateId === 'modern' ? 'Modern' : 'Minimal';
@@ -34,6 +45,44 @@ const Preview = () => {
       error: 'Could not generate PDF'
     });
   };
+
+  if (empty) {
+    return (
+      <div className="landing-page">
+        <LandingNav
+          rightContent={
+            <Link to="/dashboard" style={{ color: 'var(--lp-text)', textDecoration: 'none', fontWeight: 500 }}>Dashboard</Link>
+          }
+        />
+        <div className="preview-container" style={{ justifyContent: 'center', alignItems: 'center', padding: '48px 24px' }}>
+          <div className="lp-minimal-card" style={{ maxWidth: '420px', textAlign: 'center' }}>
+            <h2 style={{ fontSize: '1.5rem', fontWeight: 600, color: 'var(--lp-text)', marginBottom: '12px' }}>
+              No resume to preview
+            </h2>
+            <p style={{ fontSize: '0.95rem', color: 'var(--lp-text-muted)', marginBottom: '24px' }}>
+              Create a new resume or open one from your dashboard to preview and export.
+            </p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              <Link to="/build" className="btn-lp-primary" style={{ padding: '12px 24px' }}>
+                Create a resume
+              </Link>
+              <Link
+                to="/dashboard"
+                style={{
+                  padding: '12px 24px',
+                  fontSize: '0.95rem',
+                  color: 'var(--lp-accent)',
+                  fontWeight: 500
+                }}
+              >
+                Open from dashboard
+              </Link>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="landing-page">

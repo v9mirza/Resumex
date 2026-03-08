@@ -1,5 +1,5 @@
 /* eslint-disable react-refresh/only-export-components */
-import React, { createContext, useState, useContext } from 'react';
+import React, { createContext, useState, useContext, useEffect } from 'react';
 import * as api from '../services/api';
 
 const AuthContext = createContext();
@@ -9,7 +9,11 @@ export const AuthProvider = ({ children }) => {
         const stored = localStorage.getItem('user');
         return stored ? JSON.parse(stored) : null;
     });
-    // Loading is not needed for synchronous local storage check
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        setLoading(false);
+    }, []);
 
     const login = async (formData) => {
         try {
@@ -45,7 +49,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     return (
-        <AuthContext.Provider value={{ user, login, register, logout }}>
+        <AuthContext.Provider value={{ user, loading, login, register, logout }}>
             {children}
         </AuthContext.Provider>
     );

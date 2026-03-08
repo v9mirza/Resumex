@@ -59,113 +59,98 @@ const Profile = () => {
             <LandingNav
                 rightContent={
                     <>
-                        <Link to="/dashboard" style={{ color: 'var(--lp-text)', textDecoration: 'none', fontWeight: 500 }}>Dashboard</Link>
+                        <Link to="/dashboard" className="lp-nav-text">
+                            Dashboard
+                        </Link>
                         <button
                             onClick={logout}
-                            className="btn"
-                            style={{ color: 'var(--lp-text-muted)', border: 'none', background: 'transparent', cursor: 'pointer', fontWeight: 500 }}
+                            type="button"
+                            className="btn-lp-secondary lp-nav-cta"
+                            style={{ padding: '8px 18px', fontSize: '0.9rem' }}
                         >
-                            Logout
+                            Log out
                         </button>
                     </>
                 }
             />
 
-            <main className="container" style={{ padding: '80px 0', maxWidth: '900px', margin: '0 auto', width: '100%' }}>
+            <main className="container" style={{ padding: '80px 0', maxWidth: '960px', margin: '0 auto', width: '100%' }}>
                 <header style={{ marginBottom: '32px' }}>
                     <p style={{ fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '0.12em', fontWeight: 600, color: 'var(--lp-accent)', marginBottom: '8px' }}>
                         Account
                     </p>
                     <h2 style={{ fontSize: '2.1rem', fontWeight: 700, letterSpacing: '-0.03em', margin: 0, color: 'var(--lp-text)' }}>
-                        Profile
+                        Account settings
                     </h2>
-                        <p style={{ fontSize: '0.95rem', color: 'var(--lp-text-muted)', marginTop: '8px', maxWidth: '520px' }}>
-                            Keep your account details and security settings up to date.
+                    <p style={{ fontSize: '0.95rem', color: 'var(--lp-text-muted)', marginTop: '8px', maxWidth: '520px' }}>
+                        Manage your sign-in details, security, and account ownership in one place.
                     </p>
                 </header>
 
-                <section className="lp-minimal-card" style={{ marginBottom: '32px', display: 'flex', alignItems: 'center', gap: '24px', flexWrap: 'wrap' }}>
-                    <div style={{
-                        width: '80px',
-                        height: '80px',
-                        borderRadius: '50%',
-                        background: 'linear-gradient(135deg, var(--lp-accent) 0%, #00b4ff 100%)',
+                {/* Account overview (lightweight, no big card) */}
+                <section
+                    style={{
+                        marginBottom: '32px',
                         display: 'flex',
                         alignItems: 'center',
-                        justifyContent: 'center',
-                        fontSize: '2rem',
-                        fontWeight: 'bold',
-                        color: 'white'
-                    }}>
+                        gap: '16px',
+                        flexWrap: 'wrap',
+                        paddingBottom: '16px',
+                        borderBottom: '1px solid var(--lp-border)'
+                    }}
+                >
+                    <div
+                        style={{
+                            width: '48px',
+                            height: '48px',
+                            borderRadius: '50%',
+                            background: 'linear-gradient(135deg, var(--lp-accent) 0%, #00b4ff 100%)',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            fontSize: '1.5rem',
+                            fontWeight: 'bold',
+                            color: 'white'
+                        }}
+                    >
                         {user?.email?.charAt(0).toUpperCase()}
                     </div>
                     <div style={{ flex: 1, minWidth: '220px' }}>
-                        <h3 style={{ fontSize: '1.1rem', fontWeight: 600, marginBottom: '4px', color: 'var(--lp-text)' }}>{user?.email}</h3>
-                        <p style={{ fontSize: '0.9rem', color: 'var(--lp-text-muted)', marginBottom: '8px' }}>
+                        <h3 style={{ fontSize: '1rem', fontWeight: 600, marginBottom: '2px', color: 'var(--lp-text)' }}>
+                            {user?.email}
+                        </h3>
+                        <p style={{ fontSize: '0.85rem', color: 'var(--lp-text-muted)', marginBottom: '4px' }}>
                             Signed in to Resumex
                         </p>
                         <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-                            <span style={{
-                                fontSize: '0.8rem',
-                                padding: '4px 12px',
-                                borderRadius: '100px',
-                                backgroundColor: '#f1f5f9',
-                                color: '#64748b'
-                            }}>
+                            <span
+                                style={{
+                                    fontSize: '0.78rem',
+                                    padding: '3px 10px',
+                                    borderRadius: '999px',
+                                    backgroundColor: 'rgba(15,23,42,0.02)',
+                                    color: 'var(--lp-text-muted)',
+                                    border: '1px solid var(--lp-border)'
+                                }}
+                            >
                                 {user?.role === 'admin' ? 'Administrator' : 'Free plan'}
                             </span>
                         </div>
                     </div>
-                    <button
-                        onClick={logout}
-                        className="btn-lp-primary"
-                        style={{ padding: '10px 20px', fontSize: '0.95rem', whiteSpace: 'nowrap' }}
-                    >
-                        Sign Out
-                    </button>
                 </section>
 
                 <div className="profile-grid">
+                    {/* Account & security */}
                     <section className="lp-minimal-card">
                         <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '12px' }}>
                             <div style={{ width: '32px', height: '32px', borderRadius: '999px', backgroundColor: '#e0f2fe', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                <Lock size={16} color="#0369a1" />
+                                <ShieldCheck size={16} color="#0369a1" />
                             </div>
-                            <h3 className="lp-card-heading" style={{ marginBottom: 0 }}>Security</h3>
+                            <h3 className="lp-card-heading" style={{ marginBottom: 0 }}>Account & security</h3>
                         </div>
                         <p style={{ fontSize: '0.9rem', color: 'var(--lp-text-muted)', marginBottom: '20px' }}>
-                            Use a strong, unique password so your data stays private.
+                            Keep your contact email up to date and use a strong, unique password so your data stays private.
                         </p>
-                        <div style={{ marginBottom: '20px' }}>
-                            <button
-                                type="button"
-                                onClick={async () => {
-                                    try {
-                                        await api.revokeAllSessions();
-                                        logout();
-                                        navigate('/login');
-                                        toast.success('All sessions revoked. Sign in again on this device.');
-                                    } catch (err) {
-                                        toast.error(err.response?.data?.message || 'Failed to revoke sessions');
-                                    }
-                                }}
-                                style={{
-                                    padding: '8px 16px',
-                                    fontSize: '0.9rem',
-                                    borderRadius: '999px',
-                                    border: '1px solid var(--lp-border)',
-                                    background: 'transparent',
-                                    color: 'var(--lp-text)',
-                                    cursor: 'pointer',
-                                    fontWeight: 500
-                                }}
-                            >
-                                Log out everywhere
-                            </button>
-                            <p style={{ fontSize: '0.8rem', color: 'var(--lp-text-muted)', marginTop: '8px' }}>
-                                Sign out on this device and invalidate other sessions. You’ll need to sign in again.
-                            </p>
-                        </div>
                         <form onSubmit={handleUpdateProfile}>
                             <div style={{ marginBottom: '24px' }}>
                                 <label className="form-label" style={{ marginBottom: '8px', display: 'block', color: 'var(--lp-text)' }}>Email address</label>
@@ -182,6 +167,9 @@ const Profile = () => {
 
                             <div style={{ marginBottom: '24px' }}>
                                 <h4 style={{ fontSize: '0.95rem', color: 'var(--lp-text)', marginBottom: '12px', fontWeight: 600 }}>Change password</h4>
+                                <p style={{ fontSize: '0.8rem', color: 'var(--lp-text-muted)', marginBottom: '12px' }}>
+                                    Leave these fields blank if you do not want to change your password.
+                                </p>
                                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
                                     <div>
                                         <label className="form-label" style={{ color: 'var(--lp-text)' }}>New password</label>
@@ -225,7 +213,45 @@ const Profile = () => {
                         </form>
                     </section>
 
-                    <section className="lp-minimal-card" style={{ borderColor: 'rgba(239, 68, 68, 0.2)' }}>
+                    {/* Sessions & danger zone */}
+                    <section className="lp-minimal-card" style={{ borderColor: 'rgba(239, 68, 68, 0.08)' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
+                            <div style={{ width: '32px', height: '32px', borderRadius: '999px', backgroundColor: '#eff6ff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                <Lock size={16} color="#1d4ed8" />
+                            </div>
+                            <h3 className="lp-card-heading" style={{ marginBottom: 0 }}>Sessions & safety</h3>
+                        </div>
+                        <p style={{ marginBottom: '16px', fontSize: '0.9rem', color: 'var(--lp-text-muted)' }}>
+                            Control where you’re signed in and permanently remove your data if you ever need to leave.
+                        </p>
+
+                        <div style={{ padding: '12px 0 20px', borderBottom: '1px solid var(--lp-border)', marginBottom: '20px' }}>
+                            <h4 style={{ fontSize: '0.95rem', fontWeight: 600, marginBottom: '8px', color: 'var(--lp-text)' }}>Log out of all devices</h4>
+                            <p style={{ fontSize: '0.85rem', color: 'var(--lp-text-muted)', marginBottom: '12px' }}>
+                                Immediately revoke active sessions on other browsers and devices. You’ll be asked to sign in again.
+                            </p>
+                            <button
+                                type="button"
+                                onClick={async () => {
+                                    try {
+                                        await api.revokeAllSessions();
+                                        logout();
+                                        navigate('/login');
+                                        toast.success('All sessions revoked. Sign in again on this device.');
+                                    } catch (err) {
+                                        toast.error(err.response?.data?.message || 'Failed to revoke sessions');
+                                    }
+                                }}
+                                className="btn-lp-secondary"
+                                style={{
+                                    padding: '8px 18px',
+                                    fontSize: '0.9rem'
+                                }}
+                            >
+                                Log out everywhere
+                            </button>
+                        </div>
+
                         <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
                             <div style={{ width: '32px', height: '32px', borderRadius: '999px', backgroundColor: 'rgba(248, 113, 113, 0.12)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                 <Trash2 size={16} color="#ef4444" />

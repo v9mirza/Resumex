@@ -1,0 +1,6 @@
+# Node modules (root)
+node_modules
+
+# Local environment files (do not commit)
+backend/.env
+

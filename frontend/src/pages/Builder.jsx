@@ -87,6 +87,17 @@ const Builder = () => {
         return () => window.removeEventListener('keydown', handler);
     }, [currentStepIndex]); // eslint-disable-line react-hooks/exhaustive-deps
 
+    // Warn when leaving with unsaved changes (tab close / refresh)
+    useEffect(() => {
+        const handleBeforeUnload = (e) => {
+            if (isDirty) {
+                e.preventDefault();
+            }
+        };
+        window.addEventListener('beforeunload', handleBeforeUnload);
+        return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+    }, [isDirty]);
+
     const currentStep = STEPS[currentStepIndex].id;
     const PREVIEW_SCALE = 0.75;
 
@@ -287,6 +298,8 @@ const Builder = () => {
                                         key={s.id}
                                         type="button"
                                         onClick={() => goToStep(idx)}
+                                        aria-current={isActive ? 'step' : undefined}
+                                        aria-label={isActive ? `${s.label}, current step` : `Go to ${s.label}`}
                                         style={{
                                             borderRadius: 999,
                                             padding: '6px 12px',
@@ -314,7 +327,13 @@ const Builder = () => {
                                     onClick={() => {
                                         setResume(JSON.parse(JSON.stringify(SAMPLE_RESUME)));
                                         toast.success('Example resume loaded. Edit any field to make it yours.');
+                                        setCurrentStepIndex(0);
+                                        setTimeout(() => {
+                                            const nameInput = document.querySelector('input[name="name"]');
+                                            if (nameInput) nameInput.focus();
+                                        }, 100);
                                     }}
+                                    aria-label="Load example resume data"
                                     style={{
                                         padding: '8px 14px',
                                         fontSize: '0.85rem',
