@@ -6,6 +6,9 @@ import Experience from './steps/Experience';
 import Projects from './steps/Projects';
 import Skills from './steps/Skills';
 import Template from './steps/Template';
+import Certifications from './steps/Certifications';
+import Languages from './steps/Languages';
+import Achievements from './steps/Achievements';
 
 const Editor = ({ step, resume, updateBasics, setSection, setTemplate, errors = {} }) => {
     switch (step) {
@@ -21,6 +24,12 @@ const Editor = ({ step, resume, updateBasics, setSection, setTemplate, errors = 
             return <Projects data={resume.projects} update={(data) => setSection('projects', data)} />;
         case 'skills':
             return <Skills data={resume.skills} update={(data) => setSection('skills', data)} />;
+        case 'certifications':
+            return <Certifications data={resume.certifications} update={(data) => setSection('certifications', data)} />;
+        case 'languages':
+            return <Languages data={resume.languages} update={(data) => setSection('languages', data)} />;
+        case 'achievements':
+            return <Achievements data={resume.achievements} update={(data) => setSection('achievements', data)} />;
         case 'template':
             return <Template current={resume.meta.template} select={setTemplate} />;
         default:

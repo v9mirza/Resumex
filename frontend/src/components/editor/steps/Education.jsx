@@ -4,7 +4,16 @@ const Education = ({ data, update }) => {
     const addEducation = () => {
         update([
             ...data,
-            { institution: '', degree: '', start: '', end: '' }
+            {
+                institution: '',
+                degree: '',
+                start: '',
+                end: '',
+                gpa: '',
+                showGpa: true,
+                coursework: '',
+                status: ''
+            }
         ]);
     };
 
@@ -67,8 +76,8 @@ const Education = ({ data, update }) => {
                         />
                     </div>
 
-                    <div style={{ display: 'flex', gap: '16px' }}>
-                        <div style={{ flex: 1 }}>
+                    <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', marginBottom: '12px' }}>
+                        <div style={{ flex: 1, minWidth: '140px' }}>
                             <label className="form-label">Start Date</label>
                             <input
                                 type="text"
@@ -78,7 +87,7 @@ const Education = ({ data, update }) => {
                                 placeholder="YYYY"
                             />
                         </div>
-                        <div style={{ flex: 1 }}>
+                        <div style={{ flex: 1, minWidth: '140px' }}>
                             <label className="form-label">End Date</label>
                             <input
                                 type="text"
@@ -88,6 +97,56 @@ const Education = ({ data, update }) => {
                                 placeholder="YYYY or Present"
                             />
                         </div>
+                        <div style={{ flex: 1, minWidth: '160px' }}>
+                            <label className="form-label">Status</label>
+                            <select
+                                className="form-input"
+                                value={item.status || ''}
+                                onChange={(e) => updateItem(index, 'status', e.target.value)}
+                            >
+                                <option value="">Select status</option>
+                                <option value="Graduated">Graduated</option>
+                                <option value="Expected">Expected</option>
+                                <option value="In progress">In progress</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', marginBottom: '12px' }}>
+                        <div style={{ flex: 1, minWidth: '140px' }}>
+                            <label className="form-label">GPA (optional)</label>
+                            <input
+                                type="text"
+                                className="form-input"
+                                value={item.gpa || ''}
+                                onChange={(e) => updateItem(index, 'gpa', e.target.value)}
+                                placeholder="3.8 / 4.0"
+                            />
+                        </div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '24px' }}>
+                            <input
+                                id={`edu-${index}-showGpa`}
+                                type="checkbox"
+                                checked={item.showGpa !== false}
+                                onChange={(e) => updateItem(index, 'showGpa', e.target.checked)}
+                            />
+                            <label htmlFor={`edu-${index}-showGpa`} style={{ fontSize: '0.85rem', color: 'var(--lp-text-muted)', cursor: 'pointer' }}>
+                                Show GPA on resume
+                            </label>
+                        </div>
+                    </div>
+
+                    <div className="form-group">
+                        <label className="form-label">Relevant coursework (optional)</label>
+                        <input
+                            className="form-input"
+                            value={item.coursework || ''}
+                            onChange={(e) => updateItem(index, 'coursework', e.target.value)}
+                            placeholder="Data Structures, Algorithms, Databases"
+                        />
+                        <p style={{ fontSize: '0.8rem', color: 'var(--lp-text-muted)', marginTop: '4px' }}>
+                            Short list of courses that match the roles you’re applying for.
+                        </p>
                     </div>
                 </div>
             ))}
@@ -110,6 +169,11 @@ const Education = ({ data, update }) => {
             >
                 + Add Education
             </button>
+            {data.length === 0 && (
+                <p style={{ marginTop: '8px', fontSize: '0.8rem', color: 'var(--lp-text-muted)' }}>
+                    Tip: Include your current degree, bootcamps, and any shorter courses that are relevant.
+                </p>
+            )}
         </div>
     );
 };

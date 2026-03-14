@@ -7,12 +7,17 @@ const INITIAL_STATE = {
         email: '',
         phone: '',
         location: '',
+        headline: '',
+        portfolio: '',
         links: []
     },
     education: [],
     experience: [],
     projects: [],
     skills: [],
+    certifications: [],
+    languages: [],
+    achievements: [],
     meta: {
         template: 'minimal'
     }

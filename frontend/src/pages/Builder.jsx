@@ -6,7 +6,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import * as api from '../services/api';
 import toast from 'react-hot-toast';
 import LandingNav from '../components/LandingNav';
-import { SAMPLE_RESUME } from '../data/sampleResume';
+import { SAMPLE_RESUME, STUDENT_SAMPLE, JUNIOR_DEV_SAMPLE } from '../data/sampleResume';
 
 const STEPS = [
     { id: 'basics', label: 'Basics' },
@@ -15,6 +15,9 @@ const STEPS = [
     { id: 'experience', label: 'Experience' },
     { id: 'projects', label: 'Projects' },
     { id: 'skills', label: 'Skills' },
+    { id: 'certifications', label: 'Certifications' },
+    { id: 'languages', label: 'Languages' },
+    { id: 'achievements', label: 'Achievements' },
     { id: 'template', label: 'Template' }
 ];
 
@@ -49,11 +52,13 @@ const Builder = () => {
             };
             loadResume();
         } else {
-            /* New resume: start blank once when navigating to /build (omit resetResume from deps so we don't reset on every keystroke) */
+            // New resume: always start from a clean slate once when opening /build
             justResetRef.current = true;
             resetResume();
         }
-    }, [id, setResume]); // eslint-disable-line react-hooks/exhaustive-deps -- resetResume would retrigger on every typing
+        // Important: do NOT include resume/resetResume in deps to avoid resetting on every change
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [id, setResume]);
 
     // Track dirty state when resume changes
     useEffect(() => {
@@ -209,6 +214,119 @@ const Builder = () => {
         }
     };
 
+    const handleResetAll = () => {
+        toast.dismiss();
+        toast((t) => (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8, maxWidth: 320 }}>
+                <p style={{ margin: 0, fontWeight: 600, fontSize: '0.9rem', color: 'var(--lp-text)' }}>
+                    Reset this resume?
+                </p>
+                <p style={{ margin: 0, fontSize: '0.8rem', color: 'var(--lp-text-muted)' }}>
+                    This clears everything in the editor for this resume. Saved copies on your dashboard stay unchanged.
+                </p>
+                <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8 }}>
+                    <button
+                        type="button"
+                        onClick={() => toast.dismiss(t.id)}
+                        style={{
+                            padding: '4px 10px',
+                            fontSize: '0.8rem',
+                            borderRadius: 999,
+                            border: '1px solid var(--lp-border)',
+                            background: 'transparent',
+                            color: 'var(--lp-text-muted)',
+                            cursor: 'pointer'
+                        }}
+                    >
+                        Cancel
+                    </button>
+                    <button
+                        type="button"
+                        onClick={() => {
+                            toast.dismiss(t.id);
+                            resetResume();
+                            setCurrentStepIndex(0);
+                            setErrors({});
+                            setIsDirty(false);
+                            setSaveStatus('idle');
+                            setLastSavedAt(null);
+                            toast.success('Resume reset to blank.');
+                        }}
+                        style={{
+                            padding: '4px 12px',
+                            fontSize: '0.8rem',
+                            borderRadius: 999,
+                            border: 'none',
+                            background: '#ef4444',
+                            color: '#fff',
+                            cursor: 'pointer',
+                            fontWeight: 500
+                        }}
+                        autoFocus
+                    >
+                        Reset
+                    </button>
+                </div>
+            </div>
+        ), { duration: 7000, position: 'top-center' });
+    };
+
+    const confirmLoadPreset = (presetName, presetData) => {
+        toast.dismiss();
+        toast((t) => (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8, maxWidth: 320 }}>
+                <p style={{ margin: 0, fontWeight: 600, fontSize: '0.9rem', color: 'var(--lp-text)' }}>
+                    Overwrite current resume with {presetName} preset?
+                </p>
+                <p style={{ margin: 0, fontSize: '0.8rem', color: 'var(--lp-text-muted)' }}>
+                    This only changes what&apos;s in this editor. Saved copies on your dashboard stay safe.
+                </p>
+                <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8 }}>
+                    <button
+                        type="button"
+                        onClick={() => toast.dismiss(t.id)}
+                        style={{
+                            padding: '4px 10px',
+                            fontSize: '0.8rem',
+                            borderRadius: 999,
+                            border: '1px solid var(--lp-border)',
+                            background: 'transparent',
+                            color: 'var(--lp-text-muted)',
+                            cursor: 'pointer'
+                        }}
+                    >
+                        Cancel
+                    </button>
+                    <button
+                        type="button"
+                        onClick={() => {
+                            setResume(JSON.parse(JSON.stringify(presetData)));
+                            setCurrentStepIndex(0);
+                            toast.dismiss(t.id);
+                            toast.success(`${presetName} example loaded.`);
+                        }}
+                        style={{
+                            padding: '4px 12px',
+                            fontSize: '0.8rem',
+                            borderRadius: 999,
+                            border: 'none',
+                            background: 'var(--lp-accent)',
+                            color: '#fff',
+                            cursor: 'pointer',
+                            fontWeight: 500
+                        }}
+                        autoFocus
+                    >
+                        Overwrite
+                    </button>
+                </div>
+            </div>
+        ), {
+            duration: 7000,
+            position: 'top-center'
+        });
+    };
+
     // Auto-save shortly after changes
     useEffect(() => {
         if (!isDirty) return;
@@ -256,27 +374,54 @@ const Builder = () => {
                     </div>
                     <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
                         <button
+                            type="button"
+                            onClick={handleResetAll}
+                            style={{
+                                padding: '8px 14px',
+                                fontSize: '0.85rem',
+                                backgroundColor: 'transparent',
+                                color: '#ef4444',
+                                border: '1px solid rgba(239,68,68,0.5)',
+                                borderRadius: '999px',
+                                boxShadow: 'none',
+                                cursor: 'pointer'
+                            }}
+                        >
+                            Reset builder
+                        </button>
+                        <button
                             onClick={handleSave}
-                                disabled={isSaving || !isDirty}
+                            disabled={isSaving || !isDirty}
                             style={{
                                 padding: '8px 18px',
                                 fontSize: '0.9rem',
                                 backgroundColor: 'transparent',
-                                    color: isDirty ? 'var(--lp-text)' : 'var(--lp-text-muted)',
-                                    border: '1px solid var(--lp-border)',
+                                color: isDirty ? 'var(--lp-text)' : 'var(--lp-text-muted)',
+                                border: '1px solid var(--lp-border)',
                                 borderRadius: '999px',
                                 boxShadow: 'none',
-                                    cursor: (isSaving || !isDirty) ? 'default' : 'pointer',
-                                    opacity: (isSaving || !isDirty) ? 0.7 : 1
+                                cursor: (isSaving || !isDirty) ? 'default' : 'pointer',
+                                opacity: (isSaving || !isDirty) ? 0.7 : 1
                             }}
                         >
-                            {isSaving ? 'Saving…' : 'Save progress'}
+                            {isSaving ? 'Saving…' : (isDirty ? 'Save progress •' : 'Save progress')}
                         </button>
                         <Link
                             to="/preview"
                             className="btn-lp-primary"
-                            style={{ padding: '8px 20px', fontSize: '0.9rem' }}
+                            state={{ fromId: id || null }}
+                            style={{ padding: '8px 20px', fontSize: '0.9rem', display: 'inline-flex', alignItems: 'center', gap: 6 }}
                         >
+                            {isDirty && (
+                                <span
+                                    style={{
+                                        width: 6,
+                                        height: 6,
+                                        borderRadius: '999px',
+                                        backgroundColor: '#f97316'
+                                    }}
+                                />
+                            )}
                             Preview & export
                         </Link>
                     </div>
@@ -289,7 +434,7 @@ const Builder = () => {
                 <section className="builder-editor">
                     <div className="builder-editor-inner">
                         {/* Step pills */}
-                        <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 8, marginBottom: 20 }}>
+                        <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 8, marginBottom: 12 }}>
                             {STEPS.map((s, idx) => {
                                 const isActive = idx === currentStepIndex;
                                 const isCompleted = idx < currentStepIndex;
@@ -320,35 +465,89 @@ const Builder = () => {
                             })}
                         </div>
 
-                        {!id && (
-                            <div style={{ marginBottom: 16 }}>
+                        <div className="no-print" style={{ marginBottom: 16, display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+                            <span style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--lp-text-muted)' }}>
+                                Template preview
+                            </span>
+                            {['minimal', 'classic', 'modern'].map(t => (
                                 <button
+                                    key={t}
                                     type="button"
-                                    onClick={() => {
-                                        setResume(JSON.parse(JSON.stringify(SAMPLE_RESUME)));
-                                        toast.success('Example resume loaded. Edit any field to make it yours.');
-                                        setCurrentStepIndex(0);
-                                        setTimeout(() => {
-                                            const nameInput = document.querySelector('input[name="name"]');
-                                            if (nameInput) nameInput.focus();
-                                        }, 100);
-                                    }}
-                                    aria-label="Load example resume data"
+                                    onClick={() => setTemplate(t)}
                                     style={{
-                                        padding: '8px 14px',
-                                        fontSize: '0.85rem',
+                                        fontSize: '0.75rem',
+                                        padding: '4px 10px',
                                         borderRadius: '999px',
-                                        border: '1px dashed var(--lp-border)',
-                                        background: 'transparent',
-                                        color: 'var(--lp-accent)',
-                                        cursor: 'pointer',
-                                        fontWeight: 500
+                                        border: resume.meta?.template === t ? '1px solid var(--lp-accent)' : '1px solid var(--lp-border)',
+                                        background: resume.meta?.template === t ? 'rgba(0,130,201,0.06)' : 'transparent',
+                                        color: resume.meta?.template === t ? 'var(--lp-accent)' : 'var(--lp-text-muted)',
+                                        cursor: 'pointer'
                                     }}
                                 >
-                                    Load example data
+                                    {t === 'minimal' ? 'Minimal' : t === 'classic' ? 'Classic' : 'Modern'}
                                 </button>
-                            </div>
-                        )}
+                            ))}
+                        </div>
+
+                        <div style={{ marginBottom: 16, display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                            <span style={{ fontSize: '0.8rem', color: 'var(--lp-text-muted)', alignSelf: 'center' }}>
+                                Quick start:
+                            </span>
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    confirmLoadPreset('Student', STUDENT_SAMPLE);
+                                }}
+                                style={{
+                                    padding: '6px 12px',
+                                    fontSize: '0.8rem',
+                                    borderRadius: '999px',
+                                    border: '1px dashed var(--lp-border)',
+                                    background: 'transparent',
+                                    color: 'var(--lp-accent)',
+                                    cursor: 'pointer',
+                                    fontWeight: 500
+                                }}
+                            >
+                                Student
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    confirmLoadPreset('Junior dev', JUNIOR_DEV_SAMPLE);
+                                }}
+                                style={{
+                                    padding: '6px 12px',
+                                    fontSize: '0.8rem',
+                                    borderRadius: '999px',
+                                    border: '1px dashed var(--lp-border)',
+                                    background: 'transparent',
+                                    color: 'var(--lp-accent)',
+                                    cursor: 'pointer',
+                                    fontWeight: 500
+                                }}
+                            >
+                                Junior dev
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    confirmLoadPreset('Experienced', SAMPLE_RESUME);
+                                }}
+                                style={{
+                                    padding: '6px 12px',
+                                    fontSize: '0.8rem',
+                                    borderRadius: '999px',
+                                    border: '1px dashed var(--lp-border)',
+                                    background: 'transparent',
+                                    color: 'var(--lp-accent)',
+                                    cursor: 'pointer',
+                                    fontWeight: 500
+                                }}
+                            >
+                                Experienced
+                            </button>
+                        </div>
 
                         <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
                             <Editor
@@ -380,7 +579,30 @@ const Builder = () => {
                                     {saveStatus === 'idle' && lastSavedAt && 'Unsaved changes'}
                                 </span>
                                 <span>
-                                    Profile {completedCount} / {totalSections} sections started
+                                    <span style={{ marginRight: 6 }}>
+                                        Profile {completedCount} / {totalSections} sections started
+                                    </span>
+                                    <span
+                                        style={{
+                                            display: 'inline-block',
+                                            verticalAlign: 'middle',
+                                            width: 80,
+                                            height: 4,
+                                            borderRadius: 999,
+                                            background: 'rgba(148,163,184,0.3)',
+                                            overflow: 'hidden'
+                                        }}
+                                    >
+                                        <span
+                                            style={{
+                                                display: 'block',
+                                                height: '100%',
+                                                width: `${(completedCount / totalSections) * 100}%`,
+                                                background: 'var(--lp-accent)',
+                                                transition: 'width 0.2s ease-out'
+                                            }}
+                                        />
+                                    </span>
                                 </span>
                             </div>
                         </div>

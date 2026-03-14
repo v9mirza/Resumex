@@ -5,7 +5,16 @@ const Experience = ({ data, update, errors = {} }) => {
     const addExperience = () => {
         update([
             ...data,
-            { company: '', role: '', start: '', end: '', description: [] }
+            {
+                company: '',
+                role: '',
+                start: '',
+                end: '',
+                location: '',
+                employmentType: '',
+                tech: '',
+                description: []
+            }
         ]);
     };
 
@@ -30,18 +39,14 @@ const Experience = ({ data, update, errors = {} }) => {
         updateItem(index, 'description', lines);
     };
 
-    const insertExampleBullets = (index) => {
+    const appendBullets = (index, bullets) => {
         const current = data[index] || {};
         const existing = Array.isArray(current.description)
             ? current.description
             : current.description
                 ? [current.description]
                 : [];
-        const examples = [
-            'Delivered X% improvement in key metric by doing Y.',
-            'Collaborated with cross-functional team to ship feature Z on time.',
-        ];
-        updateItem(index, 'description', [...existing, ...examples]);
+        updateItem(index, 'description', [...existing, ...bullets]);
     };
 
     React.useEffect(() => {
@@ -127,8 +132,8 @@ const Experience = ({ data, update, errors = {} }) => {
                                     />
                                 </div>
 
-                                <div style={{ display: 'flex', gap: '16px', marginBottom: '16px' }}>
-                                    <div style={{ flex: 1 }}>
+                                <div style={{ display: 'flex', gap: '16px', marginBottom: '16px', flexWrap: 'wrap' }}>
+                                    <div style={{ flex: 1, minWidth: '140px' }}>
                                         <label className="form-label">Start Date</label>
                                         <input
                                             type="text"
@@ -140,7 +145,7 @@ const Experience = ({ data, update, errors = {} }) => {
                                             style={errors[`experience.${index}.start`] ? { borderColor: '#dc2626' } : undefined}
                                         />
                                     </div>
-                                    <div style={{ flex: 1 }}>
+                                    <div style={{ flex: 1, minWidth: '140px' }}>
                                         <label className="form-label">End Date</label>
                                         <input
                                             type="text"
@@ -151,6 +156,45 @@ const Experience = ({ data, update, errors = {} }) => {
                                             data-error-id={`experience.${index}.end`}
                                             style={errors[`experience.${index}.end`] ? { borderColor: '#dc2626' } : undefined}
                                         />
+                                    </div>
+                                    <div style={{ flex: 1, minWidth: '140px' }}>
+                                        <label className="form-label">Location (optional)</label>
+                                        <input
+                                            type="text"
+                                            className="form-input"
+                                            value={item.location || ''}
+                                            onChange={(e) => updateItem(index, 'location', e.target.value)}
+                                            placeholder="City, Country or Remote"
+                                        />
+                                    </div>
+                                </div>
+
+                                <div style={{ display: 'flex', gap: '16px', marginBottom: '16px', flexWrap: 'wrap' }}>
+                                    <div style={{ flex: 1, minWidth: '160px' }}>
+                                        <label className="form-label">Employment type</label>
+                                        <select
+                                            className="form-input"
+                                            value={item.employmentType || ''}
+                                            onChange={(e) => updateItem(index, 'employmentType', e.target.value)}
+                                        >
+                                            <option value="">Select type</option>
+                                            <option value="Full-time">Full-time</option>
+                                            <option value="Part-time">Part-time</option>
+                                            <option value="Internship">Internship</option>
+                                            <option value="Freelance">Freelance</option>
+                                        </select>
+                                    </div>
+                                    <div style={{ flex: 2, minWidth: '200px' }}>
+                                        <label className="form-label">Tech stack (optional)</label>
+                                        <input
+                                            className="form-input"
+                                            value={item.tech || ''}
+                                            onChange={(e) => updateItem(index, 'tech', e.target.value)}
+                                            placeholder="React, Node.js, PostgreSQL"
+                                        />
+                                        <p style={{ fontSize: '0.8rem', color: 'var(--lp-text-muted)', marginTop: '4px' }}>
+                                            Keep this short – 3–6 key tools separated by commas.
+                                        </p>
                                     </div>
                                 </div>
 
@@ -165,19 +209,56 @@ const Experience = ({ data, update, errors = {} }) => {
                                         <label className="form-label">
                                             Bullet Points (One per line)
                                         </label>
-                                        <button
-                                            type="button"
-                                            onClick={() => insertExampleBullets(index)}
-                                            style={{
-                                                border: 'none',
-                                                background: 'transparent',
-                                                fontSize: '0.8rem',
-                                                color: 'var(--lp-accent)',
-                                                cursor: 'pointer'
-                                            }}
-                                        >
-                                            Insert example
-                                        </button>
+                                        <div style={{ display: 'flex', gap: '8px' }}>
+                                            <button
+                                                type="button"
+                                                onClick={() => appendBullets(index, [
+                                                    'Increased X by Y% by doing Z.',
+                                                    'Reduced errors by N% through better tooling and monitoring.'
+                                                ])}
+                                                style={{
+                                                    border: 'none',
+                                                    background: 'transparent',
+                                                    fontSize: '0.8rem',
+                                                    color: 'var(--lp-accent)',
+                                                    cursor: 'pointer'
+                                                }}
+                                            >
+                                                Impact
+                                            </button>
+                                            <button
+                                                type="button"
+                                                onClick={() => appendBullets(index, [
+                                                    'Led a team of N to deliver feature X on time.',
+                                                    'Mentored junior teammates and improved onboarding documentation.'
+                                                ])}
+                                                style={{
+                                                    border: 'none',
+                                                    background: 'transparent',
+                                                    fontSize: '0.8rem',
+                                                    color: 'var(--lp-accent)',
+                                                    cursor: 'pointer'
+                                                }}
+                                            >
+                                                Leadership
+                                            </button>
+                                            <button
+                                                type="button"
+                                                onClick={() => appendBullets(index, [
+                                                    'Owned end-to-end delivery of project X, from design to rollout.',
+                                                    'Proactively identified and fixed a key bottleneck saving Y hours/week.'
+                                                ])}
+                                                style={{
+                                                    border: 'none',
+                                                    background: 'transparent',
+                                                    fontSize: '0.8rem',
+                                                    color: 'var(--lp-accent)',
+                                                    cursor: 'pointer'
+                                                }}
+                                            >
+                                                Ownership
+                                            </button>
+                                        </div>
                                     </div>
                                     <textarea
                                         className="form-textarea"
@@ -223,6 +304,11 @@ const Experience = ({ data, update, errors = {} }) => {
             >
                 + Add experience
             </button>
+            {data.length === 0 && (
+                <p style={{ marginTop: '8px', fontSize: '0.8rem', color: 'var(--lp-text-muted)' }}>
+                    Tip: Internships, part-time roles, and substantial volunteer work all count as experience.
+                </p>
+            )}
         </div>
     );
 };

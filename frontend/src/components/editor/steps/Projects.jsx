@@ -4,7 +4,7 @@ const Projects = ({ data, update }) => {
     const addProject = () => {
         update([
             ...data,
-            { name: '', description: '', tech: '' }
+            { name: '', description: '', role: '', github: '', demo: '', tech: '' }
         ]);
     };
 
@@ -102,6 +102,20 @@ const Projects = ({ data, update }) => {
                                 </div>
 
                                 <div className="form-group">
+                                    <label className="form-label">Your role</label>
+                                    <select
+                                        className="form-input"
+                                        value={item.role || ''}
+                                        onChange={(e) => updateItem(index, 'role', e.target.value)}
+                                    >
+                                        <option value="">Select role</option>
+                                        <option value="Solo project">Solo project</option>
+                                        <option value="Team lead">Team lead</option>
+                                        <option value="Contributor">Contributor</option>
+                                    </select>
+                                </div>
+
+                                <div className="form-group">
                                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                         <label className="form-label">Description</label>
                                         <button
@@ -139,6 +153,54 @@ const Projects = ({ data, update }) => {
                                         Keep this short – 3–6 key tools separated by commas.
                                     </p>
                                 </div>
+                                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginBottom: '12px' }}>
+                                    {['React', 'Node.js', 'TypeScript', 'Next.js', 'PostgreSQL'].map(tag => (
+                                        <button
+                                            key={tag}
+                                            type="button"
+                                            onClick={() => {
+                                                const current = item.tech || '';
+                                                if (current.toLowerCase().includes(tag.toLowerCase())) return;
+                                                const next = current ? `${current}, ${tag}` : tag;
+                                                updateItem(index, 'tech', next);
+                                            }}
+                                            style={{
+                                                fontSize: '0.75rem',
+                                                padding: '4px 8px',
+                                                borderRadius: '999px',
+                                                border: '1px solid var(--lp-border)',
+                                                background: 'var(--lp-bg-alt)',
+                                                color: 'var(--lp-text)',
+                                                cursor: 'pointer'
+                                            }}
+                                        >
+                                            {tag}
+                                        </button>
+                                    ))}
+                                </div>
+
+                                <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', marginBottom: '8px' }}>
+                                    <div className="form-group" style={{ flex: 1, minWidth: '200px' }}>
+                                        <label className="form-label">GitHub URL (optional)</label>
+                                        <input
+                                            className="form-input"
+                                            type="url"
+                                            value={item.github || ''}
+                                            onChange={(e) => updateItem(index, 'github', e.target.value)}
+                                            placeholder="https://github.com/you/project"
+                                        />
+                                    </div>
+                                    <div className="form-group" style={{ flex: 1, minWidth: '200px' }}>
+                                        <label className="form-label">Live demo URL (optional)</label>
+                                        <input
+                                            className="form-input"
+                                            type="url"
+                                            value={item.demo || ''}
+                                            onChange={(e) => updateItem(index, 'demo', e.target.value)}
+                                            placeholder="https://project-demo.example.com"
+                                        />
+                                    </div>
+                                </div>
                             </>
                         )}
                     </div>
@@ -172,6 +234,11 @@ const Projects = ({ data, update }) => {
             >
                 + Add project
             </button>
+            {data.length === 0 && (
+                <p style={{ marginTop: '8px', fontSize: '0.8rem', color: 'var(--lp-text-muted)' }}>
+                    Tip: Class projects, hackathon work, and serious side projects are all great to list here.
+                </p>
+            )}
         </div>
     );
 };

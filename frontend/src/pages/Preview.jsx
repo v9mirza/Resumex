@@ -1,7 +1,7 @@
 import React from 'react';
 import { useResume } from '../state/useResume.jsx';
 import LivePreview from '../components/preview/LivePreview';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import LandingNav from '../components/LandingNav';
 
 import html2pdf from 'html2pdf.js';
@@ -19,6 +19,7 @@ const isEmptyResume = (resume) => {
 
 const Preview = () => {
   const { resume } = useResume();
+  const location = useLocation();
 
   const empty = isEmptyResume(resume);
   const templateId = resume.meta?.template || 'minimal';
@@ -26,6 +27,8 @@ const Preview = () => {
     templateId === 'classic' ? 'Classic' : templateId === 'modern' ? 'Modern' : 'Minimal';
 
   const resumeName = resume.basics?.name || resume.title || 'Untitled resume';
+  const fromId = location.state?.fromId;
+  const backToEditorPath = fromId ? `/build/${fromId}` : '/build';
 
   const handleDownloadJson = () => {
     try {
@@ -82,7 +85,7 @@ const Preview = () => {
               Create a new resume or open one from your dashboard to preview and export.
             </p>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-              <Link to="/build" className="btn-lp-primary" style={{ padding: '12px 24px' }}>
+              <Link to={backToEditorPath} className="btn-lp-primary" style={{ padding: '12px 24px' }}>
                 Create a resume
               </Link>
               <Link
@@ -127,7 +130,7 @@ const Preview = () => {
             justifyContent: 'space-between'
           }}
         >
-          <Link to="/build" style={{ textDecoration: 'none', color: 'var(--lp-text-muted)', fontWeight: 500 }}>
+          <Link to={backToEditorPath} style={{ textDecoration: 'none', color: 'var(--lp-text-muted)', fontWeight: 500 }}>
             ← Back to editor
           </Link>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', alignItems: 'flex-end' }}>
