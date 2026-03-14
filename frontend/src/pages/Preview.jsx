@@ -27,6 +27,25 @@ const Preview = () => {
 
   const resumeName = resume.basics?.name || resume.title || 'Untitled resume';
 
+  const handleDownloadJson = () => {
+    try {
+      const json = JSON.stringify(resume, null, 2);
+      const blob = new Blob([json], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      const safeName = (resume.basics?.name || 'resume').trim() || 'resume';
+      link.href = url;
+      link.download = `${safeName.replace(/\s+/g, '_').toLowerCase()}_data.json`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error('Failed to export JSON', err);
+      toast.error('Could not export JSON');
+    }
+  };
+
   const handleDownload = async () => {
     const element = document.querySelector('.print-container');
     const opt = {
@@ -111,20 +130,37 @@ const Preview = () => {
           <Link to="/build" style={{ textDecoration: 'none', color: 'var(--lp-text-muted)', fontWeight: 500 }}>
             ← Back to editor
           </Link>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', alignItems: 'flex-end' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', alignItems: 'flex-end' }}>
             <div style={{ textAlign: 'right' }}>
               <div style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--lp-text)' }}>{resumeName}</div>
               <div style={{ fontSize: '0.8rem', color: 'var(--lp-text-muted)' }}>{templateLabel} template</div>
             </div>
-            <button
-              type="button"
-              className="btn-lp-primary"
-              onClick={handleDownload}
-              style={{ padding: '8px 18px', fontSize: '0.9rem' }}
-              aria-label="Download this resume as a PDF"
-            >
-              Download PDF
-            </button>
+            <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', justifyContent: 'flex-end' }}>
+              <button
+                type="button"
+                onClick={handleDownloadJson}
+                style={{
+                  padding: '8px 14px',
+                  fontSize: '0.85rem',
+                  borderRadius: '999px',
+                  border: '1px solid var(--lp-border)',
+                  background: 'var(--lp-bg-alt)',
+                  color: 'var(--lp-text)'
+                }}
+                aria-label="Download this resume as JSON data"
+              >
+                Download JSON
+              </button>
+              <button
+                type="button"
+                className="btn-lp-primary"
+                onClick={handleDownload}
+                style={{ padding: '8px 18px', fontSize: '0.9rem' }}
+                aria-label="Download this resume as a PDF"
+              >
+                Download PDF
+              </button>
+            </div>
           </div>
         </div>
 

@@ -11,6 +11,7 @@ const Dashboard = () => {
     const { logout, user } = useAuth();
     const [loading, setLoading] = useState(true);
     const [duplicatingId, setDuplicatingId] = useState(null);
+    const [exportingId, setExportingId] = useState(null);
 
     const getTemplateLabel = (resume) => {
         const templateId = resume.data?.meta?.template || resume.meta?.template || 'minimal';
@@ -36,6 +37,30 @@ const Dashboard = () => {
         if (diffDays === 1) return 'yesterday';
         if (diffDays < 7) return `${diffDays} days ago`;
         return updated.toLocaleDateString();
+    };
+
+    const handleExportJson = (resume) => {
+        try {
+            setExportingId(resume._id);
+            const payload = resume.data || {};
+            const json = JSON.stringify(payload, null, 2);
+            const blob = new Blob([json], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const baseTitle = (resume.title || 'resume').trim() || 'resume';
+            const safeName = baseTitle.replace(/\s+/g, '_').toLowerCase();
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `${safeName}_data.json`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        } catch (err) {
+            console.error('Failed to export JSON', err);
+            toast.error('Could not export JSON');
+        } finally {
+            setExportingId(null);
+        }
     };
 
     useEffect(() => {
@@ -261,6 +286,24 @@ const Dashboard = () => {
                                             >
                                                 Edit
                                             </Link>
+                                            <button
+                                                onClick={() => handleExportJson(resume)}
+                                                disabled={exportingId === resume._id}
+                                                className="btn-lp-secondary"
+                                                style={{
+                                                    padding: '8px 14px',
+                                                    borderRadius: '999px',
+                                                    border: '1px solid var(--lp-border)',
+                                                    background: 'var(--lp-bg-alt)',
+                                                    color: 'var(--lp-text)',
+                                                    fontSize: '0.8rem',
+                                                    fontWeight: 500,
+                                                    cursor: exportingId === resume._id ? 'wait' : 'pointer',
+                                                    opacity: exportingId === resume._id ? 0.7 : 1
+                                                }}
+                                            >
+                                                {exportingId === resume._id ? 'Preparing…' : 'JSON'}
+                                            </button>
                                             <button
                                                 onClick={async () => {
                                                     setDuplicatingId(resume._id);
