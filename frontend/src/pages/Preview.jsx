@@ -85,7 +85,12 @@ const Preview = () => {
               Create a new resume or open one from your dashboard to preview and export.
             </p>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-              <Link to={backToEditorPath} className="btn-lp-primary" style={{ padding: '12px 24px' }}>
+              <Link
+                to={backToEditorPath}
+                state={{ fromPreview: true, fromId }}
+                className="btn-lp-primary"
+                style={{ padding: '12px 24px' }}
+              >
                 Create a resume
               </Link>
               <Link
@@ -130,7 +135,11 @@ const Preview = () => {
             justifyContent: 'space-between'
           }}
         >
-          <Link to={backToEditorPath} style={{ textDecoration: 'none', color: 'var(--lp-text-muted)', fontWeight: 500 }}>
+          <Link
+            to={backToEditorPath}
+            state={{ fromPreview: true, fromId }}
+            style={{ textDecoration: 'none', color: 'var(--lp-text-muted)', fontWeight: 500 }}
+          >
             ← Back to editor
           </Link>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', alignItems: 'flex-end' }}>

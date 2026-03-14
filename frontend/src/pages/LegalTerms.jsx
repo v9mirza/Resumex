@@ -2,12 +2,18 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowLeft, FileText } from 'lucide-react';
 import LandingFooter from '../components/LandingFooter';
+import Seo from '../components/Seo';
 
 const LegalTerms = () => {
     const lastUpdated = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
 
     return (
         <div className="landing-page">
+            <Seo
+                title="Terms of Service | Resumex"
+                description="Review the Terms of Service for using Resumex, the ATS‑friendly online resume builder."
+                canonicalPath="/terms-of-service"
+            />
             <div className="container legal-page-main">
 
                 <header className="legal-doc-header">

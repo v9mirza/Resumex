@@ -57,6 +57,8 @@ export const deleteResume = (id) => API.delete(`/resumes/${id}`);
 export const getAdminStats = () => API.get('/admin/stats');
 export const getAdminUsers = () => API.get('/admin/users');
 export const getAdminResumes = () => API.get('/admin/resumes');
+export const updateUserRole = (id, role) => API.patch(`/admin/users/${id}`, { role });
 export const deleteUser = (id) => API.delete(`/admin/users/${id}`);
+export const deleteAdminResume = (id) => API.delete(`/admin/resumes/${id}`);
 
 export default API;

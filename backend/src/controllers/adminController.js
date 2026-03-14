@@ -48,6 +48,33 @@ const getStats = async (req, res) => {
     }
 };
 
+// @desc    Update user role (admin only)
+// @route   PATCH /api/admin/users/:id
+// @access  Private/Admin
+const updateUserRole = async (req, res) => {
+    try {
+        const { role } = req.body;
+        if (!role || !['user', 'admin'].includes(role)) {
+            return res.status(400).json({ message: 'Valid role (user or admin) is required' });
+        }
+        const targetId = req.params.id;
+        if (req.user.id === targetId && role !== 'admin') {
+            return res.status(400).json({ message: 'You cannot demote yourself' });
+        }
+        const user = await User.findById(targetId);
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        user.role = role;
+        await user.save();
+        const updated = await User.findById(user._id).select('-password').lean();
+        return res.json(updated);
+    } catch (error) {
+        console.error('Admin updateUserRole error:', error);
+        return res.status(500).json({ message: error.message || 'Server Error' });
+    }
+};
+
 // @desc    Delete user
 // @route   DELETE /api/admin/users/:id
 // @access  Private/Admin
@@ -67,9 +94,37 @@ const deleteUser = async (req, res) => {
     }
 };
 
+// @desc    Delete resume (admin)
+// @route   DELETE /api/admin/resumes/:id
+// @access  Private/Admin
+const deleteResume = async (req, res) => {
+    try {
+        const id = req.params.id;
+        if (!id) {
+            return res.status(400).json({ message: 'Resume ID is required' });
+        }
+
+        const resume = await Resume.findById(id);
+
+        if (!resume) {
+            // Treat missing resume as a no-op so the admin UI
+            // can safely delete already-removed records.
+            return res.status(200).json({ message: 'Resume already removed', id });
+        }
+
+        await Resume.deleteOne({ _id: id });
+        return res.status(200).json({ message: 'Resume removed', id });
+    } catch (error) {
+        console.error('Admin deleteResume error:', error);
+        return res.status(500).json({ message: error.message || 'Server Error' });
+    }
+};
+
 module.exports = {
     getUsers,
     getResumes,
     getStats,
-    deleteUser
+    updateUserRole,
+    deleteUser,
+    deleteResume
 };

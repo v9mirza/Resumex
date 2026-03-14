@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 import LandingNav from '../components/LandingNav';
+import Seo from '../components/Seo';
 import toast from 'react-hot-toast';
 
 const Login = () => {
@@ -37,6 +38,11 @@ const Login = () => {
 
     return (
         <div className="landing-page">
+            <Seo
+                title="Log in to Resumex"
+                description="Sign in to your Resumex account to manage and export your ATS‑friendly resumes."
+                canonicalPath="/login"
+            />
             <LandingNav
                 rightContent={
                     <>

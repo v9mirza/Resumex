@@ -1,13 +1,14 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext.jsx';
+import { Sun, Moon } from 'lucide-react';
 
 const LandingNav = ({ rightContent }) => {
   const { theme, toggleTheme } = useTheme();
-
   return (
     <header className="lp-glass-nav">
       <nav className="container lp-nav-bar">
+        {/* Left: Brand */}
         <div className="lp-nav-brand">
           <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '10px', textDecoration: 'none' }}>
             <img src="/resumex.svg" alt="Resumex logo" style={{ width: 24, height: 24 }} />
@@ -24,24 +25,31 @@ const LandingNav = ({ rightContent }) => {
             </span>
           </Link>
         </div>
-        <div className="lp-nav-actions">
+
+        {/* Middle: intentionally empty for a cleaner nav */}
+        <div className="lp-nav-links" />
+
+        {/* Right: Auth / dashboard actions passed from page */}
+        <div className="lp-nav-actions" style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
           <button
             type="button"
             onClick={toggleTheme}
-            className="lp-theme-toggle"
             style={{
-              padding: '6px 14px',
-              borderRadius: '999px',
+              width: 32,
+              height: 32,
+              borderRadius: 999,
               border: '1px solid var(--lp-border)',
               background: 'var(--lp-bg-alt)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
               color: 'var(--lp-text)',
-              fontSize: '0.85rem',
-              fontWeight: 500,
               cursor: 'pointer'
             }}
             title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+            aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
           >
-            {theme === 'dark' ? 'Switch to light' : 'Switch to dark'}
+            {theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
           </button>
           {rightContent}
         </div>

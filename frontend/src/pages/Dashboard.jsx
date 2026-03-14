@@ -12,6 +12,8 @@ const Dashboard = () => {
     const [loading, setLoading] = useState(true);
     const [duplicatingId, setDuplicatingId] = useState(null);
     const [exportingId, setExportingId] = useState(null);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [templateFilter, setTemplateFilter] = useState('all'); // all | minimal | classic | modern
 
     const getTemplateLabel = (resume) => {
         const templateId = resume.data?.meta?.template || resume.meta?.template || 'minimal';
@@ -67,7 +69,12 @@ const Dashboard = () => {
         const fetchResumes = async () => {
             try {
                 const { data } = await api.getResumes();
-                setResumes(data);
+                const sorted = [...data].sort((a, b) => {
+                    const aTime = a.updatedAt ? new Date(a.updatedAt).getTime() : 0;
+                    const bTime = b.updatedAt ? new Date(b.updatedAt).getTime() : 0;
+                    return bTime - aTime; // newest first
+                });
+                setResumes(sorted);
             } catch (error) {
                 console.error("Failed to fetch resumes", error);
                 toast.error("Failed to load resumes");
@@ -116,6 +123,7 @@ const Dashboard = () => {
                             fontWeight: 500,
                             cursor: 'pointer'
                         }}
+                        autoFocus
                     >
                         Delete
                     </button>
@@ -146,6 +154,15 @@ const Dashboard = () => {
         }
     };
 
+    const filteredResumes = resumes.filter(resume => {
+        const title = (resume.title || '').toLowerCase();
+        const q = searchTerm.toLowerCase().trim();
+        if (q && !title.includes(q)) return false;
+        if (templateFilter === 'all') return true;
+        const templateId = resume.data?.meta?.template || resume.meta?.template || 'minimal';
+        return templateId === templateFilter;
+    });
+
     return (
         <div className="landing-page">
             <LandingNav
@@ -166,7 +183,7 @@ const Dashboard = () => {
 
             <main className="container" style={{ padding: '72px 0 96px' }}>
                 {/* Dashboard header */}
-                <section style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginBottom: '40px' }}>
+                <section style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginBottom: '24px' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap', justifyContent: 'space-between' }}>
                         <div>
                             <p style={{ fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '0.12em', fontWeight: 600, color: 'var(--lp-accent)', marginBottom: '6px' }}>
@@ -176,7 +193,7 @@ const Dashboard = () => {
                                 Your resumes
                             </h1>
                             <p style={{ fontSize: '0.95rem', color: 'var(--lp-text-muted)', marginTop: '6px', maxWidth: '520px' }}>
-                                Create, update, and export clean, professional resumes from one place.
+                                Resumes auto‑save as you edit. You can safely close the tab and continue later from here.
                             </p>
                         </div>
                         <Link
@@ -187,6 +204,49 @@ const Dashboard = () => {
                             <PlusCircle size={18} />
                             New resume
                         </Link>
+                    </div>
+
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12, alignItems: 'center' }}>
+                        <input
+                            type="text"
+                            placeholder="Search by title…"
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            style={{
+                                flex: '1 1 220px',
+                                minWidth: 0,
+                                padding: '8px 10px',
+                                borderRadius: 999,
+                                border: '1px solid var(--lp-border)',
+                                fontSize: '0.9rem',
+                                outline: 'none'
+                            }}
+                        />
+                        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                            {[
+                                { id: 'all', label: 'All' },
+                                { id: 'minimal', label: 'Minimal' },
+                                { id: 'classic', label: 'Classic' },
+                                { id: 'modern', label: 'Modern' }
+                            ].map(f => (
+                                <button
+                                    key={f.id}
+                                    type="button"
+                                    onClick={() => setTemplateFilter(f.id)}
+                                    style={{
+                                        padding: '4px 10px',
+                                        fontSize: '0.8rem',
+                                        borderRadius: 999,
+                                        border: templateFilter === f.id ? '1px solid var(--lp-accent)' : '1px solid var(--lp-border)',
+                                        background: templateFilter === f.id ? 'rgba(0,130,201,0.06)' : 'transparent',
+                                        color: templateFilter === f.id ? 'var(--lp-accent)' : 'var(--lp-text-muted)',
+                                        cursor: 'pointer'
+                                    }}
+                                >
+                                    {f.label}
+                                </button>
+                            ))}
+                        </div>
                     </div>
                 </section>
 
@@ -215,8 +275,30 @@ const Dashboard = () => {
 
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '20px' }}>
                             {loading ? (
-                                <p style={{ fontSize: '0.9rem', color: 'var(--lp-text-muted)' }}>Loading your resumes…</p>
-                            ) : resumes.length === 0 ? (
+                                Array.from({ length: 3 }).map((_, idx) => (
+                                    <div
+                                        key={idx}
+                                        className="lp-minimal-card"
+                                        style={{
+                                            padding: '20px 18px',
+                                            borderRadius: '16px',
+                                            background: 'var(--lp-bg-alt)',
+                                            border: '1px solid var(--lp-border)',
+                                            display: 'flex',
+                                            flexDirection: 'column',
+                                            gap: 10,
+                                            opacity: 0.7
+                                        }}
+                                    >
+                                        <div style={{ height: 12, width: '60%', borderRadius: 999, background: 'rgba(148,163,184,0.4)' }} />
+                                        <div style={{ height: 10, width: '40%', borderRadius: 999, background: 'rgba(148,163,184,0.3)' }} />
+                                        <div style={{ marginTop: 8, display: 'flex', gap: 6 }}>
+                                            <div style={{ height: 28, flex: 1, borderRadius: 999, background: 'rgba(148,163,184,0.3)' }} />
+                                            <div style={{ height: 28, width: 60, borderRadius: 999, background: 'rgba(148,163,184,0.25)' }} />
+                                        </div>
+                                    </div>
+                                ))
+                            ) : filteredResumes.length === 0 ? (
                                 <div style={{ textAlign: 'center', padding: '32px 16px' }}>
                                     <p style={{ fontWeight: 600, marginBottom: '8px', color: 'var(--lp-text)' }}>No resumes yet</p>
                                     <p style={{ fontSize: '0.9rem', color: 'var(--lp-text-muted)', marginBottom: '20px' }}>
@@ -256,7 +338,7 @@ const Dashboard = () => {
                                     </Link>
                                 </div>
                             ) : (
-                                resumes.map(resume => (
+                                filteredResumes.map(resume => (
                                     <article
                                         key={resume._id}
                                         className="lp-minimal-card"
@@ -268,10 +350,22 @@ const Dashboard = () => {
                                         }}
                                     >
                                         <div>
-                                            <h3 className="lp-card-heading" style={{ marginBottom: '4px' }}>{resume.title}</h3>
-                                            <p style={{ fontSize: '0.8rem', color: 'var(--lp-text-muted)' }}>
-                                                {getTemplateLabel(resume)} • Updated {formatUpdatedAt(resume.updatedAt)}
-                                            </p>
+                                            <h3 className="lp-card-heading" style={{ marginBottom: '4px', fontSize: '1rem' }}>{resume.title}</h3>
+                                            <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: '0.75rem', color: 'var(--lp-text-muted)' }}>
+                                                <span
+                                                    style={{
+                                                        padding: '2px 8px',
+                                                        borderRadius: 999,
+                                                        border: '1px solid var(--lp-border)',
+                                                        fontSize: '0.7rem',
+                                                        textTransform: 'uppercase',
+                                                        letterSpacing: '0.08em'
+                                                    }}
+                                                >
+                                                    {getTemplateLabel(resume)}
+                                                </span>
+                                                <span>Updated {formatUpdatedAt(resume.updatedAt)}</span>
+                                            </div>
                                         </div>
                                         <div style={{ display: 'flex', gap: '8px', marginTop: '16px', alignItems: 'center', flexWrap: 'wrap' }}>
                                             <Link
@@ -285,6 +379,23 @@ const Dashboard = () => {
                                                 }}
                                             >
                                                 Edit
+                                            </Link>
+                                            <Link
+                                                to="/preview"
+                                                state={{ fromId: resume._id }}
+                                                className="btn-lp-secondary"
+                                                style={{
+                                                    padding: '8px 14px',
+                                                    borderRadius: '999px',
+                                                    border: '1px solid var(--lp-border)',
+                                                    background: 'var(--lp-bg-alt)',
+                                                    color: 'var(--lp-text)',
+                                                    fontSize: '0.8rem',
+                                                    fontWeight: 500,
+                                                    cursor: 'pointer'
+                                                }}
+                                            >
+                                                Preview / export
                                             </Link>
                                             <button
                                                 onClick={() => handleExportJson(resume)}

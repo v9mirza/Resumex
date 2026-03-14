@@ -1,0 +1,12 @@
+User-agent: *
+Allow: /
+
+Disallow: /login
+Disallow: /register
+Disallow: /dashboard
+Disallow: /build
+Disallow: /profile
+Disallow: /admin
+
+Sitemap: https://www.resumex.cv/sitemap.xml
+

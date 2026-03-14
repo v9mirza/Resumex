@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
 import LandingNav from '../components/LandingNav';
+import Seo from '../components/Seo';
 
 const Register = () => {
     const [email, setEmail] = useState('');
@@ -36,6 +37,11 @@ const Register = () => {
 
     return (
         <div className="landing-page">
+            <Seo
+                title="Create a free Resumex account"
+                description="Create a free Resumex account to build ATS‑friendly resumes with live preview and PDF/JSON export."
+                canonicalPath="/register"
+            />
             <LandingNav
                 rightContent={
                     <>

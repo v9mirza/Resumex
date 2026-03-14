@@ -99,7 +99,7 @@ export const STUDENT_SAMPLE = {
         name: 'Sara Mirza',
         email: 'sara.mirza@example.com',
         phone: '+1 (555) 987-6543',
-        location: 'Toronto, ON',
+        location: 'Lucknow, INDIA',
         headline: 'Computer Science Student',
         portfolio: '',
         summary: 'Final-year CS student focused on web development and distributed systems. Looking for internships where I can ship real features and learn from senior engineers.',
@@ -110,7 +110,7 @@ export const STUDENT_SAMPLE = {
     },
     education: [
         {
-            institution: 'University of Toronto',
+            institution: 'Integral University',
             degree: 'B.Sc. Computer Science',
             start: '2021',
             end: '2025',

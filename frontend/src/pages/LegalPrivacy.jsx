@@ -2,12 +2,18 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowLeft, ShieldCheck } from 'lucide-react';
 import LandingFooter from '../components/LandingFooter';
+import Seo from '../components/Seo';
 
 const LegalPrivacy = () => {
     const lastUpdated = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
 
     return (
         <div className="landing-page">
+            <Seo
+                title="Privacy Policy | Resumex"
+                description="Read how Resumex collects, stores, and protects your personal data when you use our resume builder."
+                canonicalPath="/privacy-policy"
+            />
             <div className="container legal-page-main">
 
                 <header className="legal-doc-header">

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useResume } from '../state/useResume.jsx';
 import Editor from '../components/editor/Editor';
 import LivePreview from '../components/preview/LivePreview';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams, useLocation } from 'react-router-dom';
 import * as api from '../services/api';
 import toast from 'react-hot-toast';
 import LandingNav from '../components/LandingNav';
@@ -35,6 +35,7 @@ const Builder = () => {
     const initializedRef = useRef(false);
     const justResetRef = useRef(false);
     const autoSaveTimeout = useRef(null);
+    const location = useLocation();
 
     useEffect(() => {
         if (id) {
@@ -52,11 +53,14 @@ const Builder = () => {
             };
             loadResume();
         } else {
-            // New resume: always start from a clean slate once when opening /build
-            justResetRef.current = true;
-            resetResume();
+            // Only reset to blank when not coming back from preview
+            const fromPreview = location.state?.fromPreview;
+            if (!fromPreview) {
+                justResetRef.current = true;
+                resetResume();
+            }
         }
-        // Important: do NOT include resume/resetResume in deps to avoid resetting on every change
+        // Important: do NOT include resume/resetResume/location in deps to avoid resetting on every change
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [id, setResume]);
 
