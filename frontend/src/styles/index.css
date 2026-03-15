@@ -137,6 +137,17 @@ ul {
   background-color: #F3F4F6;
   width: 100%;
   box-sizing: border-box;
+  overflow-x: auto;
+}
+
+/* No scale on Preview page: export target must be 1:1 A4 so PDF has no extra margins */
+.preview-container .print-container.paper-preview,
+.preview-container .print-container {
+  transform: none !important;
+  margin-bottom: 0 !important;
+  width: 210mm !important;
+  min-height: 297mm !important;
+  max-width: 210mm;
 }
 
 :root[data-theme='dark'] .preview-container {

@@ -4,7 +4,8 @@ import LivePreview from '../components/preview/LivePreview';
 import { Link, useLocation } from 'react-router-dom';
 import LandingNav from '../components/LandingNav';
 
-import html2pdf from 'html2pdf.js';
+import html2canvas from 'html2canvas';
+import { jsPDF } from 'jspdf';
 import toast from 'react-hot-toast';
 
 const isEmptyResume = (resume) => {
@@ -51,21 +52,73 @@ const Preview = () => {
 
   const handleDownload = async () => {
     const element = document.querySelector('.print-container');
-    const opt = {
-      margin: 0,
-      filename: `${resume.basics.name || 'Resume'}.pdf`,
-      image: { type: 'jpeg', quality: 0.98 },
-      html2canvas: { scale: 2, useCORS: true },
-      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-    };
+    const resumePage = element?.querySelector('.resume-page');
+    if (!element) return;
 
-    const promise = html2pdf().set(opt).from(element).save();
+    const toastId = toast.loading('Generating PDF...');
+    try {
+      const target = resumePage || element;
+      const fullHeightPx = Math.max(target.scrollHeight, target.offsetHeight, 1122);
+      const prevHeight = target.style.height;
+      const prevMinHeight = target.style.minHeight;
+      const prevOverflow = target.style.overflow;
+      const prevElementHeight = element.style.height;
+      const prevElementOverflow = element.style.overflow;
 
-    await toast.promise(promise, {
-      loading: 'Generating PDF...',
-      success: 'PDF Downloaded!',
-      error: 'Could not generate PDF'
-    });
+      target.style.height = `${fullHeightPx}px`;
+      target.style.minHeight = `${fullHeightPx}px`;
+      target.style.overflow = 'visible';
+      element.style.height = `${fullHeightPx}px`;
+      element.style.overflow = 'visible';
+
+      await new Promise((r) => requestAnimationFrame(r));
+      const measuredHeight = Math.max(target.scrollHeight, target.offsetHeight, fullHeightPx);
+      if (measuredHeight > fullHeightPx) {
+        target.style.height = `${measuredHeight}px`;
+        target.style.minHeight = `${measuredHeight}px`;
+        element.style.height = `${measuredHeight}px`;
+      }
+
+      const canvas = await html2canvas(element, {
+        scale: 2,
+        useCORS: true,
+        logging: false,
+        backgroundColor: '#ffffff',
+        scrollX: 0,
+        scrollY: 0
+      });
+
+      target.style.height = prevHeight;
+      target.style.minHeight = prevMinHeight;
+      target.style.overflow = prevOverflow;
+      element.style.height = prevElementHeight;
+      element.style.overflow = prevElementOverflow;
+
+      const pdf = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+      const pageWidth = pdf.internal.pageSize.getWidth();
+      const pageHeight = pdf.internal.pageSize.getHeight();
+
+      const imgW = canvas.width;
+      const imgH = canvas.height;
+      const pxPerMm = 96 / 25.4;
+      const imgWidthMm = imgW / pxPerMm;
+      const imgHeightMm = imgH / pxPerMm;
+
+      const scale = Math.min(pageWidth / imgWidthMm, pageHeight / imgHeightMm, 1);
+      const w = imgWidthMm * scale;
+      const h = imgHeightMm * scale;
+      const x = (pageWidth - w) / 2;
+      const y = (pageHeight - h) / 2;
+
+      const imgData = canvas.toDataURL('image/jpeg', 0.98);
+      pdf.addImage(imgData, 'JPEG', x, y, w, h);
+      pdf.save(`${resume.basics?.name || 'Resume'}.pdf`);
+
+      toast.success('PDF Downloaded!', { id: toastId });
+    } catch (err) {
+      console.error('PDF export failed', err);
+      toast.error('Could not generate PDF', { id: toastId });
+    }
   };
 
   if (empty) {
