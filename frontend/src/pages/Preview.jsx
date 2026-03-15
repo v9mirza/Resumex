@@ -61,70 +61,90 @@ const Preview = () => {
 
     const toastId = toast.loading('Generating PDF...');
     try {
-      /* On mobile: remove CSS scale so we capture 1:1; force exact pixel dimensions so html2canvas gets full-size canvas */
-      const prevTransform = element.style.transform;
-      const prevTransformOrigin = element.style.transformOrigin;
-      const prevWidth = element.style.width;
-      const prevMinHeight = element.style.minHeight;
-      const prevMaxWidth = element.style.maxWidth;
-      element.style.transform = 'none';
-      element.style.transformOrigin = '';
-      element.style.width = `${A4_WIDTH_PX}px`;
-      element.style.minHeight = `${A4_MIN_HEIGHT_PX}px`;
-      element.style.maxWidth = `${A4_WIDTH_PX}px`;
+      const container = element.parentElement;
+      const prevContainerMinWidth = container?.style.minWidth;
+      const prevContainerOverflow = container?.style.overflow;
+      if (container) {
+        container.style.setProperty('min-width', `${A4_WIDTH_PX + 48}px`, 'important');
+        container.style.setProperty('overflow', 'visible', 'important');
+      }
+
+      /* On mobile: remove scale and force full A4 pixel size; override any !important in CSS */
+      element.style.setProperty('transform', 'none', 'important');
+      element.style.setProperty('transform-origin', 'top center', 'important');
+      element.style.setProperty('width', `${A4_WIDTH_PX}px`, 'important');
+      element.style.setProperty('min-height', `${A4_MIN_HEIGHT_PX}px`, 'important');
+      element.style.setProperty('max-width', `${A4_WIDTH_PX}px`, 'important');
       if (resumePage) {
-        resumePage.style.width = `${A4_WIDTH_PX}px`;
-        resumePage.style.maxWidth = `${A4_WIDTH_PX}px`;
+        resumePage.style.setProperty('width', `${A4_WIDTH_PX}px`, 'important');
+        resumePage.style.setProperty('max-width', `${A4_WIDTH_PX}px`, 'important');
       }
 
       await new Promise((r) => requestAnimationFrame(r));
 
       const target = resumePage || element;
       const fullHeightPx = Math.max(target.scrollHeight, target.offsetHeight, A4_MIN_HEIGHT_PX);
-      const prevHeight = target.style.height;
-      const prevTargetMinHeight = target.style.minHeight;
-      const prevOverflow = target.style.overflow;
-      const prevElementHeight = element.style.height;
-      const prevElementOverflow = element.style.overflow;
-      const prevResumeWidth = resumePage?.style.width;
-      const prevResumeMaxWidth = resumePage?.style.maxWidth;
 
-      target.style.height = `${fullHeightPx}px`;
-      target.style.minHeight = `${fullHeightPx}px`;
-      target.style.overflow = 'visible';
-      element.style.height = `${fullHeightPx}px`;
-      element.style.overflow = 'visible';
+      target.style.setProperty('height', `${fullHeightPx}px`, 'important');
+      target.style.setProperty('min-height', `${fullHeightPx}px`, 'important');
+      target.style.setProperty('overflow', 'visible', 'important');
+      element.style.setProperty('height', `${fullHeightPx}px`, 'important');
+      element.style.setProperty('overflow', 'visible', 'important');
 
       await new Promise((r) => requestAnimationFrame(r));
       const measuredHeight = Math.max(target.scrollHeight, target.offsetHeight, fullHeightPx);
+      const finalHeightPx = measuredHeight > fullHeightPx ? measuredHeight : fullHeightPx;
       if (measuredHeight > fullHeightPx) {
-        target.style.height = `${measuredHeight}px`;
-        target.style.minHeight = `${measuredHeight}px`;
-        element.style.height = `${measuredHeight}px`;
+        target.style.setProperty('height', `${measuredHeight}px`, 'important');
+        target.style.setProperty('min-height', `${measuredHeight}px`, 'important');
+        element.style.setProperty('height', `${measuredHeight}px`, 'important');
       }
 
+      /* Simulate desktop viewport and force clone layout so mobile captures full A4 width */
+      const captureWidth = A4_WIDTH_PX;
+      const captureHeight = finalHeightPx;
       const canvas = await html2canvas(element, {
         scale: 2,
         useCORS: true,
         logging: false,
         backgroundColor: '#ffffff',
         scrollX: 0,
-        scrollY: 0
+        scrollY: 0,
+        windowWidth: captureWidth + 100,
+        windowHeight: Math.max(captureHeight + 200, 1200),
+        onclone: (_doc, clonedEl) => {
+          clonedEl.style.setProperty('width', `${captureWidth}px`, 'important');
+          clonedEl.style.setProperty('min-height', `${captureHeight}px`, 'important');
+          clonedEl.style.setProperty('max-width', `${captureWidth}px`, 'important');
+          clonedEl.style.setProperty('transform', 'none', 'important');
+          const clonePage = _doc.querySelector('.resume-page');
+          if (clonePage) {
+            clonePage.style.setProperty('width', `${captureWidth}px`, 'important');
+            clonePage.style.setProperty('max-width', `${captureWidth}px`, 'important');
+          }
+          const root = _doc.documentElement;
+          root.style.setProperty('width', `${captureWidth + 100}px`, 'important');
+          _doc.body.style.setProperty('min-width', `${captureWidth + 100}px`, 'important');
+        }
       });
 
-      target.style.height = prevHeight;
-      target.style.minHeight = prevTargetMinHeight;
-      target.style.overflow = prevOverflow;
-      element.style.height = prevElementHeight;
-      element.style.overflow = prevElementOverflow;
-      element.style.transform = prevTransform;
-      element.style.transformOrigin = prevTransformOrigin;
-      element.style.width = prevWidth;
-      element.style.minHeight = prevMinHeight;
-      element.style.maxWidth = prevMaxWidth;
+      target.style.removeProperty('height');
+      target.style.removeProperty('min-height');
+      target.style.removeProperty('overflow');
+      element.style.removeProperty('height');
+      element.style.removeProperty('overflow');
+      element.style.removeProperty('transform');
+      element.style.removeProperty('transform-origin');
+      element.style.removeProperty('width');
+      element.style.removeProperty('min-height');
+      element.style.removeProperty('max-width');
       if (resumePage) {
-        resumePage.style.width = prevResumeWidth ?? '';
-        resumePage.style.maxWidth = prevResumeMaxWidth ?? '';
+        resumePage.style.removeProperty('width');
+        resumePage.style.removeProperty('max-width');
+      }
+      if (container) {
+        container.style.minWidth = prevContainerMinWidth ?? '';
+        container.style.overflow = prevContainerOverflow ?? '';
       }
 
       const pdf = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
