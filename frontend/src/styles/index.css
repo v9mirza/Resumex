@@ -140,7 +140,7 @@ ul {
   overflow-x: auto;
 }
 
-/* No scale on Preview page: export target must be 1:1 A4 so PDF has no extra margins */
+/* No scale on Preview page (desktop): export target 1:1 A4 so PDF has no extra margins */
 .preview-container .print-container.paper-preview,
 .preview-container .print-container {
   transform: none !important;
@@ -238,6 +238,24 @@ ul {
   .preview-toolbar-actions button {
     width: 100%;
     justify-content: center;
+  }
+
+  /* Scale preview to fit mobile viewport so it's readable (PDF export still uses full-size DOM) */
+  .preview-container .print-container.paper-preview,
+  .preview-container .print-container {
+    transform: scale(0.52) !important;
+    transform-origin: top center !important;
+    margin-bottom: 24px !important;
+  }
+}
+
+/* Tablet: scale preview to fit on smaller screens */
+@media (max-width: 768px) and (min-width: 481px) {
+  .preview-container .print-container.paper-preview,
+  .preview-container .print-container {
+    transform: scale(0.88) !important;
+    transform-origin: top center !important;
+    margin-bottom: 24px !important;
   }
 }
 
