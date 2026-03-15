@@ -15,6 +15,7 @@ const Admin = lazy(() => import('../pages/Admin'));
 const Profile = lazy(() => import('../pages/Profile'));
 const LegalPrivacy = lazy(() => import('../pages/LegalPrivacy'));
 const LegalTerms = lazy(() => import('../pages/LegalTerms'));
+const NotFound = lazy(() => import('../pages/NotFound'));
 
 const ProtectedRoute = ({ children }) => {
     const { user, loading } = useAuth();
@@ -115,6 +116,8 @@ function App() {
                                         <Admin />
                                     </AdminRoute>
                                 } />
+                                <Route path="/404" element={<NotFound />} />
+                                <Route path="*" element={<NotFound />} />
                             </Routes>
                         </Suspense>
                     </Router>

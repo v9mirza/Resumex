@@ -301,6 +301,62 @@ const Admin = () => {
         }
     };
 
+    const confirmRoleChange = (userId, currentRole, nextRole) => {
+        if (currentRole === nextRole) return;
+        if (userId === currentUser?._id && nextRole !== 'admin') {
+            toast.error('You cannot demote yourself');
+            return;
+        }
+        toast.dismiss();
+        toast((t) => (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8, maxWidth: 320 }}>
+                <p style={{ margin: 0, fontWeight: 600, fontSize: '0.9rem', color: 'var(--lp-text)' }}>
+                    Change role to {nextRole === 'admin' ? 'ADMIN' : 'USER'}?
+                </p>
+                <p style={{ margin: 0, fontSize: '0.8rem', color: 'var(--lp-text-muted)' }}>
+                    This will update permissions for this account. You can change it back at any time.
+                </p>
+                <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8 }}>
+                    <button
+                        type="button"
+                        onClick={() => toast.dismiss(t.id)}
+                        style={{
+                            padding: '4px 10px',
+                            fontSize: '0.8rem',
+                            borderRadius: 999,
+                            border: '1px solid var(--lp-border)',
+                            background: 'transparent',
+                            color: 'var(--lp-text-muted)',
+                            cursor: 'pointer'
+                        }}
+                    >
+                        Cancel
+                    </button>
+                    <button
+                        type="button"
+                        onClick={async () => {
+                            toast.dismiss(t.id);
+                            await handleRoleChange(userId, nextRole);
+                        }}
+                        style={{
+                            padding: '4px 12px',
+                            fontSize: '0.8rem',
+                            borderRadius: 999,
+                            border: 'none',
+                            background: 'var(--lp-accent)',
+                            color: '#fff',
+                            cursor: 'pointer',
+                            fontWeight: 500
+                        }}
+                        autoFocus
+                    >
+                        Confirm
+                    </button>
+                </div>
+            </div>
+        ), { duration: 7000, position: 'top-center' });
+    };
+
     if (loading) {
         return (
             <div className="landing-page">
@@ -522,7 +578,7 @@ const Admin = () => {
                                             ) : (
                                                 <select
                                                     value={u.role}
-                                                    onChange={(e) => handleRoleChange(u._id, e.target.value)}
+                                                    onChange={(e) => confirmRoleChange(u._id, u.role, e.target.value)}
                                                     disabled={updatingRoleId === u._id}
                                                     style={{
                                                         padding: '4px 8px',
