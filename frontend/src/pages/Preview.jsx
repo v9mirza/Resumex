@@ -57,6 +57,14 @@ const Preview = () => {
 
     const toastId = toast.loading('Generating PDF...');
     try {
+      /* On mobile we scale the preview with CSS transform; remove it so we capture 1:1 for a clean PDF */
+      const prevTransform = element.style.transform;
+      const prevTransformOrigin = element.style.transformOrigin;
+      element.style.transform = 'none';
+      element.style.transformOrigin = '';
+
+      await new Promise((r) => requestAnimationFrame(r));
+
       const target = resumePage || element;
       const fullHeightPx = Math.max(target.scrollHeight, target.offsetHeight, 1122);
       const prevHeight = target.style.height;
@@ -93,6 +101,8 @@ const Preview = () => {
       target.style.overflow = prevOverflow;
       element.style.height = prevElementHeight;
       element.style.overflow = prevElementOverflow;
+      element.style.transform = prevTransform;
+      element.style.transformOrigin = prevTransformOrigin;
 
       const pdf = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
       const pageWidth = pdf.internal.pageSize.getWidth();
