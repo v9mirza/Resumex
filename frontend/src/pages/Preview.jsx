@@ -50,6 +50,10 @@ const Preview = () => {
     }
   };
 
+  /* A4 at 96dpi so capture size is consistent on all devices (avoids mobile viewport squashing) */
+  const A4_WIDTH_PX = Math.round((210 * 96) / 25.4);
+  const A4_MIN_HEIGHT_PX = Math.round((297 * 96) / 25.4);
+
   const handleDownload = async () => {
     const element = document.querySelector('.print-container');
     const resumePage = element?.querySelector('.resume-page');
@@ -57,21 +61,33 @@ const Preview = () => {
 
     const toastId = toast.loading('Generating PDF...');
     try {
-      /* On mobile we scale the preview with CSS transform; remove it so we capture 1:1 for a clean PDF */
+      /* On mobile: remove CSS scale so we capture 1:1; force exact pixel dimensions so html2canvas gets full-size canvas */
       const prevTransform = element.style.transform;
       const prevTransformOrigin = element.style.transformOrigin;
+      const prevWidth = element.style.width;
+      const prevMinHeight = element.style.minHeight;
+      const prevMaxWidth = element.style.maxWidth;
       element.style.transform = 'none';
       element.style.transformOrigin = '';
+      element.style.width = `${A4_WIDTH_PX}px`;
+      element.style.minHeight = `${A4_MIN_HEIGHT_PX}px`;
+      element.style.maxWidth = `${A4_WIDTH_PX}px`;
+      if (resumePage) {
+        resumePage.style.width = `${A4_WIDTH_PX}px`;
+        resumePage.style.maxWidth = `${A4_WIDTH_PX}px`;
+      }
 
       await new Promise((r) => requestAnimationFrame(r));
 
       const target = resumePage || element;
-      const fullHeightPx = Math.max(target.scrollHeight, target.offsetHeight, 1122);
+      const fullHeightPx = Math.max(target.scrollHeight, target.offsetHeight, A4_MIN_HEIGHT_PX);
       const prevHeight = target.style.height;
-      const prevMinHeight = target.style.minHeight;
+      const prevTargetMinHeight = target.style.minHeight;
       const prevOverflow = target.style.overflow;
       const prevElementHeight = element.style.height;
       const prevElementOverflow = element.style.overflow;
+      const prevResumeWidth = resumePage?.style.width;
+      const prevResumeMaxWidth = resumePage?.style.maxWidth;
 
       target.style.height = `${fullHeightPx}px`;
       target.style.minHeight = `${fullHeightPx}px`;
@@ -97,12 +113,19 @@ const Preview = () => {
       });
 
       target.style.height = prevHeight;
-      target.style.minHeight = prevMinHeight;
+      target.style.minHeight = prevTargetMinHeight;
       target.style.overflow = prevOverflow;
       element.style.height = prevElementHeight;
       element.style.overflow = prevElementOverflow;
       element.style.transform = prevTransform;
       element.style.transformOrigin = prevTransformOrigin;
+      element.style.width = prevWidth;
+      element.style.minHeight = prevMinHeight;
+      element.style.maxWidth = prevMaxWidth;
+      if (resumePage) {
+        resumePage.style.width = prevResumeWidth ?? '';
+        resumePage.style.maxWidth = prevResumeMaxWidth ?? '';
+      }
 
       const pdf = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
       const pageWidth = pdf.internal.pageSize.getWidth();
@@ -111,8 +134,8 @@ const Preview = () => {
       const imgW = canvas.width;
       const imgH = canvas.height;
       const pxPerMm = 96 / 25.4;
-      const imgWidthMm = imgW / pxPerMm;
-      const imgHeightMm = imgH / pxPerMm;
+      const imgWidthMm = imgW / (2 * pxPerMm);
+      const imgHeightMm = imgH / (2 * pxPerMm);
 
       const scale = Math.min(pageWidth / imgWidthMm, pageHeight / imgHeightMm, 1);
       const w = imgWidthMm * scale;
