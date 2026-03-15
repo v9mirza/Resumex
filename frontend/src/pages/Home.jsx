@@ -6,6 +6,19 @@ import { ShieldCheck, Cloud, FileJson, CheckCircle, LayoutTemplate, Star, Copy, 
 import LandingFooter from '../components/LandingFooter';
 import LandingNav from '../components/LandingNav';
 import Seo from '../components/Seo';
+import Minimal from '../templates/Minimal';
+import { SAMPLE_RESUME } from '../data/sampleResume';
+
+// Trimmed resume for hero preview: name, headline, one role, one education, skills
+const HERO_PREVIEW_RESUME = {
+  ...SAMPLE_RESUME,
+  experience: SAMPLE_RESUME.experience?.slice(0, 1) ?? [],
+  education: SAMPLE_RESUME.education?.slice(0, 1) ?? [],
+  projects: [],
+  certifications: [],
+  languages: [],
+  achievements: []
+};
 
 const AuthButtons = () => {
   const { user } = useAuth();
@@ -42,7 +55,7 @@ const Home = () => {
   return (
     <div className="landing-page">
       <Seo
-        title="Build ATS‑friendly resumes online | Resumex"
+        title="Resumex — Build ATS-friendly resumes in minutes"
         description="Resumex is an online resume builder for students, developers, and job‑seekers. Create ATS‑friendly resumes with guided steps, live preview, and PDF/JSON export."
         canonicalPath="/"
       />
@@ -87,17 +100,16 @@ const Home = () => {
             transition={{ duration: 0.6, ease: "easeOut" }}
           >
             <h1 className="lp-hero-title">
-              Resumes for <span className="text-gradient-blue">students, devs, and job‑seekers</span>.
+              Build <span className="text-gradient-blue">ATS-friendly resumes</span> in minutes.
             </h1>
 
             <p style={{ fontSize: '1.05rem', color: 'var(--lp-text-muted)', marginBottom: '24px', lineHeight: '1.6' }}>
-              Guided builder + live preview + ATS‑friendly templates. One workspace for every version of your resume,
-              with autosave, PDF export, and full JSON ownership.
+              For students, developers, and job-seekers. Guided builder, live preview, and instant PDF export—without wrestling with Word templates.
             </p>
 
             <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', justifyContent: 'center' }}>
               <Link to="/dashboard" className="btn-lp-primary" style={{ padding: '16px 36px', fontSize: '1.05rem' }}>
-                Start building your resume
+                Create your resume
               </Link>
               <a href="#features" className="btn-lp-secondary" style={{ padding: '16px 32px', fontSize: '1.05rem' }}>
                 See how it works
@@ -125,7 +137,7 @@ const Home = () => {
             </div>
           </motion.div>
 
-          {/* Right Side: Premium Floating Mock UI */}
+          {/* Right Side: Real resume preview */}
           <motion.div
             className="hero-visual-content"
             initial={{ opacity: 0, x: 40 }}
@@ -137,27 +149,39 @@ const Home = () => {
               transition={{ repeat: Infinity, duration: 5, ease: "easeInOut" }}
               style={{ perspective: '1000px' }}
             >
-              <div className="mock-ui-container" style={{ height: '400px', display: 'flex', flexDirection: 'column', transform: 'rotateY(-4deg) rotateX(2deg)', boxShadow: '20px 30px 60px rgba(0,0,0,0.08)' }}>
-                <div className="mock-ui-header">
+              <div
+                className="mock-ui-container"
+                style={{
+                  height: '400px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  transform: 'rotateY(-4deg) rotateX(2deg)',
+                  boxShadow: '20px 30px 60px rgba(0,0,0,0.12)',
+                  borderRadius: '12px',
+                  overflow: 'hidden',
+                  background: '#fff'
+                }}
+              >
+                <div className="mock-ui-header" style={{ flexShrink: 0 }}>
                   <div className="mock-ui-dot" style={{ background: '#ff5f56' }}></div>
                   <div className="mock-ui-dot" style={{ background: '#ffbd2e' }}></div>
                   <div className="mock-ui-dot" style={{ background: '#27c93f' }}></div>
                 </div>
-                <div style={{ display: 'flex', gap: '24px', flex: 1, padding: '8px' }}>
-                  <div style={{ flex: 1, borderRight: '1px solid var(--lp-border)', paddingRight: '24px' }}>
-                    <div style={{ width: '60%', height: '14px', background: 'var(--lp-border)', borderRadius: '6px', marginBottom: '24px' }}></div>
-                    <div style={{ width: '100%', height: '10px', background: 'var(--lp-bg-alt)', borderRadius: '4px', marginBottom: '12px' }}></div>
-                    <div style={{ width: '90%', height: '10px', background: 'var(--lp-bg-alt)', borderRadius: '4px', marginBottom: '12px' }}></div>
-                    <div style={{ width: '95%', height: '10px', background: 'var(--lp-bg-alt)', borderRadius: '4px', marginBottom: '32px' }}></div>
-
-                    <div style={{ width: '40%', height: '14px', background: 'var(--lp-border)', borderRadius: '6px', marginBottom: '24px' }}></div>
-                    <div style={{ width: '100%', height: '10px', background: 'var(--lp-bg-alt)', borderRadius: '4px', marginBottom: '12px' }}></div>
-                    <div style={{ width: '85%', height: '10px', background: 'var(--lp-bg-alt)', borderRadius: '4px' }}></div>
+                <div style={{ flex: 1, overflow: 'hidden', position: 'relative', background: '#fff' }}>
+                  <div style={{ padding: '16px 20px', transform: 'scale(0.72)', transformOrigin: 'top left', width: '139%', minHeight: '100%' }}>
+                    <Minimal resume={HERO_PREVIEW_RESUME} />
                   </div>
-                  <div style={{ flex: 1.2, background: 'var(--lp-bg-alt)', borderRadius: '12px', border: '1px solid var(--lp-border)', padding: '24px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', boxShadow: 'inset 0 2px 10px rgba(0,0,0,0.06)' }}>
-                    <LayoutTemplate size={56} color="var(--lp-text-muted)" />
-                    <p style={{ marginTop: '20px', color: 'var(--lp-text-muted)', fontSize: '0.95rem', fontWeight: 500 }}>Live PDF Output</p>
-                  </div>
+                  <div
+                    style={{
+                      position: 'absolute',
+                      bottom: 0,
+                      left: 0,
+                      right: 0,
+                      height: 80,
+                      background: 'linear-gradient(to top, rgba(255,255,255,0.95), transparent)',
+                      pointerEvents: 'none'
+                    }}
+                  />
                 </div>
               </div>
             </motion.div>
