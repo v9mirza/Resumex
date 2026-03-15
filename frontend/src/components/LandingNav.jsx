@@ -34,17 +34,19 @@ const LandingNav = ({ rightContent }) => {
           <button
             type="button"
             onClick={toggleTheme}
+            className="lp-nav-theme-btn"
             style={{
-              width: 32,
-              height: 32,
-              borderRadius: 999,
+              width: 36,
+              height: 36,
+              borderRadius: 8,
               border: '1px solid var(--lp-border)',
               background: 'var(--lp-bg-alt)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               color: 'var(--lp-text)',
-              cursor: 'pointer'
+              cursor: 'pointer',
+              flexShrink: 0
             }}
             title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
             aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}

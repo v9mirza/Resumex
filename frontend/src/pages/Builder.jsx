@@ -108,7 +108,6 @@ const Builder = () => {
     }, [isDirty]);
 
     const currentStep = STEPS[currentStepIndex].id;
-    const PREVIEW_SCALE = 0.75;
 
     const countCompletedSections = () => {
         const basics = resume.basics || {};
@@ -360,9 +359,9 @@ const Builder = () => {
             />
 
             {/* Builder toolbar */}
-            <div className="no-print" style={{ borderBottom: '1px solid var(--lp-border)', backgroundColor: 'var(--lp-bg)', padding: '12px 32px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', maxWidth: '1200px', margin: '0 auto' }}>
-                    <div>
+            <div className="builder-toolbar no-print">
+                <div className="builder-toolbar-inner">
+                    <div className="builder-toolbar-heading">
                         <span style={{
                             textTransform: 'uppercase',
                             letterSpacing: '0.12em',
@@ -376,7 +375,7 @@ const Builder = () => {
                             {STEPS[currentStepIndex].label}
                         </h1>
                     </div>
-                    <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+                    <div className="builder-toolbar-actions">
                         <button
                             type="button"
                             onClick={handleResetAll}
@@ -643,7 +642,7 @@ const Builder = () => {
 
                 {/* Live Preview Panel */}
                 <aside className="builder-preview">
-                    <div className="paper-preview" style={{ transform: `scale(${PREVIEW_SCALE})` }}>
+                    <div className="paper-preview builder-paper-preview">
                         <LivePreview resume={resume} />
                     </div>
                 </aside>

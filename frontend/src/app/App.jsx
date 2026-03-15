@@ -67,6 +67,7 @@ function App() {
                 <ResumeProvider>
                     <Toaster
                         position="bottom-right"
+                        containerClassName="lp-toast-container"
                         toastOptions={{
                             style: {
                                 background: 'var(--bg-panel, #ffffff)',

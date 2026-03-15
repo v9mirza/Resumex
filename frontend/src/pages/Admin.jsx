@@ -362,7 +362,7 @@ const Admin = () => {
             <div className="landing-page">
                 <style>{`@keyframes admin-skeleton-pulse { 0%, 100% { opacity: 0.4; } 50% { opacity: 0.7; } }`}</style>
                 <LandingNav rightContent={null} />
-                <main className="container" style={{ padding: '72px 0 96px' }}>
+                <main className="container admin-page-main">
                     <section style={{ marginBottom: 24 }}>
                         <div style={{ height: 28, width: 200, borderRadius: 4, background: 'var(--lp-border)', opacity: 0.5, marginBottom: 8 }} />
                         <div style={{ height: 36, width: 320, borderRadius: 4, background: 'var(--lp-border)', opacity: 0.3, marginBottom: 8 }} />
@@ -408,7 +408,7 @@ const Admin = () => {
                 }
             />
 
-            <main className="container" style={{ padding: '72px 0 96px' }}>
+            <main className="container admin-page-main">
                 {/* Admin header */}
                 <section style={{ marginBottom: '40px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '16px', flexWrap: 'wrap' }}>
                     <div>
@@ -472,8 +472,8 @@ const Admin = () => {
                 </section>
 
                 {/* Users Table */}
-                <section style={{ width: '100%', marginBottom: '40px' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '12px', gap: '12px', flexWrap: 'wrap' }}>
+                <section className="admin-section">
+                    <div className="admin-section-toolbar">
                         <div>
                             <h2 className="lp-card-heading" style={{ fontSize: '1.3rem', marginBottom: 4 }}>User management</h2>
                             <span style={{ fontSize: '0.8rem', color: 'var(--lp-text-muted)' }}>{users.length} accounts total</span>
@@ -499,6 +499,7 @@ const Admin = () => {
                                 placeholder="Search by email…"
                                 value={userSearch}
                                 onChange={(e) => setUserSearch(e.target.value)}
+                                className="admin-search-input"
                                 style={{
                                     padding: '6px 10px',
                                     borderRadius: 999,
@@ -531,8 +532,9 @@ const Admin = () => {
                             ))}
                         </div>
                     </div>
-                    <div className="lp-minimal-card" style={{ padding: 0, overflow: 'hidden' }}>
-                        <table style={{ width: '100%', borderCollapse: 'collapse', color: 'var(--lp-text)' }}>
+                    <div className="lp-minimal-card admin-table-card">
+                        <div className="admin-table-scroll">
+                        <table className="admin-table" style={{ width: '100%', borderCollapse: 'collapse', color: 'var(--lp-text)' }}>
                             <thead>
                                 <tr style={{ borderBottom: '1px solid var(--lp-border)', backgroundColor: 'var(--lp-bg-alt)' }}>
                                     <th
@@ -632,6 +634,7 @@ const Admin = () => {
                                 )}
                             </tbody>
                         </table>
+                        </div>
                         {userPageCount > 1 && (
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 16px', borderTop: '1px solid var(--lp-border)', flexWrap: 'wrap', gap: 8 }}>
                                 <span style={{ fontSize: '0.8rem', color: 'var(--lp-text-muted)' }}>
@@ -661,8 +664,8 @@ const Admin = () => {
                 </section>
 
                 {/* Resumes Table */}
-                <section style={{ width: '100%' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '12px', gap: '12px', flexWrap: 'wrap' }}>
+                <section className="admin-section">
+                    <div className="admin-section-toolbar">
                         <div>
                             <h2 className="lp-card-heading" style={{ fontSize: '1.3rem', marginBottom: 4 }}>Resume inspector</h2>
                             <span style={{ fontSize: '0.8rem', color: 'var(--lp-text-muted)' }}>{resumes.length} resumes total</span>
@@ -688,6 +691,7 @@ const Admin = () => {
                                 placeholder="Search by title or email…"
                                 value={resumeSearch}
                                 onChange={(e) => setResumeSearch(e.target.value)}
+                                className="admin-search-input"
                                 style={{
                                     padding: '6px 10px',
                                     borderRadius: 999,
@@ -721,8 +725,9 @@ const Admin = () => {
                             ))}
                         </div>
                     </div>
-                    <div className="lp-minimal-card" style={{ padding: 0, overflow: 'hidden' }}>
-                        <table style={{ width: '100%', borderCollapse: 'collapse', color: 'var(--lp-text)' }}>
+                    <div className="lp-minimal-card admin-table-card">
+                        <div className="admin-table-scroll">
+                        <table className="admin-table" style={{ width: '100%', borderCollapse: 'collapse', color: 'var(--lp-text)' }}>
                             <thead>
                                 <tr style={{ borderBottom: '1px solid var(--lp-border)', backgroundColor: 'var(--lp-bg-alt)' }}>
                                     <th
@@ -867,6 +872,7 @@ const Admin = () => {
                                 )}
                             </tbody>
                         </table>
+                        </div>
                         {resumePageCount > 1 && (
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 16px', borderTop: '1px solid var(--lp-border)', flexWrap: 'wrap', gap: 8 }}>
                                 <span style={{ fontSize: '0.8rem', color: 'var(--lp-text-muted)' }}>

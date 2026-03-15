@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+// eslint-disable-next-line no-unused-vars
 import { motion } from 'framer-motion';
 import { ShieldCheck, Cloud, FileJson, CheckCircle, LayoutTemplate, Star, Copy, Eye, Github } from 'lucide-react';
 import LandingFooter from '../components/LandingFooter';
@@ -33,12 +34,12 @@ const AuthButtons = () => {
   return (
     <>
       <Link to="/login" style={{ color: 'var(--lp-text)', textDecoration: 'none', fontWeight: 500 }}>Log in</Link>
-      <Link to="/register" style={{
+      <Link to="/register" className="lp-nav-signup" style={{
         padding: '10px 20px',
         backgroundColor: 'var(--lp-accent)',
         color: '#ffffff',
         textDecoration: 'none',
-        borderRadius: '50px',
+        borderRadius: 8,
         fontWeight: 600,
         fontSize: '0.95rem',
         boxShadow: '0 2px 4px rgba(0, 130, 201, 0.2)',
@@ -65,7 +66,7 @@ const Home = () => {
         1. Hero Section 
         Premium Split Layout with Floating Mock UI
       */}
-      <section className="container lp-section-hero" style={{ minHeight: '85vh', display: 'flex', alignItems: 'center', position: 'relative', overflow: 'hidden' }}>
+      <section className="container lp-section-hero lp-hero-section" style={{ display: 'flex', alignItems: 'center', position: 'relative', overflow: 'hidden' }}>
         {/* Subtle background gradient (primary accent orb) */}
         <div style={{
           position: 'absolute',
@@ -103,11 +104,11 @@ const Home = () => {
               Build <span className="text-gradient-blue">ATS-friendly resumes</span> in minutes.
             </h1>
 
-            <p style={{ fontSize: '1.05rem', color: 'var(--lp-text-muted)', marginBottom: '24px', lineHeight: '1.6' }}>
+            <p className="lp-hero-subtitle" style={{ fontSize: '1.05rem', color: 'var(--lp-text-muted)', marginBottom: '24px', lineHeight: '1.6', maxWidth: '100%' }}>
               For students, developers, and job-seekers. Guided builder, live preview, and instant PDF export—without wrestling with Word templates.
             </p>
 
-            <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', justifyContent: 'center' }}>
+            <div className="lp-hero-actions" style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', justifyContent: 'center' }}>
               <Link to="/dashboard" className="btn-lp-primary" style={{ padding: '16px 36px', fontSize: '1.05rem' }}>
                 Create your resume
               </Link>
@@ -116,7 +117,7 @@ const Home = () => {
               </a>
             </div>
 
-            <div style={{ marginTop: '20px', display: 'flex', flexWrap: 'wrap', gap: '10px', justifyContent: 'center', fontSize: '0.85rem', color: 'var(--lp-text-muted)' }}>
+            <div className="lp-hero-features" style={{ marginTop: '20px', display: 'flex', flexWrap: 'wrap', gap: '10px', justifyContent: 'center', fontSize: '0.85rem', color: 'var(--lp-text-muted)' }}>
               <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
                 <CheckCircle size={14} /> Autosave & dashboard history
               </span>
@@ -194,15 +195,13 @@ const Home = () => {
       <section id="how-it-works" className="lp-section-trusted">
         <div className="container" style={{ position: 'relative', zIndex: 1 }}>
           <div
+            className="lp-how-it-works-grid"
             style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(min(180px, 100%), 1fr))',
               gap: 16,
-              padding: '18px 20px',
-              borderRadius: 999,
-              border: '1px solid var(--lp-border)',
-              background: 'var(--lp-bg-alt)',
-              alignItems: 'center'
+              padding: '0',
+              alignItems: 'flex-start'
             }}
           >
             {[
@@ -211,15 +210,17 @@ const Home = () => {
               { step: '3', title: 'Preview & export', text: 'Switch templates, download PDF, or export JSON.' },
               { step: '4', title: 'Manage versions', text: 'Use the dashboard to duplicate and tweak for each role.' }
             ].map((item) => (
-              <div key={item.step} style={{ display: 'flex', gap: 10, alignItems: 'flex-start' }}>
+              <div key={item.step} className="lp-how-step" style={{ display: 'flex', gap: 10, alignItems: 'flex-start', minWidth: 0 }}>
                 <div
+                  className="lp-how-step-badge"
                   style={{
-                    width: 22,
-                    height: 22,
-                    borderRadius: 999,
+                    width: 24,
+                    height: 24,
+                    borderRadius: 6,
                     background: 'var(--lp-accent)',
                     color: '#fff',
                     fontSize: '0.8rem',
+                    fontWeight: 600,
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
@@ -228,9 +229,9 @@ const Home = () => {
                 >
                   {item.step}
                 </div>
-                <div style={{ fontSize: '0.85rem' }}>
+                <div className="lp-how-step-text" style={{ fontSize: '0.85rem', minWidth: 0, flex: 1 }}>
                   <div style={{ fontWeight: 600, color: 'var(--lp-text)' }}>{item.title}</div>
-                  <div style={{ color: 'var(--lp-text-muted)' }}>{item.text}</div>
+                  <div style={{ color: 'var(--lp-text-muted)', wordBreak: 'break-word', overflowWrap: 'break-word' }}>{item.text}</div>
                 </div>
               </div>
             ))}

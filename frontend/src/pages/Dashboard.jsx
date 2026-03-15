@@ -181,10 +181,10 @@ const Dashboard = () => {
                 }
             />
 
-            <main className="container" style={{ padding: '72px 0 96px' }}>
+            <main className="container dashboard-page-main">
                 {/* Dashboard header */}
-                <section style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginBottom: '24px' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap', justifyContent: 'space-between' }}>
+                <section className="dashboard-header">
+                    <div className="dashboard-header-top">
                         <div>
                             <p style={{ fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '0.12em', fontWeight: 600, color: 'var(--lp-accent)', marginBottom: '6px' }}>
                                 Dashboard
@@ -192,13 +192,13 @@ const Dashboard = () => {
                             <h1 style={{ fontSize: '2.3rem', fontWeight: 700, letterSpacing: '-0.03em', margin: 0, color: 'var(--lp-text)' }}>
                                 Your resumes
                             </h1>
-                            <p style={{ fontSize: '0.95rem', color: 'var(--lp-text-muted)', marginTop: '6px', maxWidth: '520px' }}>
+                            <p className="dashboard-subtitle" style={{ fontSize: '0.95rem', color: 'var(--lp-text-muted)', marginTop: '6px', maxWidth: '520px' }}>
                                 Resumes auto‑save as you edit. You can safely close the tab and continue later from here.
                             </p>
                         </div>
                         <Link
                             to="/build"
-                            className="btn-lp-primary"
+                            className="btn-lp-primary dashboard-new-resume"
                             style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', fontSize: '0.95rem', padding: '12px 24px', whiteSpace: 'nowrap' }}
                         >
                             <PlusCircle size={18} />
@@ -206,12 +206,13 @@ const Dashboard = () => {
                         </Link>
                     </div>
 
-                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12, alignItems: 'center' }}>
+                    <div className="dashboard-toolbar">
                         <input
                             type="text"
                             placeholder="Search by title…"
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
+                            className="dashboard-search-input"
                             style={{
                                 flex: '1 1 220px',
                                 minWidth: 0,
@@ -251,14 +252,8 @@ const Dashboard = () => {
                 </section>
 
                 {/* Content / grid */}
-                <section
-                    style={{
-                        display: 'grid',
-                        gridTemplateColumns: 'minmax(0, 1.8fr)',
-                        gap: '24px'
-                    }}
-                >
-                    <div className="lp-minimal-card" style={{ padding: '32px 28px' }}>
+                <section className="dashboard-content">
+                    <div className="lp-minimal-card dashboard-card-inner" style={{ padding: '32px 28px' }}>
                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px', gap: '12px' }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                                 <div style={{ width: '32px', height: '32px', borderRadius: '999px', backgroundColor: '#e0f2fe', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -273,7 +268,7 @@ const Dashboard = () => {
                             )}
                         </div>
 
-                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '20px' }}>
+                        <div className="dashboard-resume-grid">
                             {loading ? (
                                 Array.from({ length: 3 }).map((_, idx) => (
                                     <div
@@ -367,108 +362,68 @@ const Dashboard = () => {
                                                 <span>Updated {formatUpdatedAt(resume.updatedAt)}</span>
                                             </div>
                                         </div>
-                                        <div style={{ display: 'flex', gap: '8px', marginTop: '16px', alignItems: 'center', flexWrap: 'wrap' }}>
-                                            <Link
-                                                to={`/build/${resume._id}`}
-                                                className="btn-lp-primary"
-                                                style={{
-                                                    flex: 1,
-                                                    justifyContent: 'center',
-                                                    padding: '10px 0',
-                                                    fontSize: '0.9rem'
-                                                }}
-                                            >
-                                                Edit
-                                            </Link>
-                                            <Link
-                                                to="/preview"
-                                                state={{ fromId: resume._id }}
-                                                className="btn-lp-secondary"
-                                                style={{
-                                                    padding: '8px 14px',
-                                                    borderRadius: '999px',
-                                                    border: '1px solid var(--lp-border)',
-                                                    background: 'var(--lp-bg-alt)',
-                                                    color: 'var(--lp-text)',
-                                                    fontSize: '0.8rem',
-                                                    fontWeight: 500,
-                                                    cursor: 'pointer'
-                                                }}
-                                            >
-                                                Preview / export
-                                            </Link>
-                                            <button
-                                                onClick={() => handleExportJson(resume)}
-                                                disabled={exportingId === resume._id}
-                                                className="btn-lp-secondary"
-                                                style={{
-                                                    padding: '8px 14px',
-                                                    borderRadius: '999px',
-                                                    border: '1px solid var(--lp-border)',
-                                                    background: 'var(--lp-bg-alt)',
-                                                    color: 'var(--lp-text)',
-                                                    fontSize: '0.8rem',
-                                                    fontWeight: 500,
-                                                    cursor: exportingId === resume._id ? 'wait' : 'pointer',
-                                                    opacity: exportingId === resume._id ? 0.7 : 1
-                                                }}
-                                            >
-                                                {exportingId === resume._id ? 'Preparing…' : 'JSON'}
-                                            </button>
-                                            <button
-                                                onClick={async () => {
-                                                    setDuplicatingId(resume._id);
-                                                    try {
-                                                        const { data } = await api.getResume(resume._id);
-                                                        const source = data.data || {};
-                                                        const baseTitle = resume.title || data.title || 'Untitled resume';
-                                                        const { data: created } = await api.createResume({
-                                                            title: `${baseTitle} (Copy)`,
-                                                            data: source
-                                                        });
-                                                        setResumes(prev => [created, ...prev]);
-                                                        toast.success('Resume duplicated');
-                                                    } catch (error) {
-                                                        console.error('Failed to duplicate resume', error);
-                                                        toast.error('Failed to duplicate resume');
-                                                    } finally {
-                                                        setDuplicatingId(null);
-                                                    }
-                                                }}
-                                                disabled={duplicatingId === resume._id}
-                                                className="btn-lp-secondary"
-                                                style={{
-                                                    padding: '8px 14px',
-                                                    borderRadius: '999px',
-                                                    border: '1px solid var(--lp-border)',
-                                                    background: 'var(--lp-bg-alt)',
-                                                    color: 'var(--lp-text)',
-                                                    fontSize: '0.8rem',
-                                                    fontWeight: 500,
-                                                    cursor: duplicatingId === resume._id ? 'wait' : 'pointer',
-                                                    transition: 'background-color 0.15s ease, border-color 0.15s ease',
-                                                    opacity: duplicatingId === resume._id ? 0.7 : 1
-                                                }}
-                                            >
-                                                {duplicatingId === resume._id ? 'Duplicating…' : 'Duplicate'}
-                                            </button>
-                                            <button
-                                                onClick={() => handleDelete(resume._id)}
-                                                className="btn-lp-danger"
-                                                style={{
-                                                    padding: '8px 14px',
-                                                    borderRadius: '999px',
-                                                    border: '1px solid rgba(239, 68, 68, 0.5)',
-                                                    background: 'rgba(239, 68, 68, 0.12)',
-                                                    color: '#ef4444',
-                                                    fontSize: '0.8rem',
-                                                    fontWeight: 500,
-                                                    cursor: 'pointer',
-                                                    transition: 'background-color 0.15s ease, border-color 0.15s ease'
-                                                }}
-                                            >
-                                                Delete
-                                            </button>
+                                        <div className="dashboard-card-actions">
+                                            <div className="dashboard-card-actions-primary">
+                                                <Link
+                                                    to={`/build/${resume._id}`}
+                                                    className="dashboard-card-btn dashboard-card-btn-edit"
+                                                >
+                                                    Edit
+                                                </Link>
+                                                <Link
+                                                    to="/preview"
+                                                    state={{ fromId: resume._id }}
+                                                    className="dashboard-card-btn dashboard-card-btn-preview"
+                                                >
+                                                    Preview / export
+                                                </Link>
+                                            </div>
+                                            <div className="dashboard-card-actions-secondary">
+                                                <button
+                                                    type="button"
+                                                    onClick={() => handleExportJson(resume)}
+                                                    disabled={exportingId === resume._id}
+                                                    className="dashboard-card-btn dashboard-card-btn-json"
+                                                    aria-label="Download as JSON"
+                                                >
+                                                    {exportingId === resume._id ? 'Preparing…' : 'JSON'}
+                                                </button>
+                                                <button
+                                                    type="button"
+                                                    onClick={async () => {
+                                                        setDuplicatingId(resume._id);
+                                                        try {
+                                                            const { data } = await api.getResume(resume._id);
+                                                            const source = data.data || {};
+                                                            const baseTitle = resume.title || data.title || 'Untitled resume';
+                                                            const { data: created } = await api.createResume({
+                                                                title: `${baseTitle} (Copy)`,
+                                                                data: source
+                                                            });
+                                                            setResumes(prev => [created, ...prev]);
+                                                            toast.success('Resume duplicated');
+                                                        } catch (error) {
+                                                            console.error('Failed to duplicate resume', error);
+                                                            toast.error('Failed to duplicate resume');
+                                                        } finally {
+                                                            setDuplicatingId(null);
+                                                        }
+                                                    }}
+                                                    disabled={duplicatingId === resume._id}
+                                                    className="dashboard-card-btn dashboard-card-btn-duplicate"
+                                                    aria-label="Duplicate this resume"
+                                                >
+                                                    {duplicatingId === resume._id ? 'Duplicating…' : 'Duplicate'}
+                                                </button>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => handleDelete(resume._id)}
+                                                    className="dashboard-card-btn dashboard-card-btn-delete"
+                                                    aria-label="Delete this resume"
+                                                >
+                                                    Delete
+                                                </button>
+                                            </div>
                                         </div>
                                     </article>
                                 ))

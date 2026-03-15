@@ -76,7 +76,7 @@ const Preview = () => {
             <Link to="/dashboard" style={{ color: 'var(--lp-text)', textDecoration: 'none', fontWeight: 500 }}>Dashboard</Link>
           }
         />
-        <div className="preview-container" style={{ justifyContent: 'center', alignItems: 'center', padding: '48px 24px' }}>
+        <div className="preview-container preview-empty">
           <div className="lp-minimal-card" style={{ maxWidth: '420px', textAlign: 'center' }}>
             <h2 style={{ fontSize: '1.5rem', fontWeight: 600, color: 'var(--lp-text)', marginBottom: '12px' }}>
               No resume to preview
@@ -124,30 +124,21 @@ const Preview = () => {
       <div className="preview-container">
 
         {/* Toolbar - Hidden on Print */}
-        <div
-          className="no-print"
-          style={{
-            marginBottom: '32px',
-            display: 'flex',
-            gap: '16px',
-            alignItems: 'center',
-            width: '210mm',
-            justifyContent: 'space-between'
-          }}
-        >
+        <div className="preview-toolbar no-print">
           <Link
             to={backToEditorPath}
             state={{ fromPreview: true, fromId }}
+            className="preview-toolbar-back"
             style={{ textDecoration: 'none', color: 'var(--lp-text-muted)', fontWeight: 500 }}
           >
             ← Back to editor
           </Link>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', alignItems: 'flex-end' }}>
-            <div style={{ textAlign: 'right' }}>
+          <div className="preview-toolbar-right">
+            <div className="preview-toolbar-meta">
               <div style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--lp-text)' }}>{resumeName}</div>
               <div style={{ fontSize: '0.8rem', color: 'var(--lp-text-muted)' }}>{templateLabel} template</div>
             </div>
-            <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', justifyContent: 'flex-end' }}>
+            <div className="preview-toolbar-actions">
               <button
                 type="button"
                 onClick={handleDownloadJson}

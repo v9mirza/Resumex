@@ -74,7 +74,7 @@ const Profile = () => {
                 }
             />
 
-            <main className="container" style={{ padding: '80px 0', maxWidth: '960px', margin: '0 auto', width: '100%' }}>
+            <main className="container profile-page-main">
                 <header style={{ marginBottom: '32px' }}>
                     <p style={{ fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '0.12em', fontWeight: 600, color: 'var(--lp-accent)', marginBottom: '8px' }}>
                         Account
@@ -170,7 +170,7 @@ const Profile = () => {
                                 <p style={{ fontSize: '0.8rem', color: 'var(--lp-text-muted)', marginBottom: '12px' }}>
                                     Leave these fields blank if you do not want to change your password.
                                 </p>
-                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+                                <div className="profile-password-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
                                     <div>
                                         <label className="form-label" style={{ color: 'var(--lp-text)' }}>New password</label>
                                         <input
