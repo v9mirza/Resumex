@@ -9,6 +9,7 @@ const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
+    const [loading, setLoading] = useState(false);
     const { login } = useAuth();
     const navigate = useNavigate();
     const [searchParams, setSearchParams] = useSearchParams();
@@ -23,9 +24,10 @@ const Login = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
+        setLoading(true);
         const result = await login({ email, password });
+        setLoading(false);
         if (result.success) {
-            // Check role from the result (ensure AuthContext returns it)
             if (result.user?.role === 'admin') {
                 navigate('/admin');
             } else {
@@ -91,9 +93,17 @@ const Login = () => {
                         <button
                             type="submit"
                             className="btn-lp-primary"
-                            style={{ width: '100%', marginTop: '8px' }}
+                            style={{ width: '100%', marginTop: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}
+                            disabled={loading}
                         >
-                            Sign in
+                            {loading && (
+                                <span style={{
+                                    width: '16px', height: '16px', border: '2px solid currentColor',
+                                    borderTopColor: 'transparent', borderRadius: '50%',
+                                    display: 'inline-block', animation: 'spin 0.7s linear infinite', flexShrink: 0
+                                }} />
+                            )}
+                            {loading ? 'Signing in…' : 'Sign in'}
                         </button>
                     </form>
 

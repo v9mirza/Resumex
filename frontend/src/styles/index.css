@@ -2659,3 +2659,7 @@ ul {
     font-size: 0.85rem;
   }
 }
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}

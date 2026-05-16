@@ -9,6 +9,7 @@ const Register = () => {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [error, setError] = useState('');
+    const [loading, setLoading] = useState(false);
     const [acceptedLegal, setAcceptedLegal] = useState(false);
     const { register } = useAuth();
     const navigate = useNavigate();
@@ -27,7 +28,9 @@ const Register = () => {
             return;
         }
 
+        setLoading(true);
         const result = await register({ email, password });
+        setLoading(false);
         if (result.success) {
             navigate('/dashboard');
         } else {
@@ -132,9 +135,17 @@ const Register = () => {
                         <button
                             type="submit"
                             className="btn-lp-primary"
-                            style={{ width: '100%', marginTop: '8px' }}
+                            style={{ width: '100%', marginTop: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}
+                            disabled={loading}
                         >
-                            Sign up
+                            {loading && (
+                                <span style={{
+                                    width: '16px', height: '16px', border: '2px solid currentColor',
+                                    borderTopColor: 'transparent', borderRadius: '50%',
+                                    display: 'inline-block', animation: 'spin 0.7s linear infinite', flexShrink: 0
+                                }} />
+                            )}
+                            {loading ? 'Creating account…' : 'Sign up'}
                         </button>
                     </form>
 
