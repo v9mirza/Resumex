@@ -1,5 +1,6 @@
 :root {
   --font-main: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-heading: 'Geist', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-serif: 'Georgia', serif;
 
   --spacing-xs: 4px;
@@ -69,6 +70,17 @@ body {
   color: var(--text-main);
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
+}
+
+/* ─── Geist for all landing page headings ─────────────────── */
+.lp-hero-title,
+.lp-section-title,
+.lp-card-heading,
+.lp-bento-heading,
+.lp-cta-title,
+.lp-how-card-title,
+.lp-stat-value {
+  font-family: var(--font-heading);
 }
 
 a {
@@ -2633,113 +2645,103 @@ ul {
 }
 
 /* Landing Footer */
+/* ─── Footer — Minimal Modern ────────────────────────────── */
 .lp-footer {
-  padding: 72px 0 40px;
-  background: var(--lp-bg);
   border-top: 1px solid var(--lp-border);
+  background: var(--lp-bg);
+  padding: 32px 0 0;
 }
 
-.lp-footer-inner {
+/* Main row: brand left, nav right */
+.lp-footer-row {
   display: flex;
-  flex-wrap: wrap;
+  align-items: center;
   justify-content: space-between;
-  gap: 48px;
+  gap: 24px;
+  padding-bottom: 28px;
 }
 
-.lp-footer-brand {
-  max-width: 300px;
-}
-
-.lp-footer-brand .lp-footer-tagline {
-  color: var(--lp-text-muted);
-  font-size: 0.95rem;
-  line-height: 1.6;
-  margin-top: 12px;
-}
-
-.lp-footer-links {
-  display: flex;
-  gap: 48px;
-  flex-wrap: wrap;
-  min-width: 0;
-}
-
-.lp-footer-column {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  min-width: 0;
-}
-
-.lp-footer-column-title {
-  font-weight: 600;
-  font-size: 0.9rem;
-  color: var(--lp-text);
-  margin-bottom: 4px;
-}
-
-.lp-footer-column a {
-  color: var(--lp-text-muted);
-  font-size: 0.9rem;
+.lp-footer-brand-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   text-decoration: none;
-  transition: color 0.2s ease;
+  color: var(--lp-text);
+  font-weight: 700;
+  font-size: 1rem;
+  letter-spacing: -0.01em;
+  flex-shrink: 0;
 }
 
-.lp-footer-column a:hover {
+.lp-footer-brand-link:hover {
   color: var(--lp-accent);
 }
 
-/* Footer: tablet — stack brand above links, links in 2 columns */
-@media (max-width: 768px) {
-  .lp-footer {
-    padding: 48px 0 32px;
-  }
+.lp-footer-nav {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
 
-  .lp-footer-inner {
+.lp-footer-nav a {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  color: var(--lp-text-muted);
+  text-decoration: none;
+  transition: background 0.15s ease, color 0.15s ease;
+  white-space: nowrap;
+}
+
+.lp-footer-nav a:hover {
+  background: var(--lp-bg-alt);
+  color: var(--lp-text);
+}
+
+/* Bottom strip */
+.lp-footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 14px 0;
+  border-top: 1px solid var(--lp-border);
+  font-size: 0.78rem;
+  color: var(--lp-text-muted);
+}
+
+/* Tablet */
+@media (max-width: 768px) {
+  .lp-footer-row {
     flex-direction: column;
     align-items: flex-start;
-    gap: 32px;
+    gap: 16px;
   }
 
-  .lp-footer-brand {
-    max-width: 100%;
-  }
-
-  .lp-footer-links {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 24px 32px;
-    width: 100%;
-    max-width: 400px;
+  .lp-footer-nav {
+    justify-content: flex-start;
   }
 }
 
-/* Footer: mobile — single column links, tighter spacing */
+/* Mobile */
 @media (max-width: 480px) {
-  .lp-footer {
-    padding: 40px 0 24px;
+  .lp-footer { padding: 24px 0 0; }
+
+  .lp-footer-nav a {
+    padding: 5px 10px;
+    font-size: 0.8rem;
   }
 
-  .lp-footer-inner {
-    gap: 28px;
-  }
-
-  .lp-footer-brand .lp-footer-tagline {
-    font-size: 0.9rem;
-  }
-
-  .lp-footer-links {
-    grid-template-columns: 1fr;
-    gap: 20px;
-    max-width: 100%;
-  }
-
-  .lp-footer-column-title {
-    font-size: 0.85rem;
-  }
-
-  .lp-footer-column a {
-    font-size: 0.85rem;
+  .lp-footer-bottom {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
   }
 }
 

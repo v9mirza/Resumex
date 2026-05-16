@@ -1,5 +1,5 @@
-import React, { Suspense, lazy } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import React, { Suspense, lazy, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider, useAuth } from '../context/AuthContext';
 import { ResumeProvider } from '../state/useResume.jsx';
@@ -16,6 +16,14 @@ const Profile = lazy(() => import('../pages/Profile'));
 const LegalPrivacy = lazy(() => import('../pages/LegalPrivacy'));
 const LegalTerms = lazy(() => import('../pages/LegalTerms'));
 const NotFound = lazy(() => import('../pages/NotFound'));
+
+const ScrollToTop = () => {
+    const { pathname } = useLocation();
+    useEffect(() => {
+        window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    }, [pathname]);
+    return null;
+};
 
 const ProtectedRoute = ({ children }) => {
     const { user, loading } = useAuth();
@@ -80,6 +88,7 @@ function App() {
                         }}
                     />
                     <Router>
+                        <ScrollToTop />
                         <Suspense fallback={<div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--lp-bg)', color: 'var(--lp-text-muted)', fontSize: '0.95rem' }}>Loading…</div>}>
                             <Routes>
                                 <Route path="/" element={<Home />} />

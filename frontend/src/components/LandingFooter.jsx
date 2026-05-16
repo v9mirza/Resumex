@@ -1,43 +1,39 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { Github } from 'lucide-react';
 
-const LandingFooter = () => {
-  return (
-    <footer className="lp-footer">
-      <div className="container">
-        <div className="lp-footer-inner">
-          <div className="lp-footer-brand">
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '4px' }}>
-              <img src="/resumex.svg" alt="Resumex logo" style={{ width: 24, height: 24 }} />
-              <span style={{ fontFamily: 'Inter, sans-serif', fontWeight: 700, fontSize: '1.25rem', color: 'var(--lp-text)', letterSpacing: '-0.01em' }}>Resumex</span>
-            </div>
-            <p className="lp-footer-tagline">
-              The open-source, structured career history editor built for modern professionals.
-            </p>
-          </div>
+const YEAR = new Date().getFullYear();
 
-          <div className="lp-footer-links">
-            <div className="lp-footer-column">
-              <p className="lp-footer-column-title">Product</p>
-              <Link to="/dashboard">Dashboard</Link>
-              <a href="#features">Features</a>
-            </div>
-            <div className="lp-footer-column">
-              <p className="lp-footer-column-title">Legal</p>
-              <Link to="/privacy-policy">Privacy Policy</Link>
-              <Link to="/terms-of-service">Terms of Service</Link>
-            </div>
-            <div className="lp-footer-column">
-              <p className="lp-footer-column-title">Open Source</p>
-              <a href="https://github.com/v9mirza/resumex" target="_blank" rel="noopener noreferrer">GitHub Repo</a>
-              <a href="https://github.com/v9mirza/resumex" target="_blank" rel="noopener noreferrer">Report an Issue</a>
-            </div>
-          </div>
-        </div>
+const LandingFooter = () => (
+  <footer className="lp-footer">
+    <div className="container">
+      {/* Main row */}
+      <div className="lp-footer-row">
+        {/* Brand */}
+        <Link to="/" className="lp-footer-brand-link">
+          <img src="/resumex.svg" alt="Resumex" width={20} height={20} />
+          <span>Resumex</span>
+        </Link>
+
+        {/* Nav links */}
+        <nav className="lp-footer-nav">
+          <Link to="/register">Get started</Link>
+          <Link to="/dashboard">Dashboard</Link>
+          <Link to="/privacy-policy">Privacy</Link>
+          <Link to="/terms-of-service">Terms</Link>
+          <a href="https://github.com/v9mirza/resumex" target="_blank" rel="noopener noreferrer">
+            <Github size={14} /> GitHub
+          </a>
+        </nav>
       </div>
-    </footer>
-  );
-};
+
+      {/* Bottom strip */}
+        <div className="lp-footer-bottom">
+          <span>© {YEAR} Resumex. Open-source under the MIT License.</span>
+          <span>Built with React · No tracking · No ads</span>
+        </div>
+    </div>
+  </footer>
+);
 
 export default LandingFooter;
-
