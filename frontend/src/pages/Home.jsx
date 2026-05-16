@@ -1,13 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 // eslint-disable-next-line no-unused-vars
-import { motion } from 'framer-motion';
-import { ShieldCheck, Cloud, FileJson, CheckCircle, LayoutTemplate, Star, Copy, Eye, Github } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Cloud, FileJson, CheckCircle, LayoutTemplate, Github, ChevronDown, ArrowRight, ShieldCheck, UserPlus, PenLine, Eye, Copy } from 'lucide-react';
 import LandingFooter from '../components/LandingFooter';
 import LandingNav from '../components/LandingNav';
 import Seo from '../components/Seo';
 import Minimal from '../templates/Minimal';
+import Classic from '../templates/Classic';
+import Modern from '../templates/Modern';
 import { SAMPLE_RESUME } from '../data/sampleResume';
 
 // Trimmed resume for hero preview: name, headline, one role, one education, skills
@@ -52,6 +54,161 @@ const AuthButtons = () => {
   );
 };
 
+const FAQ_ITEMS = [
+  { q: 'Is Resumex free?', a: 'Yes. You can create an account, build multiple resumes, and export PDFs and JSON without entering a credit card.' },
+  { q: 'Can I export my resume as PDF and JSON?', a: 'From the preview screen you can download a ready‑to‑send PDF or export your full resume data as JSON at any time.' },
+  { q: 'Are the templates ATS‑friendly?', a: 'The Minimal, Classic, and Modern templates use clean structure and typography so Applicant Tracking Systems can parse your content reliably.' },
+  { q: 'What happens to my data?', a: 'Your resumes are stored securely in your account and can be deleted at any time from your profile. The project is open‑source for full transparency.' },
+  { q: 'Can I create multiple versions of my resume?', a: 'Yes. Use the dashboard to keep separate versions for different roles or companies, and duplicate any resume to iterate quickly.' },
+  { q: 'Does Resumex write or change my content?', a: 'No. Resumex focuses on structure, clarity, and exports—you stay in full control of the words on your resume.' },
+];
+
+const FaqSection = () => {
+  const [openIdx, setOpenIdx] = useState(null);
+  return (
+    <section className="lp-section-faq">
+      <div className="container">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          style={{ textAlign: 'center', marginBottom: '40px' }}
+        >
+          <h2 className="lp-section-title">Frequently asked questions</h2>
+        </motion.div>
+
+        <div style={{ maxWidth: 720, margin: '0 auto' }}>
+          {FAQ_ITEMS.map((item, i) => {
+            const isOpen = openIdx === i;
+            return (
+              <div
+                key={item.q}
+                style={{ borderBottom: '1px solid var(--lp-border)' }}
+              >
+                <button
+                  onClick={() => setOpenIdx(isOpen ? null : i)}
+                  style={{
+                    width: '100%', background: 'none', border: 'none', cursor: 'pointer',
+                    display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                    padding: '18px 0', gap: 12, textAlign: 'left'
+                  }}
+                  aria-expanded={isOpen}
+                >
+                  <span style={{ fontSize: '0.95rem', fontWeight: 600, color: 'var(--lp-text)' }}>{item.q}</span>
+                  <ChevronDown
+                    size={18}
+                    color="var(--lp-text-muted)"
+                    style={{ flexShrink: 0, transition: 'transform 0.3s ease', transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}
+                  />
+                </button>
+                <AnimatePresence initial={false}>
+                  {isOpen && (
+                    <motion.div
+                      key="answer"
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.28, ease: 'easeInOut' }}
+                      style={{ overflow: 'hidden' }}
+                    >
+                      <p style={{ fontSize: '0.9rem', color: 'var(--lp-text-muted)', lineHeight: 1.65, paddingBottom: 18, margin: 0 }}>
+                        {item.a}
+                      </p>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
+};
+
+const GALLERY_RESUME = {
+  ...SAMPLE_RESUME,
+  experience: SAMPLE_RESUME.experience?.slice(0, 2) ?? [],
+  education: SAMPLE_RESUME.education?.slice(0, 1) ?? [],
+  projects: SAMPLE_RESUME.projects?.slice(0, 1) ?? [],
+  certifications: [],
+  languages: [],
+  achievements: [],
+};
+
+const TEMPLATES = [
+  { id: 'minimal', label: 'Minimal', Component: Minimal },
+  { id: 'classic', label: 'Classic', Component: Classic },
+  { id: 'modern',  label: 'Modern',  Component: Modern  },
+];
+
+const TemplateGallery = () => {
+  const [active, setActive] = useState('minimal');
+  const { Component } = TEMPLATES.find(t => t.id === active);
+
+  return (
+    <section className="lp-section-templates">
+      <div className="container">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          style={{ textAlign: 'center', marginBottom: '40px' }}
+        >
+          <p className="lp-section-eyebrow">Templates</p>
+          <h2 className="lp-section-title">Pick a style. Keep your data.</h2>
+          <p className="lp-section-subtitle" style={{ maxWidth: 480, margin: '12px auto 0' }}>
+            Switch between templates instantly — your content stays exactly the same.
+          </p>
+        </motion.div>
+
+        {/* Tab switcher */}
+        <div className="lp-template-tabs">
+          {TEMPLATES.map(t => (
+            <button
+              key={t.id}
+              onClick={() => setActive(t.id)}
+              className={`lp-template-tab${active === t.id ? ' lp-template-tab--active' : ''}`}
+            >
+              {t.label}
+            </button>
+          ))}
+        </div>
+
+        {/* Preview window */}
+        <motion.div
+          key={active}
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3 }}
+          className="lp-template-preview-window"
+        >
+          {/* Browser chrome */}
+          <div className="mock-ui-header" style={{ flexShrink: 0, borderRadius: '14px 14px 0 0' }}>
+            <div className="mock-ui-dot" style={{ background: '#ff5f56' }} />
+            <div className="mock-ui-dot" style={{ background: '#ffbd2e' }} />
+            <div className="mock-ui-dot" style={{ background: '#27c93f' }} />
+            <span className="lp-template-preview-label">{TEMPLATES.find(t => t.id === active)?.label} template</span>
+          </div>
+          {/* Scaled resume */}
+          <div className="lp-template-preview-body">
+            <div className="lp-template-preview-scaler">
+              <Component resume={GALLERY_RESUME} />
+            </div>
+            <div className="lp-template-preview-fade" />
+          </div>
+        </motion.div>
+
+        <div style={{ textAlign: 'center', marginTop: 32 }}>
+          <Link to="/register" className="btn-lp-primary">
+            Try all templates free <ArrowRight size={16} />
+          </Link>
+        </div>
+      </div>
+    </section>
+  );
+};
+
 const Home = () => {
   return (
     <div className="landing-page">
@@ -67,30 +224,10 @@ const Home = () => {
         Premium Split Layout with Floating Mock UI
       */}
       <section className="container lp-section-hero lp-hero-section" style={{ display: 'flex', alignItems: 'center', position: 'relative', overflow: 'hidden' }}>
-        {/* Subtle background gradient (primary accent orb) */}
-        <div style={{
-          position: 'absolute',
-          top: '20%',
-          left: '20%',
-          transform: 'translate(-50%, -50%)',
-          width: '700px',
-          height: '700px',
-          background: 'radial-gradient(ellipse at center, rgba(0,130,201,0.06) 0%, rgba(255,255,255,0) 70%)',
-          zIndex: 0,
-          pointerEvents: 'none'
-        }}></div>
-
-        {/* Secondary Purple/Indigo Orb for mesh gradient feel */}
-        <div style={{
-          position: 'absolute',
-          bottom: '-10%',
-          right: '-10%',
-          width: '800px',
-          height: '800px',
-          background: 'radial-gradient(ellipse at center, rgba(99,102,241,0.04) 0%, rgba(255,255,255,0) 70%)',
-          zIndex: 0,
-          pointerEvents: 'none'
-        }}></div>
+        {/* Blue orb — top left */}
+        <div className="hero-orb hero-orb--blue" />
+        {/* Purple orb — bottom right */}
+        <div className="hero-orb hero-orb--purple" />
 
         <div className="hero-split-layout">
           {/* Left Side: Text and CTA */}
@@ -100,40 +237,36 @@ const Home = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, ease: "easeOut" }}
           >
+            {/* Badge pill */}
+            <div className="hero-badge">
+              <CheckCircle size={13} />
+              Free forever · Open‑source · No credit card
+            </div>
+
             <h1 className="lp-hero-title">
-              Build <span className="text-gradient-blue">ATS-friendly resumes</span> in minutes.
+              Build a resume<br />
+              that gets you <span className="text-gradient-blue">hired.</span>
             </h1>
 
-            <p className="lp-hero-subtitle" style={{ fontSize: '1.05rem', color: 'var(--lp-text-muted)', marginBottom: '24px', lineHeight: '1.6', maxWidth: '100%' }}>
-              For students, developers, and job-seekers. Guided builder, live preview, and instant PDF export—without wrestling with Word templates.
+            <p className="lp-hero-subtitle">
+              Guided steps, live preview, and instant PDF export — no Word templates, no blank pages.
             </p>
 
-            <div className="lp-hero-actions" style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', justifyContent: 'center' }}>
+            <div className="lp-hero-actions">
               <Link to="/dashboard" className="btn-lp-primary" style={{ padding: '16px 36px', fontSize: '1.05rem' }}>
-                Create your resume
+                Build my resume <ArrowRight size={18} />
               </Link>
-              <a href="#features" className="btn-lp-secondary" style={{ padding: '16px 32px', fontSize: '1.05rem' }}>
+              <a href="#how-it-works" className="btn-lp-secondary" style={{ padding: '16px 32px', fontSize: '1.05rem' }}>
                 See how it works
               </a>
             </div>
 
-            <div className="lp-hero-features" style={{ marginTop: '20px', display: 'flex', flexWrap: 'wrap', gap: '10px', justifyContent: 'center', fontSize: '0.85rem', color: 'var(--lp-text-muted)' }}>
-              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-                <CheckCircle size={14} /> Autosave & dashboard history
-              </span>
-              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-                <FileJson size={14} /> PDF & JSON export
-              </span>
-              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-                <LayoutTemplate size={14} /> Live template switching
-              </span>
-              <a
-                href="https://github.com/v9mirza/resumex"
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{ display: 'inline-flex', alignItems: 'center', gap: 6, textDecoration: 'none', color: 'var(--lp-accent)', fontWeight: 500 }}
-              >
-                <Github size={14} /> Open‑source on GitHub
+            <div className="lp-hero-trust">
+              <span><CheckCircle size={13} /> Autosave</span>
+              <span><FileJson size={13} /> PDF & JSON</span>
+              <span><LayoutTemplate size={13} /> 3 templates</span>
+              <a href="https://github.com/v9mirza/resumex" target="_blank" rel="noopener noreferrer">
+                <Github size={13} /> GitHub
               </a>
             </div>
           </motion.div>
@@ -190,69 +323,62 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Trusted By (Social Proof) */}
-      {/* How it works strip */}
-      <section id="how-it-works" className="lp-section-trusted">
-        <div className="container" style={{ position: 'relative', zIndex: 1 }}>
-          <div
-            className="lp-how-it-works-grid"
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(min(180px, 100%), 1fr))',
-              gap: 16,
-              padding: '0',
-              alignItems: 'flex-start'
-            }}
+      {/* How it works */}
+      <section id="how-it-works" className="lp-section-how">
+        <div className="container">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            style={{ textAlign: 'center', marginBottom: '48px' }}
           >
+            <p className="lp-section-eyebrow" style={{ color: 'var(--lp-accent)' }}>How it works</p>
+            <h2 className="lp-section-title">From blank page to PDF in four steps.</h2>
+          </motion.div>
+
+          <div className="lp-how-cards">
             {[
-              { step: '1', title: 'Create your account', text: 'Sign up free—no credit card required.' },
-              { step: '2', title: 'Fill the guided builder', text: 'Basics, education, experience, projects, skills, and more.' },
-              { step: '3', title: 'Preview & export', text: 'Switch templates, download PDF, or export JSON.' },
-              { step: '4', title: 'Manage versions', text: 'Use the dashboard to duplicate and tweak for each role.' }
-            ].map((item) => (
-              <div key={item.step} className="lp-how-step" style={{ display: 'flex', gap: 10, alignItems: 'flex-start', minWidth: 0 }}>
-                <div
-                  className="lp-how-step-badge"
-                  style={{
-                    width: 24,
-                    height: 24,
-                    borderRadius: 6,
-                    background: 'var(--lp-accent)',
-                    color: '#fff',
-                    fontSize: '0.8rem',
-                    fontWeight: 600,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    flexShrink: 0
-                  }}
-                >
-                  {item.step}
+              { icon: <UserPlus size={22} />, step: '01', title: 'Create your account', text: 'Sign up free — no credit card, no trial. Just a working email.', color: '#6366f1', bg: 'rgba(99,102,241,0.1)' },
+              { icon: <PenLine size={22} />, step: '02', title: 'Fill the guided builder', text: 'Work through basics, experience, education, skills, and projects — one section at a time.', color: '#0082c9', bg: 'rgba(0,130,201,0.1)' },
+              { icon: <Eye size={22} />,     step: '03', title: 'Preview & export', text: 'Switch templates live and download a polished PDF or clean JSON the moment you\'re ready.', color: '#10b981', bg: 'rgba(16,185,129,0.1)' },
+              { icon: <Copy size={22} />,    step: '04', title: 'Manage versions', text: 'Duplicate any resume and tailor it per role. Your dashboard keeps every version safe.', color: '#f59e0b', bg: 'rgba(245,158,11,0.1)' },
+            ].map((item, i) => (
+              <motion.div
+                key={item.step}
+                className="lp-how-card"
+                initial={{ opacity: 0, y: 24 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.08 }}
+              >
+                <div className="lp-how-card-top">
+                  <div className="lp-how-card-icon" style={{ background: item.bg, color: item.color }}>
+                    {item.icon}
+                  </div>
+                  <span className="lp-how-card-step">{item.step}</span>
                 </div>
-                <div className="lp-how-step-text" style={{ fontSize: '0.85rem', minWidth: 0, flex: 1 }}>
-                  <div style={{ fontWeight: 600, color: 'var(--lp-text)' }}>{item.title}</div>
-                  <div style={{ color: 'var(--lp-text-muted)', wordBreak: 'break-word', overflowWrap: 'break-word' }}>{item.text}</div>
-                </div>
-              </div>
+                <h3 className="lp-how-card-title">{item.title}</h3>
+                <p className="lp-how-card-text">{item.text}</p>
+              </motion.div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Social proof / use cases */}
-      <section className="lp-section-trusted">
-        <div className="container" style={{ textAlign: 'center', position: 'relative', zIndex: 1 }}>
-          <p className="lp-trusted-eyebrow">
-            Helping people at different stages of their career
-          </p>
-          <div className="lp-trusted-logos">
+      {/* Stats bar */}
+      <section className="lp-stats-bar">
+        <div className="container">
+          <div className="lp-stats-grid">
             {[
-              'Students landing internships faster',
-              'Bootcamp grads shipping their first portfolio resume',
-              'Junior devs keeping versions for each job description',
-              'Experienced hires standardizing years of experience'
-            ].map((label) => (
-              <span key={label} className="lp-trusted-logo-item">{label}</span>
+              { value: '3', label: 'Resume templates' },
+              { value: '100%', label: 'Free forever' },
+              { value: 'PDF + JSON', label: 'Export formats' },
+              { value: 'Open‑source', label: 'On GitHub' },
+            ].map((stat, i) => (
+              <div key={i} className="lp-stat-item">
+                <span className="lp-stat-value">{stat.value}</span>
+                <span className="lp-stat-label">{stat.label}</span>
+              </div>
             ))}
           </div>
         </div>
@@ -266,111 +392,102 @@ const Home = () => {
             viewport={{ once: true, margin: "-100px" }}
             style={{ textAlign: 'center', marginBottom: '64px' }}
           >
-            <p className="lp-section-eyebrow">Engineered Principles</p>
-            <h2 className="lp-section-title">Designed for real‑world applications.</h2>
+            <p className="lp-section-eyebrow">Features</p>
+            <h2 className="lp-section-title">Everything you need to land the interview.</h2>
             <p className="lp-section-subtitle">
-              Your experience should be the only thing that stands out—not a noisy template. Resumex gives you a guided builder,
-              autosave, live preview, and structured data so updating your resume becomes a calm, repeatable workflow.
+              A calm, repeatable workflow — guided steps, live preview, and autosave so your resume is always one click away from ready.
             </p>
           </motion.div>
 
           <div className="lp-bento-grid">
-            {/* Bento Large Feature */}
+            {/* Bento Large — Guided Builder */}
             <motion.div
-              className="lp-minimal-card bento-large"
+              className="lp-minimal-card bento-large lp-bento-feature-card"
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
             >
-              <div style={{ background: 'rgba(0,130,201,0.08)', width: '56px', height: '56px', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '8px' }}>
-                <Cloud size={28} color="var(--lp-accent)" />
+              <div className="lp-bento-icon lp-bento-icon--blue">
+                <Cloud size={26} />
               </div>
-              <h3 className="lp-card-heading" style={{ fontSize: '1.5rem' }}>Guided builder with autosave</h3>
-              <p className="lp-card-body" style={{ fontSize: '1.05rem' }}>
-                Move step‑by‑step through basics, education, experience, projects, skills, certifications, and more. Quick‑start presets
-                for students, junior devs, and experienced hires help you get started fast, while autosave and the dashboard keep every version safely stored.
+              <h3 className="lp-card-heading lp-bento-heading">Guided builder with autosave</h3>
+              <p className="lp-card-body">
+                Move step‑by‑step through every section of your resume. Nothing gets skipped, nothing gets lost — every change saves itself.
               </p>
 
-              <div style={{ marginTop: 'auto', paddingTop: '32px' }}>
-                <div className="lp-saved-badge" style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '16px', background: 'var(--lp-bg-alt)', borderRadius: '8px', border: '1px solid var(--lp-border)' }}>
-                  <CheckCircle size={20} color="var(--lp-success, #10b981)" />
-                  <span style={{ fontWeight: 500, fontSize: '0.95rem', color: 'var(--lp-text)' }}>Changes saved automatically</span>
+              {/* Mini builder steps visual */}
+              <div className="lp-builder-steps">
+                {['Basics', 'Experience', 'Education', 'Skills', 'Projects'].map((step, i) => (
+                  <span key={step} className="lp-builder-step-pill">
+                    <span className="lp-builder-step-num">{i + 1}</span>
+                    {step}
+                  </span>
+                ))}
+              </div>
+
+              {/* Saved badge */}
+              <div className="lp-autosave-badge">
+                <CheckCircle size={16} color="#10b981" />
+                <span>Changes saved automatically</span>
+              </div>
+            </motion.div>
+
+            {/* Bento Small — PDF & JSON export */}
+            <motion.div
+              className="lp-minimal-card lp-bento-feature-card"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.1 }}
+            >
+              <div className="lp-bento-icon lp-bento-icon--green">
+                <FileJson size={22} />
+              </div>
+              <h3 className="lp-card-heading lp-bento-heading">PDF & JSON export</h3>
+              <p className="lp-card-body">
+                Download a polished PDF or export clean JSON — your career data is never locked to one format.
+              </p>
+
+              {/* Decorative export pills */}
+              <div className="lp-export-pills">
+                <div className="lp-export-pill lp-export-pill--pdf">
+                  <ShieldCheck size={13} /> Download PDF
+                </div>
+                <div className="lp-export-pill lp-export-pill--json">
+                  <FileJson size={13} /> Export JSON
                 </div>
               </div>
             </motion.div>
 
-            {/* Bento Small Top */}
+            {/* Bento Small — ATS Templates */}
             <motion.div
-              className="lp-minimal-card"
+              className="lp-minimal-card lp-bento-feature-card"
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, delay: 0.1 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2 }}
             >
-              <div style={{ background: 'var(--lp-bg-alt)', width: '48px', height: '48px', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '4px' }}>
-                <ShieldCheck size={24} color="var(--lp-text-muted)" />
+              <div className="lp-bento-icon lp-bento-icon--purple">
+                <LayoutTemplate size={22} />
               </div>
-              <h3 className="lp-card-heading">PDF & JSON export</h3>
+              <h3 className="lp-card-heading lp-bento-heading">ATS‑friendly templates</h3>
               <p className="lp-card-body">
-                Download polished PDFs directly from the preview screen, or export your complete resume data as clean JSON for backups,
-                integrations, or future tools. Your career history is never locked into a single format.
+                Switch between Minimal, Classic, and Modern instantly — same data, different look, always scanner-ready.
               </p>
-            </motion.div>
 
-            {/* Bento Small Bottom */}
-            <motion.div
-              className="lp-minimal-card"
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, delay: 0.2 }}
-            >
-              <div style={{ background: 'var(--lp-bg-alt)', width: '48px', height: '48px', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '4px' }}>
-                <LayoutTemplate size={24} color="var(--lp-text-muted)" />
+              {/* Template name pills */}
+              <div className="lp-template-name-pills">
+                {['Minimal', 'Classic', 'Modern'].map(name => (
+                  <span key={name} className="lp-template-name-pill">{name}</span>
+                ))}
               </div>
-              <h3 className="lp-card-heading">ATS‑friendly templates</h3>
-              <p className="lp-card-body">
-                Switch instantly between Minimal, Classic, and Modern templates while keeping the same structured data underneath.
-                Each layout is optimized for scanners and for humans reading on screen or as a PDF.
-              </p>
             </motion.div>
           </div>
         </div>
       </section>
 
-      {/* Capabilities */}
-      <section className="container lp-section-capabilities">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          style={{ textAlign: 'center', marginBottom: '48px' }}
-        >
-          <p className="lp-section-eyebrow">Capabilities</p>
-          <h2 className="lp-section-title">Everything you need. Nothing you don't.</h2>
-        </motion.div>
-
-        <div className="lp-grid-2">
-          <motion.div className="lp-minimal-card lp-capability-card" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
-            <div className="lp-capability-icon"><Copy size={22} /></div>
-            <h3 className="lp-card-heading">Multiple versions</h3>
-            <p className="lp-card-body">Keep tailored versions for internships, junior roles, and senior positions without losing your core history.</p>
-          </motion.div>
-          <motion.div className="lp-minimal-card lp-capability-card" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, delay: 0.05 }}>
-            <div className="lp-capability-icon"><Eye size={22} /></div>
-            <h3 className="lp-card-heading">Real‑time preview</h3>
-            <p className="lp-card-body">See exactly what recruiters will see as you type, with live template switching built into the editor.</p>
-          </motion.div>
-          <motion.div className="lp-minimal-card lp-capability-card" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, delay: 0.1 }}>
-            <div className="lp-capability-icon"><FileJson size={22} /></div>
-            <h3 className="lp-card-heading">JSON export</h3>
-            <p className="lp-card-body">Export your resume data as clean JSON—perfect for backups, integrations, or feeding into other tools.</p>
-          </motion.div>
-          <motion.div className="lp-minimal-card lp-capability-card" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, delay: 0.15 }}>
-            <div className="lp-capability-icon"><Github size={22} /></div>
-            <h3 className="lp-card-heading">Open Source</h3>
-            <p className="lp-card-body">Transparency you can trust. Code is available for review on GitHub.</p>
-          </motion.div>
-        </div>
-      </section>
+      {/* Template Gallery */}
+      <TemplateGallery />
 
       {/* CTA Section */}
       <section className="lp-section-cta">
@@ -382,10 +499,10 @@ const Home = () => {
             className="lp-cta-card"
           >
             <h2 className="lp-cta-title">
-              Your best resume yet.
+              Your resume, ready in<br />10 minutes.
             </h2>
             <p className="lp-cta-subtitle">
-              Join professionals who have accelerated their careers with cleaner, structured data that recruiters love.
+              Guided steps, live preview, instant PDF. Free forever — no credit card needed.
             </p>
             <div className="lp-cta-actions">
               <Link to="/register" className="btn-lp-primary">
@@ -405,77 +522,7 @@ const Home = () => {
       </section>
 
       {/* FAQ */}
-      <section className="lp-section-faq">
-        <div className="container">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            style={{ textAlign: 'center', marginBottom: '20px' }}
-          >
-            <p className="lp-section-eyebrow"></p>
-            <h2 className="lp-section-title">FAQs</h2>
-          </motion.div>
-
-          <div style={{ maxWidth: 720, margin: '0 auto' }}>
-            {[
-              {
-                q: 'Is Resumex free?',
-                a: 'Yes. You can create an account, build multiple resumes, and export PDFs and JSON without entering a credit card.'
-              },
-              {
-                q: 'Can I export my resume as PDF and JSON?',
-                a: 'From the preview screen you can download a ready‑to‑send PDF or export your full resume data as JSON at any time.'
-              },
-              {
-                q: 'Are the templates ATS‑friendly?',
-                a: 'The Minimal, Classic, and Modern templates use clean structure and typography so Applicant Tracking Systems can parse your content reliably.'
-              },
-              {
-                q: 'What happens to my data?',
-                a: 'Your resumes are stored securely in your account and can be deleted at any time from your profile. The project is open‑source for full transparency.'
-              },
-              {
-                q: 'Can I create multiple versions of my resume?',
-                a: 'Yes. Use the dashboard to keep separate versions for different roles or companies, and duplicate any resume to iterate quickly.'
-              },
-              {
-                q: 'Does Resumex write or change my content?',
-                a: 'No. Resumex focuses on structure, clarity, and exports—you stay in full control of the words on your resume.'
-              }
-            ].map((item) => (
-              <details
-                key={item.q}
-                style={{
-                  padding: '10px 0',
-                  marginBottom: 4,
-                  borderBottom: '1px solid var(--lp-border)',
-                  cursor: 'pointer',
-                  background: 'transparent'
-                }}
-              >
-                <summary
-                  style={{
-                    listStyle: 'none',
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    fontSize: '0.95rem',
-                    fontWeight: 600,
-                    color: 'var(--lp-text)'
-                  }}
-                >
-                  <span>{item.q}</span>
-                  <span style={{ fontSize: '1.1rem', color: 'var(--lp-text-muted)', marginLeft: 12 }}>+</span>
-                </summary>
-                <p className="lp-card-body" style={{ fontSize: '0.88rem', color: 'var(--lp-text-muted)', marginTop: 6 }}>
-                  {item.a}
-                </p>
-              </details>
-            ))}
-          </div>
-        </div>
-      </section>
+      <FaqSection />
 
       <LandingFooter />
     </div>
