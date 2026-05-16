@@ -86,6 +86,8 @@ const Login = () => {
                                 className="form-input"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
+                                minLength={6}
+                                maxLength={128}
                                 required
                             />
                         </div>

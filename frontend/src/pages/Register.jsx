@@ -18,6 +18,16 @@ const Register = () => {
         e.preventDefault();
         setError('');
 
+        if (password.length < 6) {
+            setError("Password must be at least 6 characters");
+            return;
+        }
+
+        if (password.length > 128) {
+            setError("Password must be 128 characters or fewer");
+            return;
+        }
+
         if (password !== confirmPassword) {
             setError("Passwords do not match");
             return;
@@ -86,6 +96,8 @@ const Register = () => {
                                 className="form-input"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
+                                minLength={6}
+                                maxLength={128}
                                 required
                             />
                         </div>
@@ -97,6 +109,8 @@ const Register = () => {
                                 className="form-input"
                                 value={confirmPassword}
                                 onChange={(e) => setConfirmPassword(e.target.value)}
+                                minLength={6}
+                                maxLength={128}
                                 required
                             />
                         </div>
