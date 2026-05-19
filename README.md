@@ -41,9 +41,6 @@
 
 To access the admin panel, you must manually update your user's `role` to `admin` directly in the MongoDB database.
 
-## Structure
-
-
 ---
 
 Made by [v9mirza](https://v9mirza.com/) | MIT License
