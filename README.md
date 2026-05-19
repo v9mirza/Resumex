@@ -43,7 +43,6 @@ To access the admin panel, you must manually update your user's `role` to `admin
 
 ## Structure
 
-See [PROJECT_STRUCTURE.md](./PROJECT_STRUCTURE.md) for architecture details.
 
 ---
 
