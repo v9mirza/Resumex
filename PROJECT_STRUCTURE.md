@@ -1,112 +1,314 @@
-# Project Architecture & File Documentation
+# Project Structure
 
-This document explains the structure of the **Resumex** application, detailing the purpose of every file in the Backend and Frontend.
-
-## 🟢 Backend (`/backend/src`)
-The backend is a Node.js & Express application that handles the database, authentication, and API logic.
-
-### **Core**
-- **`index.js`**:
-  - **Purpose**: The entry point of the server.
-  - **Function**: It starts the Express app, connects to the database, sets up middleware (CORS, JSON parsing), and defines the main API routes (`/api/auth`, `/api/resumes`, `/api/admin`). It listens on port 3000.
-
-### **Config**
-- **`config/db.js`**:
-  - **Purpose**: Database configuration.
-  - **Function**: Connects to the MongoDB database using Mongoose.
-
-### **Models (Database Schemas)**
-- **`models/User.js`**:
-  - **Purpose**: Defines the structure of a User account.
-  - **Fields**: `email`, `password` (hashed), `role` ('user' or 'admin'), timestamps.
-- **`models/Resume.js`**:
-  - **Purpose**: Defines the structure of a Resume.
-  - **Fields**: `user` (linked to User model), `title`, `data` (the big JSON object containing resume content like education, skills, etc.).
-
-### **Middleware**
-- **`middleware/authMiddleware.js`**:
-  - **Purpose**: Security guard.
-  - **Function**:
-    - `protect`: Checks if the request has a valid JWT token. If yes, it attaches the User to the request; if no, it blocks access.
-    - `admin`: Checks if the authenticated user has the `role: 'admin'`.
-
-### **Routes (API Definitions)**
-- **`routes/auth.js`**:
-  - **Purpose**: Endpoints for Account management.
-  - **Function**: Handles POST `/register`, POST `/login`, and PUT/DELETE `/profile`.
-- **`routes/resumes.js`**:
-  - **Purpose**: Endpoints for Resume management.
-  - **Function**: Handles GET/POST/PUT/DELETE for resumes. Uses `protect` middleware to ensure you only touch *your* resumes (unless Admin).
-- **`routes/adminRoutes.js`**:
-  - **Purpose**: Endpoints for Admin capabilities.
-  - **Function**: Secure routes for getting system stats, listing all users, and listing all resumes.
-
-### **Controllers (Business Logic)**
-- **`controllers/authController.js`**:
-  - **Purpose**: Logic for Auth routes.
-  - **Function**: Hashes passwords, checks credentials, generates tokens (`registerUser`, `loginUser`, `updateUserProfile`, `deleteAccount`).
-- **`controllers/resumeController.js`**:
-  - **Purpose**: Logic for Resume routes.
-  - **Function**: Creates, reads, updates, and deletes resumes in the database (`getResumes`, `getResumeById`, `createResume`, `updateResume`, `deleteResume`).
-- **`controllers/adminController.js`**:
-  - **Purpose**: Logic for Admin routes.
-  - **Function**: Calculates stats (`getStats`), fetches all data (`getUsers`, `getResumes`), and can delete users (`deleteUser`).
+This document covers every file in the Resumex codebase — what it is, what it owns, and how it relates to the rest of the system.
 
 ---
 
-## 🔵 Frontend (`/frontend/src`)
-The frontend is a React application (using Vite) that provides the user interface.
+## Root
 
-### **Core & Application Structure**
-- **`main.jsx`**:
-  - **Purpose**: React Entry point.
-  - **Function**: Mounts the React app into the HTML `root` element.
-- **`app/App.jsx`**:
-  - **Purpose**: Main Application Component.
-  - **Function**: Defines the **Routing** (which page shows for which URL) and wraps the app in Global Providers (`AuthProvider`, `ResumeProvider`, `Toaster`). It handles `ProtectedRoute` logic.
+```
+Resumex/
+├── backend/
+├── frontend/
+├── vercel.json          # Monorepo routing for Vercel (rewrites API calls to the backend)
+├── README.md
+└── PROJECT_STRUCTURE.md
+```
 
-### **Services & Global State**
-- **`services/api.js`**:
-  - **Purpose**: Communication Layer.
-  - **Function**: Configures `axios` to make HTTP requests to the Backend. It automatically attaches the JWT token to every request so you don't have to manually send it every time.
-- **`context/AuthContext.jsx`**:
-  - **Purpose**: User Session State.
-  - **Function**: Keeps track of "Who is logged in?". It loads the user from LocalStorage on startup and provides `login`, `register`, and `logout` functions to the rest of the app.
-- **`state/useResume.jsx`**:
-  - **Purpose**: Resume Editor State.
-  - **Function**: A generic state manager for the Resume Builder. It holds the current resume data (`basics`, `education`, `experience`, etc.) so different parts of the builder can read/write to it.
+- **`vercel.json`** — Top-level Vercel config. Routes `/api/*` to the backend service and everything else to the frontend SPA.
 
-### **Pages (Views)**
-- **`pages/Home.jsx`**:
-  - **Purpose**: Landing Page.
-  - **Function**: The public marketing page. Shows "Login/Dashboard" buttons dynamically based on auth status.
-- **`pages/Login.jsx` & `pages/Register.jsx`**:
-  - **Purpose**: Authentication Pages.
-  - **Function**: Forms to sign in or sign up. They call `AuthContext` methods.
-- **`pages/Dashboard.jsx`**:
-  - **Purpose**: User's Home Base.
-  - **Function**: Lists all your created resumes. Allows Creating, Editing, and Deleting resumes.
-- **`pages/Profile.jsx`**:
-  - **Purpose**: User Settings.
-  - **Function**: Allows updating password, viewing role, and deleting the account.
-- **`pages/Builder.jsx`**:
-  - **Purpose**: The core application feature.
-  - **Function**: The split-screen editor. It loads the `Editor` (forms) on one side and `LivePreview` (resume render) on the other. It handles **saving** data to the backend.
-- **`pages/Preview.jsx`**:
-  - **Purpose**: Print View.
-  - **Function**: A dedicated page for viewing the resume in full screen, usually used for downloading the PDF.
-- **`pages/Admin.jsx`**:
-  - **Purpose**: Admin Dashboard.
-  - **Function**: A special protected page for Admins to view stats, manage users, and inspect all resumes.
+---
 
-### **Components & Templates**
-- **`components/editor/`**: Contains the form inputs for each section (e.g., `Education.jsx`, `Experience.jsx`).
-- **`components/preview/LivePreview.jsx`**:
-  - **Purpose**: The Resume Renderer.
-  - **Function**: Takes the raw resume data and decides which Template to render.
-- **`templates/`** (`Classic.jsx`, `Modern.jsx`, `Minimal.jsx`):
-  - **Purpose**: Visual Designs.
-  - **Function**: Check the `resume.meta.template` setting and render the HTML/CSS for that specific look.
-- **`styles/index.css`**:
-  - **Purpose**: Global Styles.
-  - **Function**: Defines CSS variables (colors, fonts) and utility classes used throughout the app.
+## Backend (`/backend`)
+
+Node.js + Express REST API. Handles authentication, resume persistence, and admin operations.
+
+```
+backend/
+├── src/
+│   ├── index.js
+│   ├── config/
+│   │   └── db.js
+│   ├── models/
+│   │   ├── User.js
+│   │   └── Resume.js
+│   ├── middleware/
+│   │   └── authMiddleware.js
+│   ├── routes/
+│   │   ├── auth.js
+│   │   ├── resumes.js
+│   │   └── adminRoutes.js
+│   └── controllers/
+│       ├── authController.js
+│       ├── resumeController.js
+│       └── adminController.js
+├── .env                 # Local secrets (not committed)
+├── .env.example         # Template showing required env variables
+└── package.json
+```
+
+### Entry point
+
+**`src/index.js`**
+Starts the Express server. Wires up CORS, JSON body parsing, and registers all route groups under `/api/auth`, `/api/resumes`, and `/api/admin`. Calls `connectDB()` before listening.
+
+### Config
+
+**`src/config/db.js`**
+Mongoose connection helper. Reads `MONGO_URI` from env and connects. Called once at startup from `index.js`.
+
+### Models
+
+**`src/models/User.js`**
+Mongoose schema for a user account.
+- Fields: `email`, `password` (bcrypt hash), `role` (`"user"` | `"admin"`), timestamps.
+- The `role` field is the only gate for the admin panel. It defaults to `"user"` and must be changed directly in the database to `"admin"`.
+
+**`src/models/Resume.js`**
+Mongoose schema for a single resume.
+- Fields: `user` (ref to `User`), `title`, `data` (a large JSON object containing all resume sections: basics, education, experience, skills, etc.), timestamps.
+
+### Middleware
+
+**`src/middleware/authMiddleware.js`**
+Exports two middleware functions:
+- `protect` — verifies the `Authorization: Bearer <token>` header. Attaches the decoded user to `req.user`. Returns 401 if missing or invalid.
+- `admin` — checks that `req.user.role === "admin"`. Returns 403 if not. Always used after `protect`.
+
+### Routes
+
+**`src/routes/auth.js`**
+| Method | Path | Handler |
+|--------|------|---------|
+| POST | `/api/auth/register` | `registerUser` |
+| POST | `/api/auth/login` | `loginUser` |
+| PUT | `/api/auth/profile` | `updateUserProfile` (protected) |
+| DELETE | `/api/auth/profile` | `deleteAccount` (protected) |
+
+**`src/routes/resumes.js`**
+All routes are protected by `protect`. Users can only access their own resumes unless they are an admin.
+
+| Method | Path | Handler |
+|--------|------|---------|
+| GET | `/api/resumes` | `getResumes` |
+| POST | `/api/resumes` | `createResume` |
+| GET | `/api/resumes/:id` | `getResumeById` |
+| PUT | `/api/resumes/:id` | `updateResume` |
+| DELETE | `/api/resumes/:id` | `deleteResume` |
+
+**`src/routes/adminRoutes.js`**
+All routes are protected by `protect` + `admin`.
+
+| Method | Path | Handler |
+|--------|------|---------|
+| GET | `/api/admin/stats` | `getStats` |
+| GET | `/api/admin/users` | `getUsers` |
+| GET | `/api/admin/resumes` | `getResumes` |
+| DELETE | `/api/admin/users/:id` | `deleteUser` |
+
+### Controllers
+
+**`src/controllers/authController.js`**
+Business logic for account management: hashes passwords with bcrypt, validates credentials on login, signs and returns JWTs, handles profile updates and account deletion.
+
+**`src/controllers/resumeController.js`**
+CRUD logic for resumes. Enforces per-user ownership — a user can only read, update, or delete resumes linked to their own `_id`. Admins bypass this check.
+
+**`src/controllers/adminController.js`**
+Aggregates platform-wide stats (user count, resume count), fetches full user and resume lists, and handles user deletion.
+
+---
+
+## Frontend (`/frontend`)
+
+React + Vite SPA. Split-screen resume builder with live preview, multi-template rendering, and PDF export.
+
+```
+frontend/
+├── public/
+│   ├── resumex.svg      # App favicon/logo
+│   ├── mockup.png       # Marketing screenshot used on the landing page
+│   ├── robots.txt       # Crawler instructions
+│   └── sitemap.xml      # XML sitemap for search engines
+├── src/
+│   ├── main.jsx
+│   ├── app/
+│   │   └── App.jsx
+│   ├── pages/
+│   │   ├── Home.jsx
+│   │   ├── Login.jsx
+│   │   ├── Register.jsx
+│   │   ├── Dashboard.jsx
+│   │   ├── Builder.jsx
+│   │   ├── Preview.jsx
+│   │   ├── Profile.jsx
+│   │   ├── Admin.jsx
+│   │   ├── NotFound.jsx
+│   │   ├── LegalTerms.jsx
+│   │   └── LegalPrivacy.jsx
+│   ├── components/
+│   │   ├── LandingNav.jsx
+│   │   ├── LandingFooter.jsx
+│   │   ├── Seo.jsx
+│   │   ├── editor/
+│   │   │   ├── Editor.jsx
+│   │   │   └── steps/
+│   │   │       ├── Basics.jsx
+│   │   │       ├── About.jsx
+│   │   │       ├── Experience.jsx
+│   │   │       ├── Education.jsx
+│   │   │       ├── Skills.jsx
+│   │   │       ├── Projects.jsx
+│   │   │       ├── Certifications.jsx
+│   │   │       ├── Achievements.jsx
+│   │   │       ├── Languages.jsx
+│   │   │       └── Template.jsx
+│   │   └── preview/
+│   │       └── LivePreview.jsx
+│   ├── templates/
+│   │   ├── Classic.jsx
+│   │   ├── Modern.jsx
+│   │   └── Minimal.jsx
+│   ├── context/
+│   │   ├── AuthContext.jsx
+│   │   └── ThemeContext.jsx
+│   ├── state/
+│   │   └── useResume.jsx
+│   ├── services/
+│   │   └── api.js
+│   ├── data/
+│   │   └── sampleResume.js
+│   └── styles/
+│       └── index.css
+├── index.html
+├── vite.config.js
+├── eslint.config.js
+├── vercel.json          # Frontend-level Vercel config (SPA fallback rewrites)
+├── .env.example
+└── package.json
+```
+
+### Entry points
+
+**`src/main.jsx`**
+React DOM entry. Mounts `<App />` into the `#root` div in `index.html`.
+
+**`src/app/App.jsx`**
+Defines all client-side routes using React Router. Wraps the tree with `AuthProvider` and `ThemeProvider`. Implements `ProtectedRoute` — any route that requires auth redirects to `/login` if no session is found.
+
+### Pages
+
+**`Home.jsx`**
+Public landing page. Shows the product description, feature highlights, and uses `mockup.png` from `public/`. Buttons dynamically switch between "Get Started" and "Go to Dashboard" depending on auth state.
+
+**`Login.jsx` / `Register.jsx`**
+Auth forms. Call `login()` and `register()` from `AuthContext`. On success, redirect to `/dashboard`.
+
+**`Dashboard.jsx`**
+The user's resume list. Shows all saved resumes as cards. Supports creating a new resume (POST), navigating into the builder (edit), and deleting resumes with a confirmation.
+
+**`Builder.jsx`**
+The core page. Renders a split-screen layout: `Editor` on the left, `LivePreview` on the right. Loads an existing resume from the API on mount (or initializes a blank one). Handles saving — debounces changes and PUTs the full `data` object back to the API.
+
+**`Preview.jsx`**
+Full-screen, print-optimized view of a single resume. Strips the app chrome and renders only the template output. Used as the target page when the user triggers PDF export via the browser's print dialog.
+
+**`Profile.jsx`**
+User settings page. Allows changing password (PUT `/api/auth/profile`) and permanently deleting the account (DELETE `/api/auth/profile`). Also displays the user's current role.
+
+**`Admin.jsx`**
+Admin-only dashboard. Displays platform stats (total users, total resumes), a full user list with delete capability, and a list of all resumes in the system. Redirects non-admins away on load.
+
+**`NotFound.jsx`**
+Standard 404 page. Rendered by React Router for any unmatched path.
+
+**`LegalTerms.jsx` / `LegalPrivacy.jsx`**
+Static legal pages for Terms of Service and Privacy Policy. Linked from `LandingFooter`.
+
+### Components
+
+**`LandingNav.jsx`**
+Navigation bar used on the public landing page. Includes the logo and auth-aware links.
+
+**`LandingFooter.jsx`**
+Footer for the landing page. Contains links to `LegalTerms` and `LegalPrivacy`.
+
+**`Seo.jsx`**
+A thin wrapper around React Helmet (or equivalent). Accepts `title` and `description` props and injects them into the document `<head>`. Used at the top of every page component for per-route meta tags.
+
+**`components/editor/Editor.jsx`**
+The left panel of the builder. Renders a stepped form UI. Each step maps to one of the section components in `steps/`. Manages which step is currently active and passes the shared resume state down.
+
+**`components/editor/steps/`**
+Each file owns one section of the resume form:
+
+| File | Section |
+|------|---------|
+| `Basics.jsx` | Name, job title, contact details, links |
+| `About.jsx` | Professional summary / about paragraph |
+| `Experience.jsx` | Work history — company, role, dates, description |
+| `Education.jsx` | Degrees, institutions, graduation dates |
+| `Skills.jsx` | Skills list with optional proficiency levels |
+| `Projects.jsx` | Personal or professional projects with links |
+| `Certifications.jsx` | Certifications and issuing organizations |
+| `Achievements.jsx` | Awards and notable achievements |
+| `Languages.jsx` | Spoken languages and proficiency |
+| `Template.jsx` | Template picker — lets the user switch between Classic, Modern, and Minimal |
+
+**`components/preview/LivePreview.jsx`**
+The right panel of the builder. Reads the current resume data from state and passes it to the correct template component based on `resume.meta.template`. Re-renders on every state change to keep the preview in sync.
+
+### Templates
+
+Each template is a self-contained React component that accepts the full resume `data` object as props and renders it as styled HTML. They are the only place layout and visual design live — the editor and preview are template-agnostic.
+
+- **`Classic.jsx`** — Traditional single-column layout. High ATS compatibility.
+- **`Modern.jsx`** — Two-column layout with a sidebar for contact and skills.
+- **`Minimal.jsx`** — Clean, typographic layout with minimal decoration.
+
+### Context & State
+
+**`context/AuthContext.jsx`**
+Global user session state. On load, reads the stored token from `localStorage` and decodes the user. Provides `user`, `login()`, `register()`, and `logout()` to the entire app via `useAuth()` hook.
+
+**`context/ThemeContext.jsx`**
+Light/dark theme state. Stores the current preference in `localStorage` and toggles a class on `<body>` or a CSS custom property. Provides `theme` and `toggleTheme()` via `useTheme()` hook.
+
+**`state/useResume.jsx`**
+Custom hook that manages the in-memory resume editor state. Holds the full resume `data` object and exposes updater functions for each section. Used by `Builder.jsx` and passed down to `Editor` and `LivePreview`.
+
+### Services
+
+**`services/api.js`**
+Axios instance preconfigured with the API base URL (from `VITE_API_URL` env var). An Axios request interceptor automatically attaches `Authorization: Bearer <token>` from `localStorage` to every outgoing request, so no page needs to handle this manually.
+
+### Data
+
+**`data/sampleResume.js`**
+A hardcoded sample resume object. Used to populate the builder when a user creates a new resume, so they see a useful starting point rather than a blank form.
+
+### Styles
+
+**`styles/index.css`**
+Global stylesheet. Defines CSS custom properties for the color system (light and dark themes), base typography, layout utilities, and any global resets. All component-level styles are co-located or rely on these tokens.
+
+### Config & Tooling
+
+**`index.html`**
+Vite's HTML entry point. Contains the `<div id="root">` mount target and links the favicon.
+
+**`vite.config.js`**
+Vite configuration. Sets up the React plugin and any path aliases or proxy rules for local development.
+
+**`eslint.config.js`**
+ESLint flat config. Enforces code style and React-specific rules across the frontend.
+
+**`public/robots.txt`**
+Tells crawlers which paths to index or skip.
+
+**`public/sitemap.xml`**
+Lists the app's public URLs for search engine discovery.
+
+---
+
+*For a high-level overview of the project, see [README.md](./README.md).*
