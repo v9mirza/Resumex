@@ -58,8 +58,8 @@ const Register = () => {
             <LandingNav
                 rightContent={
                     <>
-                        <span className="lp-nav-text">Already have an account?</span>
-                        <Link to="/login" className="btn-lp-primary lp-nav-cta">
+                        <span className="lp-nav-explain">Already have an account?</span>
+                        <Link to="/login" className="btn-lp-primary lp-nav-cta lp-nav-link">
                             Log in
                         </Link>
                     </>

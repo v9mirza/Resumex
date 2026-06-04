@@ -393,13 +393,13 @@ const Admin = () => {
             <LandingNav
                 rightContent={
                     <>
-                        <span style={{ fontSize: '0.9rem', color: 'var(--lp-text-muted)', textTransform: 'uppercase', letterSpacing: '0.12em' }}>
+                        <span className="lp-nav-email" style={{ fontSize: '0.9rem', color: 'var(--lp-text-muted)', textTransform: 'uppercase', letterSpacing: '0.12em' }}>
                             Admin
                         </span>
-                        <Link to="/dashboard" style={{ color: 'var(--lp-text)', textDecoration: 'none', fontWeight: 500 }}>Go to app</Link>
+                        <Link to="/dashboard" className="lp-nav-link" style={{ color: 'var(--lp-text)', textDecoration: 'none', fontWeight: 500 }}>Go to app</Link>
                         <button
                             onClick={handleLogout}
-                            className="btn"
+                            className="btn lp-nav-link"
                             style={{ color: 'var(--lp-text-muted)', border: 'none', background: 'transparent', cursor: 'pointer', fontWeight: 500 }}
                         >
                             Logout

@@ -237,15 +237,15 @@ const AuthButtons = () => {
   if (user) {
     return (
       <div style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
-        <Link to="/dashboard" style={{ color: 'var(--lp-text)', textDecoration: 'none', fontWeight: 500 }}>Dashboard</Link>
-        <Link to="/profile" style={{ color: 'var(--lp-text)', textDecoration: 'none', fontWeight: 500 }}>Profile</Link>
+        <Link to="/dashboard" className="lp-nav-link" style={{ color: 'var(--lp-text)', textDecoration: 'none', fontWeight: 500 }}>Dashboard</Link>
+        <Link to="/profile" className="lp-nav-link" style={{ color: 'var(--lp-text)', textDecoration: 'none', fontWeight: 500 }}>Profile</Link>
       </div>
     );
   }
   return (
     <>
-      <Link to="/login" style={{ color: 'var(--lp-text)', textDecoration: 'none', fontWeight: 500 }}>Log in</Link>
-      <Link to="/register" className="lp-nav-signup" style={{
+      <Link to="/login" className="lp-nav-link lp-nav-login" style={{ color: 'var(--lp-text)', textDecoration: 'none', fontWeight: 500 }}>Log in</Link>
+      <Link to="/register" className="lp-nav-link lp-nav-signup" style={{
         padding: '10px 20px',
         backgroundColor: 'var(--lp-accent)',
         color: '#ffffff',

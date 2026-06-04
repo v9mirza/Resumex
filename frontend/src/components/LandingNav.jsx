@@ -20,6 +20,7 @@ const LandingNav = ({ rightContent, onThemeToggle }) => {
           <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '10px', textDecoration: 'none' }}>
             <img src="/resumex.svg" alt="Resumex logo" style={{ width: 24, height: 24 }} />
             <span
+              className="lp-nav-brand-text"
               style={{
                 fontFamily: 'Inter, sans-serif',
                 fontWeight: 700,

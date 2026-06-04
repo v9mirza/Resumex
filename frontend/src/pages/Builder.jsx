@@ -353,7 +353,7 @@ const Builder = () => {
             <LandingNav
                 rightContent={
                     <>
-                        <Link to="/dashboard" style={{ color: 'var(--lp-text)', textDecoration: 'none', fontWeight: 500 }}>Dashboard</Link>
+                        <Link to="/dashboard" className="lp-nav-link" style={{ color: 'var(--lp-text)', textDecoration: 'none', fontWeight: 500 }}>Dashboard</Link>
                     </>
                 }
             />

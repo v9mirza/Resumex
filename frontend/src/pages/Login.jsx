@@ -48,8 +48,8 @@ const Login = () => {
             <LandingNav
                 rightContent={
                     <>
-                        <span className="lp-nav-text">New here?</span>
-                        <Link to="/register" className="btn-lp-primary lp-nav-cta">
+                        <span className="lp-nav-explain">New here?</span>
+                        <Link to="/register" className="btn-lp-primary lp-nav-cta lp-nav-link">
                             Sign up
                         </Link>
                     </>

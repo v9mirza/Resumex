@@ -59,13 +59,13 @@ const Profile = () => {
             <LandingNav
                 rightContent={
                     <>
-                        <Link to="/dashboard" className="lp-nav-text">
+                        <Link to="/dashboard" className="lp-nav-text lp-nav-link">
                             Dashboard
                         </Link>
                         <button
                             onClick={logout}
                             type="button"
-                            className="btn-lp-secondary lp-nav-cta"
+                            className="btn-lp-secondary lp-nav-cta lp-nav-link"
                             style={{ padding: '8px 18px', fontSize: '0.9rem' }}
                         >
                             Log out

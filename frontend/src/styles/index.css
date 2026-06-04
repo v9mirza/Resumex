@@ -2083,15 +2083,52 @@ ul {
   }
 
   .lp-nav-bar {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
   }
 
   .lp-nav-actions {
-    width: 100%;
-    justify-content: flex-start;
-    gap: 12px;
+    width: auto;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 8px !important;
+  }
+
+  .lp-nav-explain,
+  .lp-nav-email {
+    display: none !important;
+  }
+
+  .lp-nav-link {
+    font-size: 0.85rem !important;
+  }
+
+  .lp-nav-signup {
+    padding: 8px 14px !important;
+    font-size: 0.85rem !important;
+  }
+
+  .lp-nav-theme-btn {
+    width: 32px !important;
+    height: 32px !important;
+  }
+
+  .lp-nav-brand-text {
+    font-size: 1.1rem !important;
+  }
+}
+
+@media (max-width: 400px) {
+  .lp-nav-brand-text {
+    display: none !important;
+  }
+  .lp-nav-bar {
+    gap: 4px;
+  }
+  .lp-nav-actions {
+    gap: 6px !important;
   }
 }
 
