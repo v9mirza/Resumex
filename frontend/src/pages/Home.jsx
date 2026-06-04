@@ -39,6 +39,12 @@ const useViewTransitionTheme = () => {
         Math.max(y, window.innerHeight - y)
       );
 
+      // Set CSS coords BEFORE startViewTransition so the
+      // clip-path animation has the correct origin on first frame.
+      document.documentElement.style.setProperty('--vt-x', `${x}px`);
+      document.documentElement.style.setProperty('--vt-y', `${y}px`);
+      document.documentElement.style.setProperty('--vt-r', `${maxR}px`);
+
       if (!document.startViewTransition) {
         toggleTheme();
         return;
@@ -47,11 +53,6 @@ const useViewTransitionTheme = () => {
       document.startViewTransition(() => {
         toggleTheme();
       });
-
-      // Expose coords so the CSS animation can use them
-      document.documentElement.style.setProperty('--vt-x', `${x}px`);
-      document.documentElement.style.setProperty('--vt-y', `${y}px`);
-      document.documentElement.style.setProperty('--vt-r', `${maxR}px`);
     },
     [toggleTheme]
   );
@@ -115,6 +116,8 @@ const HowItWorksWithPath = () => {
   });
   const rawProgress = useTransform(scrollYProgress, [0, 1], [0, 1]);
   const pathProgress = useSpring(rawProgress, { stiffness: 60, damping: 18 });
+  // Hoist the strokeDashoffset transform to component level (Rules of Hooks)
+  const strokeDashoffset = useTransform(pathProgress, [0, 1], [1, 0]);
 
   return (
     <div ref={sectionRef} style={{ position: 'relative' }}>
@@ -130,7 +133,7 @@ const HowItWorksWithPath = () => {
           stroke="url(#howGrad)"
           strokeWidth="2"
           strokeDasharray="1"
-          strokeDashoffset={useTransform(pathProgress, [0, 1], [1, 0])}
+          strokeDashoffset={strokeDashoffset}
           pathLength="1"
           strokeLinecap="round"
         />
