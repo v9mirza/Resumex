@@ -558,7 +558,7 @@ const Home = () => {
             <div className="lp-hero-trust">
               <span><CheckCircle size={13} /> Autosave</span>
               <span><FileJson size={13} /> PDF & JSON</span>
-              <span><LayoutTemplate size={13} /> 3 templates</span>
+              <span><LayoutTemplate size={13} /> Multiple templates</span>
               <a href="https://github.com/v9mirza/resumex" target="_blank" rel="noopener noreferrer">
                 <Github size={13} /> GitHub
               </a>
@@ -640,7 +640,7 @@ const Home = () => {
         <div className="container">
           <div className="lp-stats-grid">
             {[
-              { value: '3', label: 'Resume templates' },
+              { value: 'Multiple', label: 'Resume templates' },
               { value: '100%', label: 'Free forever' },
               { value: 'PDF + JSON', label: 'Export formats' },
               { value: 'Open‑source', label: 'On GitHub' },
