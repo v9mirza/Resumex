@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
 // eslint-disable-next-line no-unused-vars
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useScroll, useTransform, useSpring } from 'framer-motion';
 import { Cloud, FileJson, CheckCircle, LayoutTemplate, Github, ChevronDown, ArrowRight, ShieldCheck, UserPlus, PenLine, Eye, Copy } from 'lucide-react';
 import LandingFooter from '../components/LandingFooter';
 import LandingNav from '../components/LandingNav';
@@ -21,6 +22,151 @@ const HERO_PREVIEW_RESUME = {
   certifications: [],
   languages: [],
   achievements: []
+};
+
+// ─── View Transition Theme Toggle ───────────────────────────
+// Wraps the standard toggleTheme with the View Transitions API
+// for a smooth circular-reveal animation on theme switch.
+const useViewTransitionTheme = () => {
+  const { theme, toggleTheme } = useTheme();
+
+  const transitionToggle = useCallback(
+    (e) => {
+      const x = e?.clientX ?? window.innerWidth / 2;
+      const y = e?.clientY ?? window.innerHeight / 2;
+      const maxR = Math.hypot(
+        Math.max(x, window.innerWidth - x),
+        Math.max(y, window.innerHeight - y)
+      );
+
+      if (!document.startViewTransition) {
+        toggleTheme();
+        return;
+      }
+
+      document.startViewTransition(() => {
+        toggleTheme();
+      });
+
+      // Expose coords so the CSS animation can use them
+      document.documentElement.style.setProperty('--vt-x', `${x}px`);
+      document.documentElement.style.setProperty('--vt-y', `${y}px`);
+      document.documentElement.style.setProperty('--vt-r', `${maxR}px`);
+    },
+    [toggleTheme]
+  );
+
+  return { theme, transitionToggle };
+};
+
+// ─── Bento Glow Grid ─────────────────────────────────────────
+// Tracks cursor over the grid and makes each card glow where
+// the cursor is closest using a radial gradient via CSS vars.
+const BentoGlowGrid = ({ children }) => {
+  const gridRef = useRef(null);
+
+  const handleMouseMove = useCallback((e) => {
+    const grid = gridRef.current;
+    if (!grid) return;
+    const cards = grid.querySelectorAll('.lp-minimal-card');
+    cards.forEach((card) => {
+      const rect = card.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      card.style.setProperty('--glow-x', `${x}px`);
+      card.style.setProperty('--glow-y', `${y}px`);
+    });
+  }, []);
+
+  const handleMouseLeave = useCallback(() => {
+    const grid = gridRef.current;
+    if (!grid) return;
+    grid.querySelectorAll('.lp-minimal-card').forEach((card) => {
+      card.style.removeProperty('--glow-x');
+      card.style.removeProperty('--glow-y');
+    });
+  }, []);
+
+  return (
+    <div
+      ref={gridRef}
+      className="lp-bento-grid"
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+    >
+      {children}
+    </div>
+  );
+};
+
+// ─── How It Works: scroll-driven SVG connector ───────────────
+const HOW_STEPS = [
+  { icon: <UserPlus size={22} />, step: '01', title: 'Create your account', text: 'Sign up free — no credit card, no trial. Just a working email.', color: '#6366f1', bg: 'rgba(99,102,241,0.1)' },
+  { icon: <PenLine size={22} />, step: '02', title: 'Fill the guided builder', text: 'Work through basics, experience, education, skills, and projects — one section at a time.', color: '#0082c9', bg: 'rgba(0,130,201,0.1)' },
+  { icon: <Eye size={22} />, step: '03', title: 'Preview & export', text: "Switch templates live and download a polished PDF or clean JSON the moment you're ready.", color: '#10b981', bg: 'rgba(16,185,129,0.1)' },
+  { icon: <Copy size={22} />, step: '04', title: 'Manage versions', text: 'Duplicate any resume and tailor it per role. Your dashboard keeps every version safe.', color: '#f59e0b', bg: 'rgba(245,158,11,0.1)' },
+];
+
+const HowItWorksWithPath = () => {
+  const sectionRef = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ['start 0.85', 'end 0.4'],
+  });
+  const rawProgress = useTransform(scrollYProgress, [0, 1], [0, 1]);
+  const pathProgress = useSpring(rawProgress, { stiffness: 60, damping: 18 });
+
+  return (
+    <div ref={sectionRef} style={{ position: 'relative' }}>
+      {/* SVG connector line — desktop only, hidden on mobile via CSS */}
+      <svg
+        className="how-connector-svg"
+        aria-hidden="true"
+        preserveAspectRatio="none"
+      >
+        <motion.line
+          x1="12.5%" y1="60"
+          x2="87.5%" y2="60"
+          stroke="url(#howGrad)"
+          strokeWidth="2"
+          strokeDasharray="1"
+          strokeDashoffset={useTransform(pathProgress, [0, 1], [1, 0])}
+          pathLength="1"
+          strokeLinecap="round"
+        />
+        <defs>
+          <linearGradient id="howGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stopColor="#6366f1" stopOpacity="0.9" />
+            <stop offset="33%" stopColor="#0082c9" stopOpacity="0.9" />
+            <stop offset="66%" stopColor="#10b981" stopOpacity="0.9" />
+            <stop offset="100%" stopColor="#f59e0b" stopOpacity="0.9" />
+          </linearGradient>
+        </defs>
+      </svg>
+
+      <div className="lp-how-cards">
+        {HOW_STEPS.map((item, i) => (
+          <motion.div
+            key={item.step}
+            className="lp-how-card"
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: i * 0.08 }}
+          >
+            <div className="lp-how-card-top">
+              <div className="lp-how-card-icon" style={{ background: item.bg, color: item.color }}>
+                {item.icon}
+              </div>
+              <span className="lp-how-card-step">{item.step}</span>
+            </div>
+            <h3 className="lp-how-card-title">{item.title}</h3>
+            <p className="lp-how-card-text">{item.text}</p>
+          </motion.div>
+        ))}
+      </div>
+    </div>
+  );
 };
 
 const AuthButtons = () => {
@@ -210,6 +356,8 @@ const TemplateGallery = () => {
 };
 
 const Home = () => {
+  const { transitionToggle } = useViewTransitionTheme();
+
   return (
     <div className="landing-page">
       <Seo
@@ -217,17 +365,38 @@ const Home = () => {
         description="Resumex is an online resume builder for students, developers, and job‑seekers. Create ATS‑friendly resumes with guided steps, live preview, and PDF/JSON export."
         canonicalPath="/"
       />
-      <LandingNav rightContent={<AuthButtons />} />
+      <LandingNav rightContent={<AuthButtons />} onThemeToggle={transitionToggle} />
 
       {/* 
         1. Hero Section 
         Premium Split Layout with Floating Mock UI
       */}
       <section className="container lp-section-hero lp-hero-section" style={{ display: 'flex', alignItems: 'center', position: 'relative', overflow: 'hidden' }}>
-        {/* Blue orb — top left */}
-        <div className="hero-orb hero-orb--blue" />
-        {/* Purple orb — bottom right */}
-        <div className="hero-orb hero-orb--purple" />
+        {/* Dot-grid background overlay */}
+        <div className="hero-dot-grid" aria-hidden="true" />
+
+        {/* Blue orb — animated drift */}
+        <motion.div
+          className="hero-orb hero-orb--blue"
+          animate={{
+            x: [0, 30, -20, 0],
+            y: [0, -20, 30, 0],
+            scale: [1, 1.08, 0.95, 1],
+            borderRadius: ['50%', '48% 52% 55% 45%', '52% 48% 44% 56%', '50%'],
+          }}
+          transition={{ repeat: Infinity, duration: 22, ease: 'easeInOut' }}
+        />
+        {/* Purple orb — animated drift (counter-phase) */}
+        <motion.div
+          className="hero-orb hero-orb--purple"
+          animate={{
+            x: [0, -25, 20, 0],
+            y: [0, 18, -28, 0],
+            scale: [1, 0.93, 1.06, 1],
+            borderRadius: ['50%', '54% 46% 44% 56%', '47% 53% 58% 42%', '50%'],
+          }}
+          transition={{ repeat: Infinity, duration: 28, ease: 'easeInOut' }}
+        />
 
         <div className="hero-split-layout">
           {/* Left Side: Text and CTA */}
@@ -336,32 +505,8 @@ const Home = () => {
             <h2 className="lp-section-title">From blank page to PDF in four steps.</h2>
           </motion.div>
 
-          <div className="lp-how-cards">
-            {[
-              { icon: <UserPlus size={22} />, step: '01', title: 'Create your account', text: 'Sign up free — no credit card, no trial. Just a working email.', color: '#6366f1', bg: 'rgba(99,102,241,0.1)' },
-              { icon: <PenLine size={22} />, step: '02', title: 'Fill the guided builder', text: 'Work through basics, experience, education, skills, and projects — one section at a time.', color: '#0082c9', bg: 'rgba(0,130,201,0.1)' },
-              { icon: <Eye size={22} />,     step: '03', title: 'Preview & export', text: 'Switch templates live and download a polished PDF or clean JSON the moment you\'re ready.', color: '#10b981', bg: 'rgba(16,185,129,0.1)' },
-              { icon: <Copy size={22} />,    step: '04', title: 'Manage versions', text: 'Duplicate any resume and tailor it per role. Your dashboard keeps every version safe.', color: '#f59e0b', bg: 'rgba(245,158,11,0.1)' },
-            ].map((item, i) => (
-              <motion.div
-                key={item.step}
-                className="lp-how-card"
-                initial={{ opacity: 0, y: 24 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.08 }}
-              >
-                <div className="lp-how-card-top">
-                  <div className="lp-how-card-icon" style={{ background: item.bg, color: item.color }}>
-                    {item.icon}
-                  </div>
-                  <span className="lp-how-card-step">{item.step}</span>
-                </div>
-                <h3 className="lp-how-card-title">{item.title}</h3>
-                <p className="lp-how-card-text">{item.text}</p>
-              </motion.div>
-            ))}
-          </div>
+          {/* Animated SVG connector path + step cards */}
+          <HowItWorksWithPath />
         </div>
       </section>
 
@@ -399,7 +544,8 @@ const Home = () => {
             </p>
           </motion.div>
 
-          <div className="lp-bento-grid">
+          {/* BentoGlowGrid: tracks cursor and adds radial glow on each card */}
+          <BentoGlowGrid>
             {/* Bento Large — Guided Builder */}
             <motion.div
               className="lp-minimal-card bento-large lp-bento-feature-card"
@@ -482,7 +628,7 @@ const Home = () => {
                 ))}
               </div>
             </motion.div>
-          </div>
+          </BentoGlowGrid>
         </div>
       </section>
 

@@ -3379,3 +3379,169 @@ ul {
   .lp-stat-value    { font-size: 1rem; }
   .lp-cta-card      { padding: 28px 16px; }
 }
+
+/* ═══════════════════════════════════════════════════════════
+   ENHANCEMENT 2 — Cursor-tracking Radial Glow on Bento Cards
+   ═══════════════════════════════════════════════════════════
+   Each .lp-minimal-card gets --glow-x / --glow-y injected
+   by BentoGlowGrid.jsx. We render the glow via a ::before
+   pseudo-element using a radial-gradient from those coords.
+   The glow is invisible when the vars aren't set (no cursor).
+*/
+.lp-minimal-card {
+  /* ensure relative for pseudo-element stacking */
+  isolation: isolate;
+}
+
+.lp-minimal-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  /* Radial glow that follows the cursor */
+  background: radial-gradient(
+    600px circle at var(--glow-x, 50%) var(--glow-y, 50%),
+    rgba(99, 102, 241, 0.10) 0%,
+    transparent 70%
+  );
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.lp-minimal-card:hover::before {
+  opacity: 1;
+}
+
+:root[data-theme='dark'] .lp-minimal-card::before {
+  background: radial-gradient(
+    600px circle at var(--glow-x, 50%) var(--glow-y, 50%),
+    rgba(88, 166, 255, 0.12) 0%,
+    transparent 70%
+  );
+}
+
+/* ensure card content sits above the glow pseudo-element */
+.lp-minimal-card > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Also upgrade the border glow on hover: animated gradient border */
+.lp-minimal-card:hover {
+  border-color: transparent;
+  box-shadow:
+    0 20px 40px rgba(0, 0, 0, 0.06),
+    0 0 0 1px rgba(99, 102, 241, 0.25),
+    inset 0 1px 0 rgba(255,255,255,0.4);
+}
+
+:root[data-theme='dark'] .lp-minimal-card:hover {
+  border-color: transparent;
+  box-shadow:
+    0 20px 40px rgba(0, 0, 0, 0.35),
+    0 0 0 1px rgba(88, 166, 255, 0.2),
+    inset 0 1px 0 rgba(255,255,255,0.04);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   ENHANCEMENT 3 — Dot-grid Hero Overlay + Drifting Orbs
+   ═══════════════════════════════════════════════════════════ */
+
+/* Dot-grid pattern overlay in the hero */
+.hero-dot-grid {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(
+    circle,
+    rgba(0, 0, 0, 0.06) 1px,
+    transparent 1px
+  );
+  background-size: 28px 28px;
+  pointer-events: none;
+  z-index: 0;
+  mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 100%);
+  -webkit-mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 100%);
+}
+
+:root[data-theme='dark'] .hero-dot-grid {
+  background-image: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.05) 1px,
+    transparent 1px
+  );
+}
+
+/* Orbs: allow Framer Motion borderRadius animation */
+.hero-orb {
+  will-change: transform, border-radius;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   ENHANCEMENT 5 — Scroll-driven SVG Connector for How-It-Works
+   ═══════════════════════════════════════════════════════════ */
+
+/* The SVG sits above the card grid, anchored across the top of step 1–4 */
+.how-connector-svg {
+  display: none; /* hidden on mobile */
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 120px;
+  overflow: visible;
+  pointer-events: none;
+  z-index: 0;
+}
+
+@media (min-width: 768px) {
+  .how-connector-svg {
+    display: block;
+  }
+
+  /* Push the cards down so the SVG line sits across the icon level */
+  .how-connector-svg + .lp-how-cards {
+    padding-top: 0;
+    position: relative;
+    z-index: 1;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   ENHANCEMENT 6 — View Transitions: Circular Theme Morph
+   ═══════════════════════════════════════════════════════════
+   When document.startViewTransition() fires, the browser
+   creates ::view-transition-old(root) and ::view-transition-new(root).
+   We clip the new view with a circle that expands from the
+   button click coordinate stored in --vt-x / --vt-y.
+*/
+
+@keyframes vt-clip-expand {
+  from {
+    clip-path: circle(0px at var(--vt-x, 50%) var(--vt-y, 50%));
+  }
+  to {
+    clip-path: circle(var(--vt-r, 150vmax) at var(--vt-x, 50%) var(--vt-y, 50%));
+  }
+}
+
+@keyframes vt-fade-out {
+  to { opacity: 0; }
+}
+
+::view-transition-old(root) {
+  animation: vt-fade-out 0.3s ease forwards;
+}
+
+::view-transition-new(root) {
+  animation: vt-clip-expand 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* Respect reduced motion: instant crossfade, no clip */
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: 0.01ms !important;
+  }
+}

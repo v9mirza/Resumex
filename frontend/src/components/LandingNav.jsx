@@ -3,8 +3,15 @@ import { Link } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext.jsx';
 import { Sun, Moon } from 'lucide-react';
 
-const LandingNav = ({ rightContent }) => {
+const LandingNav = ({ rightContent, onThemeToggle }) => {
   const { theme, toggleTheme } = useTheme();
+  const handleThemeClick = (e) => {
+    if (onThemeToggle) {
+      onThemeToggle(e);
+    } else {
+      toggleTheme();
+    }
+  };
   return (
     <header className="lp-glass-nav">
       <nav className="container lp-nav-bar">
@@ -33,7 +40,7 @@ const LandingNav = ({ rightContent }) => {
         <div className="lp-nav-actions" style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
           <button
             type="button"
-            onClick={toggleTheme}
+            onClick={handleThemeClick}
             className="lp-nav-theme-btn"
             style={{
               width: 36,
