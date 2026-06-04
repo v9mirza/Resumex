@@ -172,6 +172,66 @@ const HowItWorksWithPath = () => {
   );
 };
 
+// ─── Staggered Word-by-Word Hero Title ──────────────────────
+// Splits the title into lines/words, then staggers each word
+// in with a spring-based upward reveal — the Linear/Vercel effect.
+const titleContainerVariants = {
+  hidden: {},
+  visible: {
+    transition: {
+      staggerChildren: 0.06,
+      delayChildren: 0.15,
+    },
+  },
+};
+
+const titleWordVariants = {
+  hidden: { opacity: 0, y: 28, filter: 'blur(4px)' },
+  visible: {
+    opacity: 1,
+    y: 0,
+    filter: 'blur(0px)',
+    transition: {
+      type: 'spring',
+      stiffness: 180,
+      damping: 22,
+    },
+  },
+};
+
+// Each line is an array of word tokens; the last word of line 2
+// gets a special gradient class.
+const TITLE_LINES = [
+  ['Build', 'a', 'resume'],
+  ['that', 'gets', 'you', 'hired.'],
+];
+const GRADIENT_WORD = 'hired.';
+
+const SplitTitle = () => (
+  <motion.h1
+    className="lp-hero-title"
+    variants={titleContainerVariants}
+    initial="hidden"
+    animate="visible"
+    aria-label="Build a resume that gets you hired."
+  >
+    {TITLE_LINES.map((line, li) => (
+      <span key={li} className="title-line" aria-hidden="true">
+        {line.map((word, wi) => (
+          <motion.span
+            key={wi}
+            variants={titleWordVariants}
+            className={`title-word${word === GRADIENT_WORD ? ' text-gradient-blue' : ''}`}
+          >
+            {word}
+          </motion.span>
+        ))}
+        {li < TITLE_LINES.length - 1 && <br />}
+      </span>
+    ))}
+  </motion.h1>
+);
+
 const AuthButtons = () => {
   const { user } = useAuth();
   if (user) {
@@ -288,7 +348,7 @@ const GALLERY_RESUME = {
 const TEMPLATES = [
   { id: 'minimal', label: 'Minimal', Component: Minimal },
   { id: 'classic', label: 'Classic', Component: Classic },
-  { id: 'modern',  label: 'Modern',  Component: Modern  },
+  { id: 'modern', label: 'Modern', Component: Modern },
 ];
 
 const TemplateGallery = () => {
@@ -405,24 +465,32 @@ const Home = () => {
           {/* Left Side: Text and CTA */}
           <motion.div
             className="hero-text-content"
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, ease: "easeOut" }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.4, ease: "easeOut" }}
           >
             {/* Badge pill */}
-            <div className="hero-badge">
+            <motion.div
+              className="hero-badge"
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.05, ease: 'easeOut' }}
+            >
               <CheckCircle size={13} />
               Free forever · Open‑source · No credit card
-            </div>
+            </motion.div>
 
-            <h1 className="lp-hero-title">
-              Build a resume<br />
-              that gets you <span className="text-gradient-blue">hired.</span>
-            </h1>
+            {/* Staggered word-by-word title reveal */}
+            <SplitTitle />
 
-            <p className="lp-hero-subtitle">
+            <motion.p
+              className="lp-hero-subtitle"
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.55, delay: 0.55, ease: 'easeOut' }}
+            >
               Guided steps, live preview, and instant PDF export — no Word templates, no blank pages.
-            </p>
+            </motion.p>
 
             <div className="lp-hero-actions">
               <Link to="/dashboard" className="btn-lp-primary" style={{ padding: '16px 36px', fontSize: '1.05rem' }}>

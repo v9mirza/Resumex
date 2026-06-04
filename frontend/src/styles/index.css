@@ -3538,10 +3538,44 @@ ul {
   animation: vt-clip-expand 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
-/* Respect reduced motion: instant crossfade, no clip */
+/* ═══════════════════════════════════════════════════════════
+   ENHANCEMENT 2 — Staggered Word-by-Word Hero Title
+   ═══════════════════════════════════════════════════════════
+   .title-line:   block-level row, clips the sliding words
+   .title-word:   inline-block word with right gap for spacing
+   overflow:hidden on .title-line creates the "wipe up" effect
+*/
+.title-line {
+  display: block;
+  overflow: visible; /* words use translate, not clip */
+}
+
+.title-word {
+  display: inline-block;
+  margin-right: 0.28em; /* word spacing */
+  will-change: transform, opacity, filter;
+  /* keep gradient painted correctly on inline-block */
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
+/* The last word on each line shouldn't have trailing gap */
+.title-line:last-child .title-word:last-child {
+  margin-right: 0;
+}
+
+/* Respect prefers-reduced-motion across all animations */
 @media (prefers-reduced-motion: reduce) {
+  /* View Transitions: instant crossfade, no clip */
   ::view-transition-old(root),
   ::view-transition-new(root) {
     animation-duration: 0.01ms !important;
+  }
+
+  /* Title words: appear instantly, skip blur/slide */
+  .title-word {
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
   }
 }
