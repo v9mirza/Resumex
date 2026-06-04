@@ -3203,7 +3203,8 @@ ul {
   box-shadow: 0 4px 12px rgba(0, 130, 201, 0.3);
 }
 
-.lp-template-preview-window {
+/* 3D flip stage: contains chrome + the perspective viewport */
+.lp-template-flip-stage {
   max-width: 780px;
   margin: 0 auto;
   border-radius: 14px;
@@ -3214,9 +3215,42 @@ ul {
   flex-direction: column;
 }
 
-:root[data-theme='dark'] .lp-template-preview-window {
+:root[data-theme='dark'] .lp-template-flip-stage {
+  background: var(--lp-bg-alt);
   box-shadow: 0 24px 64px rgba(0, 0, 0, 0.4), 0 0 0 1px var(--lp-border);
 }
+
+/* Static chrome bar above the flip */
+.lp-template-chrome {
+  flex-shrink: 0;
+  border-radius: 0; /* stage handles the radius */
+}
+
+/* Perspective container — the actual 3D space */
+.lp-template-flip-viewport {
+  position: relative;
+  height: 480px;
+  overflow: hidden;
+  perspective: 1200px;
+  perspective-origin: 50% 40%;
+  background: #fff;
+}
+
+:root[data-theme='dark'] .lp-template-flip-viewport {
+  background: var(--lp-bg-alt);
+}
+
+/* The card that rotates in 3D */
+.lp-template-flip-card {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transform-origin: 50% 50%;
+  transform-style: preserve-3d;
+  will-change: transform, opacity;
+}
+
 
 .lp-template-preview-label {
   font-size: 0.75rem;
@@ -3286,6 +3320,8 @@ ul {
 
   /* Template gallery */
   .lp-section-templates { padding: 64px 0 48px; }
+  .lp-template-flip-viewport { height: 340px; }
+  .lp-template-preview-body  { height: 340px; }
 
   /* Dark-mode template preview fade */
   :root[data-theme='dark'] .lp-template-preview-fade {

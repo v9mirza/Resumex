@@ -353,7 +353,50 @@ const TEMPLATES = [
 
 const TemplateGallery = () => {
   const [active, setActive] = useState('minimal');
-  const { Component } = TEMPLATES.find(t => t.id === active);
+  // Track the navigation direction so the flip goes the right way
+  const [direction, setDirection] = useState(1); // 1 = forward, -1 = backward
+  const activeIndex = TEMPLATES.findIndex(t => t.id === active);
+  const { Component } = TEMPLATES[activeIndex];
+
+  const handleSelect = (id) => {
+    const nextIndex = TEMPLATES.findIndex(t => t.id === id);
+    setDirection(nextIndex > activeIndex ? 1 : -1);
+    setActive(id);
+  };
+
+  // 3D flip variants — exit folds away, enter unfolds in
+  const flipVariants = {
+    enter: (dir) => ({
+      rotateY: dir * 75,
+      opacity: 0,
+      scale: 0.94,
+      filter: 'brightness(0.85)',
+    }),
+    center: {
+      rotateY: 0,
+      opacity: 1,
+      scale: 1,
+      filter: 'brightness(1)',
+      transition: {
+        rotateY: { type: 'spring', stiffness: 200, damping: 26 },
+        opacity:  { duration: 0.18 },
+        scale:    { type: 'spring', stiffness: 200, damping: 26 },
+        filter:   { duration: 0.25 },
+      },
+    },
+    exit: (dir) => ({
+      rotateY: dir * -75,
+      opacity: 0,
+      scale: 0.94,
+      filter: 'brightness(0.85)',
+      transition: {
+        rotateY: { type: 'spring', stiffness: 260, damping: 30 },
+        opacity:  { duration: 0.14 },
+        scale:    { duration: 0.2 },
+        filter:   { duration: 0.14 },
+      },
+    }),
+  };
 
   return (
     <section className="lp-section-templates">
@@ -376,7 +419,7 @@ const TemplateGallery = () => {
           {TEMPLATES.map(t => (
             <button
               key={t.id}
-              onClick={() => setActive(t.id)}
+              onClick={() => handleSelect(t.id)}
               className={`lp-template-tab${active === t.id ? ' lp-template-tab--active' : ''}`}
             >
               {t.label}
@@ -384,29 +427,40 @@ const TemplateGallery = () => {
           ))}
         </div>
 
-        {/* Preview window */}
-        <motion.div
-          key={active}
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3 }}
-          className="lp-template-preview-window"
-        >
-          {/* Browser chrome */}
-          <div className="mock-ui-header" style={{ flexShrink: 0, borderRadius: '14px 14px 0 0' }}>
+        {/* 3D flip preview window — perspective wraps the flipping card */}
+        <div className="lp-template-flip-stage">
+          {/* Browser chrome stays static above the flip */}
+          <div className="mock-ui-header lp-template-chrome">
             <div className="mock-ui-dot" style={{ background: '#ff5f56' }} />
             <div className="mock-ui-dot" style={{ background: '#ffbd2e' }} />
             <div className="mock-ui-dot" style={{ background: '#27c93f' }} />
-            <span className="lp-template-preview-label">{TEMPLATES.find(t => t.id === active)?.label} template</span>
+            <span className="lp-template-preview-label">
+              {TEMPLATES[activeIndex].label} template
+            </span>
           </div>
-          {/* Scaled resume */}
-          <div className="lp-template-preview-body">
-            <div className="lp-template-preview-scaler">
-              <Component resume={GALLERY_RESUME} />
-            </div>
-            <div className="lp-template-preview-fade" />
+
+          {/* The card that actually flips */}
+          <div className="lp-template-flip-viewport">
+            <AnimatePresence mode="wait" custom={direction}>
+              <motion.div
+                key={active}
+                className="lp-template-flip-card"
+                custom={direction}
+                variants={flipVariants}
+                initial="enter"
+                animate="center"
+                exit="exit"
+              >
+                <div className="lp-template-preview-body" style={{ height: '100%', borderRadius: 0 }}>
+                  <div className="lp-template-preview-scaler">
+                    <Component resume={GALLERY_RESUME} />
+                  </div>
+                  <div className="lp-template-preview-fade" />
+                </div>
+              </motion.div>
+            </AnimatePresence>
           </div>
-        </motion.div>
+        </div>
 
         <div style={{ textAlign: 'center', marginTop: 32 }}>
           <Link to="/register" className="btn-lp-primary">
